@@ -12,7 +12,7 @@
 
 import { writeFileSync } from 'node:fs';
 
-const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-dusky.vercel.app';
+const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-pax.vercel.app';
 // one fund at a time: the boards on the same platform share one paced
 // request budget, and two of them listing at once crowd each other out
 const CONCURRENCY = 1;
