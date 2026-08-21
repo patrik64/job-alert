@@ -3,11 +3,13 @@ import type { JobBoardScraper } from './types';
 import { board as gv } from './gv';
 import { board as insight } from './insight';
 import { board as khosla } from './khosla';
+import { board as ycombinator } from './ycombinator';
 
 const impls: Record<string, JobBoardScraper> = {
 	gv,
 	insight,
-	khosla
+	khosla,
+	ycombinator
 };
 
 if (Object.keys(impls).length !== FUNDS.length || FUNDS.some((f) => !impls[f.slug]))

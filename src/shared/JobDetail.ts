@@ -9,7 +9,8 @@ export class JobDetail {
 	@Fields.string()
 	id = '';
 
-	// the description as the board delivers it: html — sanitize before rendering
+	// the description as the board delivers it — html, or markdown on some
+	// boards; sanitize before rendering
 	@Fields.string()
 	description = '';
 }

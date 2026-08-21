@@ -38,7 +38,7 @@ for (const s of targets) {
 			const d = await s.board.detail(jobs[0]);
 			console.log(
 				d
-					? `     detail: ${d.description.length} chars, category "${d.category}" in ${seconds(t1)}s`
+					? `     detail: ${d.description.length} chars, category "${d.category ?? "(unchanged)"}" in ${seconds(t1)}s`
 					: '     detail: the job is gone'
 			);
 		}

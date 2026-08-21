@@ -114,6 +114,10 @@ descriptions on pages of their own, knows how to fetch a job's detail:
 - **Consider** boards (GV) — `consider.ts`: the board's own search api behind a
   csrf handshake, up to a thousand jobs a page; no descriptions, and no job
   pages, so a job links to its company's page on the board.
+- **Y Combinator** — `ycombinator.ts`: the job search sits behind a login, so
+  the board is read company by company — the jobs sitemap names the hiring
+  companies, each company page embeds its current postings — and a job's own
+  page is read for its description (markdown).
 
 Scrapers fail loudly rather than import a partial list (which would mark the
 missing jobs closed, only to have them reappear as newcomers later); a failing
