@@ -122,6 +122,9 @@ descriptions on pages of their own, knows how to fetch a job's detail:
   their postings through open apis; about two thirds of these boards' jobs
   sit on one of them). Getro boards fall back to the same source when a job
   page carries no description.
+- **Greenhouse** boards (Flagship Pioneering) — `greenhouse.ts`: a fund's own
+  greenhouse job board whose offices are the portfolio companies; one request
+  lists everything, pay ranges included.
 - **Y Combinator** — `ycombinator.ts`: the job search sits behind a login, so
   the board is read company by company — the jobs sitemap names the hiring
   companies, each company page embeds its current postings — and a job's own
