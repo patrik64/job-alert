@@ -23,6 +23,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'craft', name: 'Craft Ventures', url: 'https://jobs.craftventures.com/jobs' },
 	{ slug: 'creandum', name: 'Creandum', url: 'https://careers.creandum.com/jobs' },
 	{ slug: 'dcvc', name: 'DCVC', url: 'https://jobs.dcvc.com/jobs' },
+	{ slug: 'earlybird', name: 'Earlybird Venture Capital', url: 'https://jobs.earlybird.com/jobs' },
 	{ slug: 'generalcatalyst', name: 'General Catalyst', url: 'https://jobs.generalcatalyst.com/jobs' },
 	{ slug: 'greylock', name: 'Greylock', url: 'https://jobs.greylock.com/jobs' },
 	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
