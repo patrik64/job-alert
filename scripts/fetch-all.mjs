@@ -42,7 +42,12 @@ if (!fundsResp.ok) {
 	process.exit(1);
 }
 let funds = await fundsResp.json();
-if (only) funds = funds.filter((f) => only.includes(f.slug));
+// --only names the funds to refresh — including a board that has never been
+// fetched and so has no row yet; the server knows it from its registry
+if (only) {
+	const known = new Map(funds.map((f) => [f.slug, f]));
+	funds = only.map((slug) => known.get(slug) ?? { slug, name: slug });
+}
 console.log(`refreshing ${funds.length} funds against ${BASE_URL}\n`);
 
 // a remult backend method: POST /api/<name> with { args }, answering { data }
