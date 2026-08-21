@@ -107,7 +107,7 @@
 				</div>
 			{/if}
 		</div>
-		<a href="/" class="-mt-1 pl-1 font-semibold text-white">{SITE_NAME}</a>
+		<a href="/" class="-mt-1 pl-3 font-semibold text-white">{SITE_NAME}</a>
 		<!-- each link drops out at the width where it stops fitting, rightmost first,
 		     so the icons on the right always keep their place; the menu holds them all -->
 		<nav class="-mt-1 flex items-center gap-3 pl-4 text-sm">
