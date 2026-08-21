@@ -73,9 +73,7 @@
 	{#if loading}
 		<Spinner label="loading newcomers" />
 	{:else if groups.length === 0}
-		<p class="mt-6 text-sm text-white/80">
-			no newcomers — run a fetch from the <a href="/" class="font-semibold text-white underline">dashboard</a>
-		</p>
+		<p class="mt-6 text-sm text-white/80">no newcomers</p>
 	{:else}
 		<div class="mt-4 flex flex-col gap-4">
 			{#each groups as group (group.slug)}
