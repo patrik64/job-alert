@@ -21,6 +21,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'canapi', name: 'Canapi Ventures', url: 'https://careers.canapi.com/jobs' },
 	{ slug: 'congruent', name: 'Congruent Ventures', url: 'https://jobs.congruentvc.com/jobs' },
 	{ slug: 'craft', name: 'Craft Ventures', url: 'https://jobs.craftventures.com/jobs' },
+	{ slug: 'creandum', name: 'Creandum', url: 'https://careers.creandum.com/jobs' },
 	{ slug: 'generalcatalyst', name: 'General Catalyst', url: 'https://jobs.generalcatalyst.com/jobs' },
 	{ slug: 'greylock', name: 'Greylock', url: 'https://jobs.greylock.com/jobs' },
 	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
