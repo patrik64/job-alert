@@ -1,3 +1,4 @@
+import { atsDetail } from './ats';
 import { fetchJson, fetchWithRetry, mapConcurrent, normalizePeriod, pacer } from './http';
 import type { JobBoardScraper, ScrapedJob } from './types';
 
@@ -196,8 +197,14 @@ export function getroBoard({
 			const data = (await resp.json()) as DetailResponse;
 			const current = data.pageProps?.initialState?.jobs?.currentJob;
 			if (!current) return null;
+			// a board page without a description may still lead to a posting
+			// whose tracking system publishes one
+			let description = current.description ?? '';
+			if (!description.trim() && job.applyUrl) {
+				description = (await atsDetail(job.applyUrl))?.description ?? '';
+			}
 			return {
-				description: current.description ?? '',
+				description,
 				category: (current.jobFunctions ?? [])
 					.map((f) => (f.name ?? '').trim())
 					.filter(Boolean)

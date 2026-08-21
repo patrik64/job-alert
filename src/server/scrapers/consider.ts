@@ -1,3 +1,4 @@
+import { atsDetail } from './ats';
 import { fetchWithRetry, normalizePeriod } from './http';
 import type { JobBoardScraper, ScrapedJob } from './types';
 
@@ -6,8 +7,8 @@ import type { JobBoardScraper, ScrapedJob } from './types';
 // cookie and the csrf token the page hands out, both from the same response;
 // pages are cursor-based and hold up to a thousand jobs each. The board has
 // no job pages of its own — its cards link straight to the posting — so the
-// company's page on the board stands in for the job's, and there is no
-// description to fetch.
+// company's page on the board stands in for the job's, and the description
+// is read from the posting's applicant tracking system where that is possible.
 
 const PAGE_SIZE = 1000;
 const MAX_PAGES = 50;
@@ -158,6 +159,10 @@ export function considerBoard({ host, boardId }: { host: string; boardId: string
 				throw new Error(`${base}: collected ${byKey.size} of ${total} jobs`);
 			}
 			return [...byKey.values()];
+		},
+
+		detail(job) {
+			return atsDetail(job.applyUrl);
 		}
 	};
 }

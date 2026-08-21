@@ -37,7 +37,8 @@ export interface ScrapedJobDetail {
 export interface JobBoardScraper {
 	// every job the board currently lists
 	list(): Promise<ScrapedJob[]>;
-	// the job's detail when the board keeps it on a page of its own; null when
-	// the job is gone. Absent for boards that publish no detail at all.
-	detail?(job: { url: string }): Promise<ScrapedJobDetail | null>;
+	// the job's detail — from its page on the board, or from the posting on
+	// the company's applicant tracking system when the board has none; null
+	// when there is nothing to be had. Absent for boards without either.
+	detail?(job: { url: string; applyUrl: string }): Promise<ScrapedJobDetail | null>;
 }

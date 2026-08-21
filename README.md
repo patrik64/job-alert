@@ -108,12 +108,17 @@ are read from the environment when they are.
 board scrapers. A scraper lists every job on its board and, if the board keeps
 descriptions on pages of their own, knows how to fetch a job's detail:
 
-- **Getro** boards (Khosla Ventures, Insight Partners) — `getro.ts`: the
+- **Getro** boards (Khosla Ventures, Insight Partners, 2150, Accel) — `getro.ts`: the
   public search api, 20 jobs a page, paced to stay under its rate limit; the
   description and job functions come from each job page's next.js data.
-- **Consider** boards (GV) — `consider.ts`: the board's own search api behind a
-  csrf handshake, up to a thousand jobs a page; no descriptions, and no job
-  pages, so a job links to its company's page on the board.
+- **Consider** boards (GV, 01 Advisors, Sequoia Capital) — `consider.ts`: the
+  board's own search api behind a csrf handshake, up to a thousand jobs a page;
+  no job pages, so a job links to its company's page on the board, and no
+  descriptions of its own — those are read from the posting's applicant
+  tracking system (`ats.ts`: Greenhouse, Ashby, Lever and Workday publish
+  their postings through open apis; about two thirds of these boards' jobs
+  sit on one of them). Getro boards fall back to the same source when a job
+  page carries no description.
 - **Y Combinator** — `ycombinator.ts`: the job search sits behind a login, so
   the board is read company by company — the jobs sitemap names the hiring
   companies, each company page embeds its current postings — and a job's own
