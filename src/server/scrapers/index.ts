@@ -12,6 +12,7 @@ import { board as generalcatalyst } from './generalcatalyst';
 import { board as gv } from './gv';
 import { board as insight } from './insight';
 import { board as khosla } from './khosla';
+import { board as lightspeed } from './lightspeed';
 import { board as sequoia } from './sequoia';
 import { board as ycombinator } from './ycombinator';
 
@@ -27,6 +28,7 @@ const impls: Record<string, JobBoardScraper> = {
 	gv,
 	insight,
 	khosla,
+	lightspeed,
 	sequoia,
 	ycombinator
 };
