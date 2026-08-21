@@ -17,7 +17,7 @@
 
 import { readFileSync } from 'node:fs';
 
-const BASE_URL = process.env.BASE_URL ?? 'https://job-alert.vercel.app';
+const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-dusky.vercel.app';
 const SERVICE = process.env.BLUESKY_SERVICE ?? 'https://bsky.social';
 const IDENTIFIER = process.env.BLUESKY_IDENTIFIER ?? 'job-alert.bsky.social';
 const PASSWORD = process.env.BLUESKY_APP_PASSWORD;
