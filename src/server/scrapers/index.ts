@@ -15,6 +15,7 @@ import { board as indexventures } from './indexventures';
 import { board as insight } from './insight';
 import { board as khosla } from './khosla';
 import { board as lightspeed } from './lightspeed';
+import { board as nea } from './nea';
 import { board as sequoia } from './sequoia';
 import { board as ycombinator } from './ycombinator';
 
@@ -33,6 +34,7 @@ const impls: Record<string, JobBoardScraper> = {
 	insight,
 	khosla,
 	lightspeed,
+	nea,
 	sequoia,
 	ycombinator
 };
