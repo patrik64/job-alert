@@ -18,10 +18,15 @@ const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-dusky.vercel.app';
 const CONCURRENCY = 1;
 // fetchFund aborts its listing after 4 minutes; give the request a little more
 const REQUEST_TIMEOUT = 300_000;
-// one enrichment pass runs for this long at most; a board of ten thousand
-// jobs needs a handful of passes on its first night, a few seconds after that
+// one enrichment pass stops taking on jobs after this long; a board of ten
+// thousand jobs needs a handful of passes on its first night, a few seconds
+// after that. The pass may overrun a little while its last jobs finish, so
+// its request gets more room, and a pass that fails is simply tried again —
+// the jobs it did not reach stay pending for the next pass or the next night
 const ENRICH_BUDGET_MS = 180_000;
+const ENRICH_TIMEOUT = 420_000;
 const ENRICH_PASSES = 12;
+const ENRICH_FAILURES = 2;
 
 const arg = (name) => {
 	const found = process.argv.find((a) => a === name || a.startsWith(`${name}=`));
@@ -41,12 +46,12 @@ if (only) funds = funds.filter((f) => only.includes(f.slug));
 console.log(`refreshing ${funds.length} funds against ${BASE_URL}\n`);
 
 // a remult backend method: POST /api/<name> with { args }, answering { data }
-async function call(method, args) {
+async function call(method, args, timeout = REQUEST_TIMEOUT) {
 	const resp = await fetch(`${BASE_URL}/api/${method}`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ args }),
-		signal: AbortSignal.timeout(REQUEST_TIMEOUT)
+		signal: AbortSignal.timeout(timeout)
 	});
 	if (!resp.ok) {
 		const body = await resp.text();
@@ -76,8 +81,18 @@ async function worker() {
 			);
 			let enriched = 0;
 			let remaining = data.pending;
+			let failures = 0;
 			for (let pass = 0; remaining > 0 && pass < ENRICH_PASSES; pass++) {
-				const r = await call('enrichFund', [fund.slug, ENRICH_BUDGET_MS]);
+				let r;
+				try {
+					r = await call('enrichFund', [fund.slug, ENRICH_BUDGET_MS], ENRICH_TIMEOUT);
+				} catch (err) {
+					const message = String(err instanceof Error ? err.message : err).slice(0, 120);
+					console.log(`     ${fund.slug.padEnd(10)} ${elapsed()}s  pass failed: ${message}`);
+					if (++failures >= ENRICH_FAILURES) break;
+					continue;
+				}
+				failures = 0;
 				enriched += r.enriched;
 				remaining = r.remaining;
 				console.log(
