@@ -152,12 +152,17 @@ export class ScrapeController {
 				where: { fundSlug: slug, isNewcomer: true },
 				set: { isNewcomer: false }
 			});
-			// jobs that left the board are closed, jobs that came back reopened
+			// jobs that left the board are closed — and their descriptions go with
+			// them; jobs that came back are reopened, and described afresh
 			for (const ids of chunks(toClose, 500)) {
 				await jobs.updateMany({ where: { id: { $in: ids } }, set: { closedAt: now } });
+				await repo(JobDetail).deleteMany({ where: { id: { $in: ids } } });
 			}
 			for (const ids of chunks(toReopen, 500)) {
-				await jobs.updateMany({ where: { id: { $in: ids } }, set: { closedAt: null } });
+				await jobs.updateMany({
+					where: { id: { $in: ids } },
+					set: { closedAt: null, ...(entry.board.detail ? { enrichedAt: null } : {}) }
+				});
 			}
 
 			// chunked concurrent inserts; the pg pool bounds real concurrency
@@ -182,8 +187,11 @@ export class ScrapeController {
 							postedAt: j.postedAt ?? null,
 							isNewcomer: !baseline,
 							baseline,
-							// a board without detail pages has nothing more to fetch
-							enrichedAt: entry.board.detail ? null : now
+							// descriptions are kept for the jobs that turn up after a board's
+							// baseline: the baseline is thousands of jobs a board, more than
+							// the database has room for, and it is the newcomers that get
+							// read. A board without detail has nothing to fetch anyway
+							enrichedAt: entry.board.detail && !baseline ? null : now
 						})
 					)
 				);
@@ -244,7 +252,7 @@ export class ScrapeController {
 			const jobs = repo(Job);
 			// newest first: the newcomers of this run are what gets announced
 			const queue = await jobs.find({
-				where: { fundSlug: slug, enrichedAt: NULL_DATE, closedAt: NULL_DATE },
+				where: { fundSlug: slug, enrichedAt: NULL_DATE, closedAt: NULL_DATE, baseline: false },
 				orderBy: { firstSeenAt: 'desc' },
 				limit: ENRICH_BATCH
 			});

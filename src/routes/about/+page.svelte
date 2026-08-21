@@ -58,7 +58,8 @@
 			<a href="/timeline" class="font-semibold text-white underline">timeline</a> groups them by the
 			day they first appeared, and
 			<a href="/download" class="font-semibold text-white underline">download</a> exports everything
-			as JSON. Job descriptions are collected as well; a way to read them here is coming.
+			as JSON. Job descriptions are kept for the jobs that appear after a board's first
+			import; a way to read them here is coming.
 		</p>
 		<p>
 			{#if BLUESKY_URL}
