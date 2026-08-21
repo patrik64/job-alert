@@ -72,13 +72,13 @@
 
 <div class="mx-auto mt-2 w-full max-w-[53rem] px-6 py-4 lg:dashed-frame">
 	<div class="flex flex-wrap items-center justify-between gap-2">
-		<h1 class="text-lg font-semibold">
+		<h1 class="text-lg font-semibold text-white">
 			{#if fund}
 				<a
 					href={fund.url}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="transition duration-150 hover:text-tertiary-600"
+					class="transition duration-150 hover:text-primary-300"
 				>
 					{name}
 				</a>
@@ -86,7 +86,7 @@
 				{name}
 			{/if}
 		</h1>
-		<div class="flex items-center gap-3 text-sm text-gray-600">
+		<div class="flex items-center gap-3 text-sm text-white/80">
 			{#if !loading}
 				<span>
 					{filtered.length.toLocaleString()} of {jobs.length.toLocaleString()} jobs · {groups.length} companies
@@ -109,8 +109,8 @@
 	{#if loading}
 		<Spinner label="loading jobs" />
 	{:else if jobs.length === 0}
-		<p class="mt-6 text-sm text-gray-600">
-			no jobs yet — run a fetch from the <a href="/" class="font-semibold text-tertiary-600">dashboard</a>
+		<p class="mt-6 text-sm text-white/80">
+			no jobs yet — run a fetch from the <a href="/" class="font-semibold text-white underline">dashboard</a>
 		</p>
 	{:else}
 		<div class="mt-4 flex flex-col gap-3">

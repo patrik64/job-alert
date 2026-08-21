@@ -42,8 +42,8 @@
 
 <div class="mx-auto mt-2 w-full max-w-[53rem] px-6 py-4 lg:dashed-frame">
 	<div class="flex flex-wrap items-center justify-between gap-2">
-		<h1 class="text-lg font-semibold">search</h1>
-		<span class="text-sm text-gray-600">
+		<h1 class="text-lg font-semibold text-white">search</h1>
+		<span class="text-sm text-white/80">
 			{#if searching}
 				searching…
 			{:else if searched}
@@ -66,9 +66,9 @@
 	/>
 
 	{#if !searched && !searching}
-		<p class="mt-6 text-sm text-gray-600">type at least 2 characters to search all listed jobs</p>
+		<p class="mt-6 text-sm text-white/80">type at least 2 characters to search all listed jobs</p>
 	{:else if searched && results.length === 0}
-		<p class="mt-6 text-sm text-gray-600">no jobs match "{search.trim()}"</p>
+		<p class="mt-6 text-sm text-white/80">no jobs match "{search.trim()}"</p>
 	{:else if results.length > 0}
 		<ul class="mt-4 divide-y divide-gray-200 rounded-lg bg-white shadow-lg">
 			{#each results as job (job.id)}

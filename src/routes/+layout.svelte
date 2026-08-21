@@ -30,7 +30,7 @@
 				}}
 				class="flex h-8 w-8 items-center justify-center rounded-full border border-frame transition duration-150 ease-in-out hover:bg-tertiary-500 focus:outline-none"
 			>
-				<svg width="20" height="20" viewBox="0 0 20 20" fill="gray">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="white">
 					<path
 						fill-rule="evenodd"
 						d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -107,43 +107,43 @@
 				</div>
 			{/if}
 		</div>
-		<a href="/" class="-mt-1 pl-1 font-semibold">{SITE_NAME}</a>
+		<a href="/" class="-mt-1 pl-1 font-semibold text-white">{SITE_NAME}</a>
 		<!-- each link drops out at the width where it stops fitting, rightmost first,
 		     so the icons on the right always keep their place; the menu holds them all -->
 		<nav class="-mt-1 flex items-center gap-3 pl-4 text-sm">
 			<a
 				href="/search"
-				class="hidden min-[280px]:block text-gray-600 transition duration-150 hover:text-tertiary-600"
+				class="hidden min-[280px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				search
 			</a>
 			<a
 				href="/newcomers"
-				class="hidden min-[370px]:block text-gray-600 transition duration-150 hover:text-tertiary-600"
+				class="hidden min-[370px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				newcomers
 			</a>
 			<a
 				href="/timeline"
-				class="hidden min-[430px]:block text-gray-600 transition duration-150 hover:text-tertiary-600"
+				class="hidden min-[430px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				timeline
 			</a>
 			<a
 				href="/about"
-				class="hidden min-[480px]:block text-gray-600 transition duration-150 hover:text-tertiary-600"
+				class="hidden min-[480px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				about
 			</a>
 		</nav>
-		<div class="-mt-1 ml-auto flex items-center gap-3 pr-1 text-gray-600">
+		<div class="-mt-1 ml-auto flex items-center gap-3 pr-1 text-white">
 			<a
 				href="/download"
 				download
 				data-sveltekit-reload
 				aria-label="download"
 				title="download"
-				class="transition duration-150 hover:text-tertiary-600"
+				class="transition duration-150 hover:text-primary-300"
 			>
 				<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
 					<path
@@ -160,7 +160,7 @@
 					rel="external noreferrer"
 					aria-label="bluesky"
 					title="bluesky"
-					class="transition duration-150 hover:text-tertiary-600"
+					class="transition duration-150 hover:text-primary-300"
 				>
 					<svg width="20" height="18" viewBox="0 0 568 501" fill="currentColor">
 						<path

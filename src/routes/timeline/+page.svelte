@@ -97,9 +97,9 @@
 
 <div class="mx-auto mt-2 w-full max-w-[53rem] px-6 py-4 lg:dashed-frame">
 	<div class="flex flex-wrap items-center justify-between gap-2">
-		<h1 class="text-lg font-semibold">timeline</h1>
+		<h1 class="text-lg font-semibold text-white">timeline</h1>
 		{#if !loading && total}
-			<span class="text-sm text-gray-600">
+			<span class="text-sm text-white/80">
 				{total.toLocaleString()} listed jobs · since {since.toLocaleDateString()}
 			</span>
 		{/if}
@@ -108,16 +108,16 @@
 	{#if loading}
 		<Spinner label="loading timeline" />
 	{:else if days.length === 0}
-		<p class="mt-6 text-sm text-gray-600">
+		<p class="mt-6 text-sm text-white/80">
 			nothing since {since.toLocaleDateString()} — run a fetch from the
-			<a href="/" class="font-semibold text-tertiary-600">dashboard</a>
+			<a href="/" class="font-semibold text-white underline">dashboard</a>
 		</p>
 	{:else}
 		{#each days as day (day.day)}
 			<div class="mt-6">
-				<h2 class="font-semibold text-gray-800">
+				<h2 class="font-semibold text-white">
 					{day.label}
-					<span class="ml-1 text-sm font-normal text-gray-500">
+					<span class="ml-1 text-sm font-normal text-white/70">
 						({day.total.toLocaleString()} {day.total === 1 ? 'job' : 'jobs'})
 					</span>
 				</h2>
@@ -180,7 +180,7 @@
 			<button
 				type="button"
 				onclick={() => (windows += 1)}
-				class="rounded-md px-3 py-1 text-sm font-semibold text-primary-700 transition duration-150 ease-in-out hover:bg-primary-300 focus:shadow-outline-green focus:outline-none"
+				class="rounded-md px-3 py-1 text-sm font-semibold text-white transition duration-150 ease-in-out hover:bg-white/20 focus:shadow-outline-green focus:outline-none"
 			>
 				show earlier
 			</button>

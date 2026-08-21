@@ -16,8 +16,8 @@
 
 <div class="mx-auto mt-2 w-full max-w-[53rem] px-6 py-4 lg:dashed-frame">
 	<div class="flex flex-wrap items-center justify-between gap-2">
-		<h1 class="text-lg font-semibold">about</h1>
-		<span class="text-sm text-gray-600">
+		<h1 class="text-lg font-semibold text-white">about</h1>
+		<span class="text-sm text-white/80">
 			{FUNDS.length} funds
 			{#if jobCount > 0}
 				· {jobCount.toLocaleString()} jobs
@@ -25,10 +25,10 @@
 		</span>
 	</div>
 
-	<div class="mt-4 flex flex-col gap-4 text-sm text-black">
+	<div class="mt-4 flex flex-col gap-4 text-sm text-white">
 		<p>
 			Hi, my name is Patrik Simic -
-			<a href="https://www.github.com/patrik64" class="font-semibold text-tertiary-600"
+			<a href="https://www.github.com/patrik64" class="font-semibold text-white underline"
 				>github.com/patrik64</a
 			>
 			and I created this app to help me find new work.
@@ -41,30 +41,30 @@
 			<span class="font-semibold">{SITE_NAME}</span> watches the job boards of {FUNDS.length}
 			venture capital funds — the openings at their portfolio companies. It reads each board's
 			public listing, keeps every job it has ever seen, and highlights
-			<a href="/newcomers" class="font-semibold text-tertiary-600">newcomers</a> — jobs that
+			<a href="/newcomers" class="font-semibold text-white underline">newcomers</a> — jobs that
 			appeared on a board since the last fetch. A job that leaves its board is marked closed and
 			drops out of the listings.
 		</p>
 		<p>
-			The <a href="/" class="font-semibold text-tertiary-600">dashboard</a> shows one card per
+			The <a href="/" class="font-semibold text-white underline">dashboard</a> shows one card per
 			fund with its job count, newcomer badge and last-fetch time; each fund's page lists its jobs
 			by company, with the job's function, location and pay where the board publishes them. The
 			first fetch of a fund imports a baseline and is not counted as newcomers. Every job row
 			shows when it was first encountered.
 		</p>
 		<p>
-			<a href="/search" class="font-semibold text-tertiary-600">search</a> finds jobs across every
+			<a href="/search" class="font-semibold text-white underline">search</a> finds jobs across every
 			board by title, company, category, sector or location,
-			<a href="/timeline" class="font-semibold text-tertiary-600">timeline</a> groups them by the
+			<a href="/timeline" class="font-semibold text-white underline">timeline</a> groups them by the
 			day they first appeared, and
-			<a href="/download" class="font-semibold text-tertiary-600">download</a> exports everything
+			<a href="/download" class="font-semibold text-white underline">download</a> exports everything
 			as JSON. Job descriptions are collected as well; a way to read them here is coming.
 		</p>
 		<p>
 			{#if BLUESKY_URL}
 				Every night the boards are refreshed automatically, and whatever newcomers turn up are
 				announced on bluesky at
-				<a href={BLUESKY_URL} target="_blank" rel="external noreferrer" class="font-semibold text-tertiary-600"
+				<a href={BLUESKY_URL} target="_blank" rel="external noreferrer" class="font-semibold text-white underline"
 					>@{BLUESKY_HANDLE}</a
 				>.
 			{:else}
@@ -75,7 +75,7 @@
 		<p>
 			Built with SvelteKit, Svelte 5, remult and Tailwind CSS on a Neon postgres database. The
 			source is on
-			<a href={REPO_URL} target="_blank" rel="external noreferrer" class="font-semibold text-tertiary-600"
+			<a href={REPO_URL} target="_blank" rel="external noreferrer" class="font-semibold text-white underline"
 				>github</a
 			>.
 		</p>
