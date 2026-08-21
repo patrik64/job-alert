@@ -23,6 +23,7 @@ import { board as generalcatalyst } from './generalcatalyst';
 import { board as greycroft } from './greycroft';
 import { board as greylock } from './greylock';
 import { board as gv } from './gv';
+import { board as headline } from './headline';
 import { board as indexventures } from './indexventures';
 import { board as insight } from './insight';
 import { board as khosla } from './khosla';
@@ -54,6 +55,7 @@ const impls: Record<string, JobBoardScraper> = {
 	greycroft,
 	greylock,
 	gv,
+	headline,
 	indexventures,
 	insight,
 	khosla,
