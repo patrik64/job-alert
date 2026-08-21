@@ -8,6 +8,7 @@ import { board as accel } from './accel';
 import { board as avp } from './avp';
 import { board as battery } from './battery';
 import { board as bessemer } from './bessemer';
+import { board as generalcatalyst } from './generalcatalyst';
 import { board as gv } from './gv';
 import { board as insight } from './insight';
 import { board as khosla } from './khosla';
@@ -22,6 +23,7 @@ const impls: Record<string, JobBoardScraper> = {
 	avp,
 	battery,
 	bessemer,
+	generalcatalyst,
 	gv,
 	insight,
 	khosla,
