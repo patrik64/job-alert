@@ -10,6 +10,7 @@ export interface FundInfo {
 export const FUNDS: FundInfo[] = [
 	{ slug: '01a', name: '01 Advisors', url: 'https://jobs.01a.com/jobs' },
 	{ slug: '2150', name: '2150', url: 'https://2150.getro.com/jobs' },
+	{ slug: 'accel', name: 'Accel', url: 'https://jobs.accel.com/jobs' },
 	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
 	{ slug: 'insight', name: 'Insight Partners', url: 'https://jobs.insightpartners.com/jobs' },
 	{ slug: 'khosla', name: 'Khosla Ventures', url: 'https://jobs.khoslaventures.com/jobs' },
