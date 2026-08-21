@@ -13,6 +13,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'accel', name: 'Accel', url: 'https://jobs.accel.com/jobs' },
 	{ slug: 'a16z', name: 'Andreessen Horowitz', url: 'https://jobs.a16z.com/jobs' },
 	{ slug: 'battery', name: 'Battery Ventures', url: 'https://jobs.battery.com/jobs' },
+	{ slug: 'bessemer', name: 'Bessemer Venture Partners', url: 'https://jobs.bvp.com/jobs' },
 	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
 	{ slug: 'insight', name: 'Insight Partners', url: 'https://jobs.insightpartners.com/jobs' },
 	{ slug: 'khosla', name: 'Khosla Ventures', url: 'https://jobs.khoslaventures.com/jobs' },
