@@ -1,0 +1,17 @@
+// The tracked funds — each runs a public job board listing the openings at
+// its portfolio companies. Slugs match the scraper module filenames in
+// src/server/scrapers/; url is the board's job listing page.
+export interface FundInfo {
+	slug: string;
+	name: string;
+	url: string;
+}
+
+export const FUNDS: FundInfo[] = [
+	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
+	{ slug: 'insight', name: 'Insight Partners', url: 'https://jobs.insightpartners.com/jobs' },
+	{ slug: 'khosla', name: 'Khosla Ventures', url: 'https://jobs.khoslaventures.com/jobs' }
+];
+
+export const fundName = new Map(FUNDS.map((f) => [f.slug, f.name]));
+export const fundBySlug = new Map(FUNDS.map((f) => [f.slug, f]));

@@ -141,3 +141,11 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# job-alert
+build/
+db/
+.DS_Store
+fetch-results.json
+plan.md
+.vercel
