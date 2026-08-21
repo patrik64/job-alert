@@ -6,6 +6,7 @@ import { board as twentyonefifty } from './2150';
 import { board as gv } from './gv';
 import { board as insight } from './insight';
 import { board as khosla } from './khosla';
+import { board as sequoia } from './sequoia';
 import { board as ycombinator } from './ycombinator';
 
 const impls: Record<string, JobBoardScraper> = {
@@ -14,6 +15,7 @@ const impls: Record<string, JobBoardScraper> = {
 	gv,
 	insight,
 	khosla,
+	sequoia,
 	ycombinator
 };
 

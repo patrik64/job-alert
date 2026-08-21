@@ -13,6 +13,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
 	{ slug: 'insight', name: 'Insight Partners', url: 'https://jobs.insightpartners.com/jobs' },
 	{ slug: 'khosla', name: 'Khosla Ventures', url: 'https://jobs.khoslaventures.com/jobs' },
+	{ slug: 'sequoia', name: 'Sequoia Capital', url: 'https://jobs.sequoiacap.com/jobs' },
 	{ slug: 'ycombinator', name: 'Y Combinator', url: 'https://www.ycombinator.com/jobs' }
 ];
 
