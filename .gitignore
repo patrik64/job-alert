@@ -149,3 +149,4 @@ db/
 fetch-results.json
 plan.md
 .vercel
+.env.local
