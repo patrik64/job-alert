@@ -52,6 +52,10 @@
 
 	/* page background — soft green */
 	--color-page-500: #cde5c0;
+
+	/* company names — a dark cherry red, so they stand out in the job rows */
+	--color-cherry-500: #7c1d2f;
+	--color-cherry-600: #5e1424;
 }
 
 body {

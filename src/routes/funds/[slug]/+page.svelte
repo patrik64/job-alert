@@ -128,7 +128,7 @@
 					<summary
 						class="cursor-pointer px-4 py-3 font-semibold text-gray-800 transition duration-150 select-none hover:text-tertiary-600"
 					>
-						{group.company}
+						<span class="text-cherry-500">{group.company}</span>
 						<span class="ml-1 text-sm font-normal text-gray-500">({group.jobs.length})</span>
 						{#if group.sector}
 							<span class="ml-2 text-xs font-normal text-gray-500">{group.sector}</span>

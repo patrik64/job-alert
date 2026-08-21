@@ -160,7 +160,7 @@
 											{:else}
 												<span class="font-medium text-gray-800">{job.title}</span>
 											{/if}
-											<span class="ml-2 text-sm text-gray-600">{job.company}</span>
+											<span class="ml-2 text-sm font-medium text-cherry-500">{job.company}</span>
 											{#if meta}
 												<span class="ml-2 text-xs text-gray-500">{meta}</span>
 											{/if}
