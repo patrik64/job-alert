@@ -45,8 +45,11 @@ export interface SearchHit {
 
 export const SEARCH_LIMIT = 500;
 
-// how long one fetch may spend listing a board
-const LIST_TIMEOUT_MS = 240_000;
+// how long one fetch may spend listing a board — the largest getro boards
+// run to well over a thousand paced pages, a good three minutes; the rest of
+// a nightly fetch (diff, a few inserts) fits in the time a serverless
+// function has left after that
+const LIST_TIMEOUT_MS = 270_000;
 // how many jobs one enrichment pass picks up at most, how many detail
 // requests it keeps in flight, and how long it runs unless told otherwise
 const ENRICH_BATCH = 3000;
@@ -109,7 +112,7 @@ export class ScrapeController {
 				entry.board.list(),
 				new Promise<never>((_, reject) =>
 					setTimeout(
-						() => reject(new Error(`${entry.name}: scrape timed out after 4 minutes`)),
+						() => reject(new Error(`${entry.name}: scrape timed out after ${LIST_TIMEOUT_MS / 60_000} minutes`)),
 						LIST_TIMEOUT_MS
 					)
 				)
