@@ -9,6 +9,8 @@ import type { JobBoardScraper, ScrapedJob } from './types';
 // no job pages of its own — its cards link straight to the posting — so the
 // company's page on the board stands in for the job's, and the description
 // is read from the posting's applicant tracking system where that is possible.
+// A board without a domain of its own lives under a path on consider.com
+// (consider.com/boards/vc/<slug>); the api is at the host's root either way.
 
 const PAGE_SIZE = 1000;
 const MAX_PAGES = 50;
@@ -108,8 +110,19 @@ function toJob(base: string, j: SearchJob): ScrapedJob | null {
 	};
 }
 
-export function considerBoard({ host, boardId }: { host: string; boardId: string }): JobBoardScraper {
-	const base = `https://${host}`;
+export function considerBoard({
+	host,
+	boardId,
+	path = ''
+}: {
+	host: string;
+	boardId: string;
+	path?: string;
+}): JobBoardScraper {
+	// the board's pages (the handshake, the company pages) live under the
+	// path; the api does not
+	const base = `https://${host}${path}`;
+	const api = `https://${host}/api-boards/search-jobs`;
 	return {
 		async list() {
 			let session = await handshake(base);
@@ -118,7 +131,7 @@ export function considerBoard({ host, boardId }: { host: string; boardId: string
 			let sequence: string | undefined;
 			let renewed = false;
 			for (let page = 0; page < MAX_PAGES; page++) {
-				const resp = await fetchWithRetry(`${base}/api-boards/search-jobs`, {
+				const resp = await fetchWithRetry(api, {
 					method: 'POST',
 					headers: {
 						accept: 'application/json',
