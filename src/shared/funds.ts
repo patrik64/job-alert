@@ -40,6 +40,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'nea', name: 'New Enterprise Associates', url: 'https://careers.nea.com/jobs' },
 	{ slug: 'sequoia', name: 'Sequoia Capital', url: 'https://jobs.sequoiacap.com/jobs' },
 	{ slug: 'sosv', name: 'SOSV', url: 'https://techjobs.sosv.com/jobs' },
+	{ slug: 'techstars', name: 'Techstars', url: 'https://jobs.techstars.com/jobs' },
 	{ slug: 'ycombinator', name: 'Y Combinator', url: 'https://www.ycombinator.com/jobs' }
 ];
 
