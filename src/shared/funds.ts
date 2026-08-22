@@ -42,6 +42,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'lux', name: 'Lux Capital', url: 'https://jobs.luxcapital.com/jobs' },
 	{ slug: 'nea', name: 'New Enterprise Associates', url: 'https://careers.nea.com/jobs' },
 	{ slug: 'northzone', name: 'Northzone', url: 'https://portfolio.northzone.com/jobs' },
+	{ slug: 'norwest', name: 'Norwest Venture Partners', url: 'https://careers.norwest.com/jobs' },
 	{ slug: 'seedcamp', name: 'Seedcamp', url: 'https://talent.seedcamp.com/jobs' },
 	{ slug: 'sequoia', name: 'Sequoia Capital', url: 'https://jobs.sequoiacap.com/jobs' },
 	{ slug: 'sosv', name: 'SOSV', url: 'https://techjobs.sosv.com/jobs' },
