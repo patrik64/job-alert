@@ -43,6 +43,7 @@ import { board as sequoia } from './sequoia';
 import { board as sosv } from './sosv';
 import { board as speedinvest } from './speedinvest';
 import { board as techstars } from './techstars';
+import { board as usv } from './usv';
 import { board as ycombinator } from './ycombinator';
 
 const impls: Record<string, JobBoardScraper> = {
@@ -88,6 +89,7 @@ const impls: Record<string, JobBoardScraper> = {
 	sosv,
 	speedinvest,
 	techstars,
+	usv,
 	ycombinator
 };
 

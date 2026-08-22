@@ -50,6 +50,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'sosv', name: 'SOSV', url: 'https://techjobs.sosv.com/jobs' },
 	{ slug: 'speedinvest', name: 'Speedinvest', url: 'https://careers.speedinvest.com/jobs' },
 	{ slug: 'techstars', name: 'Techstars', url: 'https://jobs.techstars.com/jobs' },
+	{ slug: 'usv', name: 'Union Square Ventures', url: 'https://jobs.usv.com/jobs' },
 	{ slug: 'ycombinator', name: 'Y Combinator', url: 'https://www.ycombinator.com/jobs' }
 ];
 
