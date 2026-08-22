@@ -10,6 +10,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
 	<title>{SITE_NAME}</title>
 </svelte:head>
 
@@ -89,6 +90,14 @@
 						</a>
 					{/if}
 					<a
+						href="/rss.xml"
+						target="_blank"
+						onclick={() => (menuOpen = false)}
+						class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+					>
+						rss
+					</a>
+					<a
 						href={REPO_URL}
 						target="_blank"
 						rel="external noreferrer"
@@ -113,25 +122,25 @@
 		<nav class="-mt-1 flex items-center gap-3 pl-4 text-sm">
 			<a
 				href="/search"
-				class="hidden min-[280px]:block text-white transition duration-150 hover:text-primary-300"
+				class="hidden min-[310px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				search
 			</a>
 			<a
 				href="/newcomers"
-				class="hidden min-[370px]:block text-white transition duration-150 hover:text-primary-300"
+				class="hidden min-[400px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				newcomers
 			</a>
 			<a
 				href="/timeline"
-				class="hidden min-[430px]:block text-white transition duration-150 hover:text-primary-300"
+				class="hidden min-[460px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				timeline
 			</a>
 			<a
 				href="/about"
-				class="hidden min-[480px]:block text-white transition duration-150 hover:text-primary-300"
+				class="hidden min-[510px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				about
 			</a>
@@ -150,6 +159,20 @@
 						fill-rule="evenodd"
 						d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
 						clip-rule="evenodd"
+					/>
+				</svg>
+			</a>
+			<a
+				href="/rss.xml"
+				target="_blank"
+				aria-label="rss"
+				title="rss"
+				class="transition duration-150 hover:text-primary-300"
+			>
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+					<path d="M5 3a1 1 0 000 2c5.523 0 10 4.477 10 10a1 1 0 102 0C17 8.373 11.627 3 5 3z" />
+					<path
+						d="M4 9a1 1 0 011-1 7 7 0 017 7 1 1 0 11-2 0 5 5 0 00-5-5 1 1 0 01-1-1zM3 15a2 2 0 114 0 2 2 0 01-4 0z"
 					/>
 				</svg>
 			</a>

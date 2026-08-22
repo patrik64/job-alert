@@ -30,6 +30,9 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
 - **download** (`/download`) — a JSON file with every listed job grouped by fund
   and company (no descriptions).
 - **about** (`/about`) — what the app does and how the pages fit together.
+- **rss** (`/rss.xml`) — the nightly newcomer digests as a feed: one item per
+  night that found some, naming the jobs under their funds (the first few
+  dozen per fund, counting the rest).
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -101,9 +104,21 @@ pnpm post-newcomers --check          # prove the app password still works
 ```
 
 `BASE_URL` points both scripts at another deployment (e.g. a local dev
-server). The Bluesky account and the GitHub workflow that runs the two scripts
-every night are still to come; `BLUESKY_IDENTIFIER` and `BLUESKY_APP_PASSWORD`
-are read from the environment when they are.
+server).
+
+`.github/workflows/daily-fetch.yml` runs the two scripts every night at 4am
+Central European time (GitHub's cron only speaks UTC, so both candidate hours
+fire and a guard keeps whichever is 4am in Berlin); it can also be run by hand
+from the Actions tab. The announcement step needs the Bluesky account, which
+is still to come — set `BLUESKY_IDENTIFIER` in the workflow and
+`gh secret set BLUESKY_APP_PASSWORD` once it exists; until then the step
+composes and posts nothing, and the refresh runs on its own.
+
+The same digests are served as an RSS feed at `/rss.xml`, straight from the
+database: one item per night that found newcomers, with the jobs named under
+their funds and linked to their pages on the boards. A night still being
+written is held back until it has settled, so readers never cache a
+half-announced one.
 
 ## Scrapers
 

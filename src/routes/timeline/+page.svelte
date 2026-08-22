@@ -54,6 +54,20 @@
 		});
 	});
 
+	// the rss feed links a night as /timeline#YYYY-MM-DD; the days only exist
+	// once the rows are in, so the jump happens here rather than on page load —
+	// widening the window first when the night lies beyond it
+	$effect(() => {
+		if (loading || days.length === 0) return;
+		const target = location.hash.slice(1);
+		if (!target) return;
+		if (target < dayKey(since) && windows < 8) {
+			windows += 1;
+			return;
+		}
+		document.getElementById(target)?.scrollIntoView();
+	});
+
 	const days = $derived.by(() => {
 		const byDay = new Map<string, Job[]>();
 		for (const j of jobs) {
@@ -114,7 +128,7 @@
 		</p>
 	{:else}
 		{#each days as day (day.day)}
-			<div class="mt-6">
+			<div id={day.day} class="mt-6 scroll-mt-4">
 				<h2 class="font-semibold text-white">
 					{day.label}
 					<span class="ml-1 text-sm font-normal text-white/70">

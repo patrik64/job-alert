@@ -67,10 +67,13 @@
 				announced on bluesky at
 				<a href={BLUESKY_URL} target="_blank" rel="external noreferrer" class="font-semibold text-white underline"
 					>@{BLUESKY_HANDLE}</a
-				>.
+				>
+				and in the
+				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a>.
 			{:else}
-				The boards get refreshed every night, and the newcomers of each night are to be announced
-				on bluesky once that account is set up.
+				Every night the boards are refreshed automatically; the newcomers of each night go out
+				in the <a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a>,
+				and will be announced on bluesky once that account is set up.
 			{/if}
 		</p>
 		<p>
