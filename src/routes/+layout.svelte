@@ -70,6 +70,13 @@
 						timeline
 					</a>
 					<a
+						href="/rust-jobs"
+						onclick={() => (menuOpen = false)}
+						class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+					>
+						rust jobs
+					</a>
+					<a
 						href="/download"
 						download
 						data-sveltekit-reload
@@ -139,8 +146,14 @@
 				timeline
 			</a>
 			<a
+				href="/rust-jobs"
+				class="hidden min-[530px]:block text-white transition duration-150 hover:text-primary-300"
+			>
+				rust jobs
+			</a>
+			<a
 				href="/about"
-				class="hidden min-[510px]:block text-white transition duration-150 hover:text-primary-300"
+				class="hidden min-[580px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				about
 			</a>

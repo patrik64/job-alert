@@ -1,4 +1,4 @@
-import { BackendMethod, repo } from 'remult';
+import { BackendMethod, SqlDatabase, remult, repo } from 'remult';
 import type { ScrapedJob } from '../server/scrapers/types';
 import { Fund } from './Fund';
 import { Job, NULL_DATE } from './Job';
@@ -44,6 +44,15 @@ export interface SearchHit {
 }
 
 export const SEARCH_LIMIT = 500;
+
+// a job on the rust jobs page, with where the language turned up: the title,
+// the job function, or — for a job whose description is stored — only there
+export interface RustJob extends SearchHit {
+	matchedIn: 'title' | 'function' | 'description';
+}
+
+// the language as a word — "Rust", "RUST", "Rust/Go" — but not "Trust"
+const RUST = /\brust\b/i;
 
 // how long one fetch may spend listing a board — the largest getro boards
 // run to well over a thousand paced pages, a good three minutes; the rest of
@@ -362,6 +371,69 @@ export class ScrapeController {
 			salaryPeriod: job.salaryPeriod,
 			firstSeenAt: job.firstSeenAt?.toISOString() ?? ''
 		}));
+	}
+
+	// the listed jobs that have to do with rust: the language named in the
+	// title or the job function, or mentioned in the description — of the jobs
+	// whose description is stored, that is (see fetchFund)
+	@BackendMethod({ allowed: true })
+	static async rustJobs(): Promise<RustJob[]> {
+		// the descriptions are html by the thousand: the database matches them,
+		// on word boundaries, and only the ids travel — unless the data provider
+		// is the json fallback of local development, which has no sql
+		const db = remult.dataProvider;
+		const described =
+			db instanceof SqlDatabase
+				? (await db.execute(`select id from job_details where description ~* '\\mrust\\M'`)).rows.map(
+						(r) => String(r.id)
+					)
+				: (await repo(JobDetail).find({ where: { description: { $contains: 'rust' } }, limit: 100_000 }))
+						.filter((d) => RUST.test(d.description))
+						.map((d) => d.id);
+		// a substring query first ("Trust" comes along), the word test after
+		const rows = await repo(Job).find({
+			where: {
+				closedAt: NULL_DATE,
+				$or: [
+					{ title: { $contains: 'rust' } },
+					{ category: { $contains: 'rust' } },
+					...chunks(described, 500).map((ids) => ({ id: { $in: ids } }))
+				]
+			},
+			orderBy: { firstSeenAt: 'desc', company: 'asc', title: 'asc' },
+			limit: 100_000
+		});
+		const mentioned = new Set(described);
+		const hits: RustJob[] = [];
+		for (const job of rows) {
+			const matchedIn = RUST.test(job.title)
+				? 'title'
+				: RUST.test(job.category)
+					? 'function'
+					: mentioned.has(job.id)
+						? 'description'
+						: null;
+			if (!matchedIn) continue;
+			hits.push({
+				id: job.id,
+				fundSlug: job.fundSlug,
+				company: job.company,
+				companyUrl: job.companyUrl,
+				title: job.title,
+				url: job.url,
+				applyUrl: job.applyUrl,
+				category: job.category,
+				sector: job.sector,
+				location: job.location,
+				salaryMin: job.salaryMin,
+				salaryMax: job.salaryMax,
+				salaryCurrency: job.salaryCurrency,
+				salaryPeriod: job.salaryPeriod,
+				firstSeenAt: job.firstSeenAt?.toISOString() ?? '',
+				matchedIn
+			});
+		}
+		return hits;
 	}
 
 	// the jobs currently listed across all boards (a posting that sits on two

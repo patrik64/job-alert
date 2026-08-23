@@ -27,6 +27,10 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
 - **timeline** (`/timeline`) — the newcomers of the last two weeks grouped by
   the day they first appeared and then by fund, newest day first; **show
   earlier** widens the window. A fund's baseline import shows as a count.
+- **rust jobs** (`/rust-jobs`) — the timeline's form over the listed jobs that
+  have to do with rust: the language named in the title or job function, or
+  mentioned in the description where one is stored (a word match — "Trust"
+  does not count). All of them at once, no window.
 - **download** (`/download`) — a JSON file with every listed job grouped by fund
   and company (no descriptions).
 - **about** (`/about`) — what the app does and how the pages fit together.
