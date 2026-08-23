@@ -46,9 +46,11 @@ export interface SearchHit {
 export const SEARCH_LIMIT = 500;
 
 // a job on the rust jobs page, with where the language turned up: the title,
-// the job function, or — for a job whose description is stored — only there
+// the job function, or — for a job whose description is stored — only there;
+// closedAt travels as an ISO string, null while the job is listed
 export interface RustJob extends SearchHit {
 	matchedIn: 'title' | 'function' | 'description';
+	closedAt: string | null;
 }
 
 // the language as a word — "Rust", "RUST", "Rust/Go" — but not "Trust"
@@ -375,9 +377,11 @@ export class ScrapeController {
 
 	// the listed jobs that have to do with rust: the language named in the
 	// title or the job function, or mentioned in the description — of the jobs
-	// whose description is stored, that is (see fetchFund)
+	// whose description is stored, that is (see fetchFund). With includeClosed
+	// the closed ones come along — by title or function only, since a job's
+	// description goes when it closes
 	@BackendMethod({ allowed: true })
-	static async rustJobs(): Promise<RustJob[]> {
+	static async rustJobs(includeClosed = false): Promise<RustJob[]> {
 		// the descriptions are html by the thousand: the database matches them,
 		// on word boundaries, and only the ids travel — unless the data provider
 		// is the json fallback of local development, which has no sql
@@ -393,7 +397,7 @@ export class ScrapeController {
 		// a substring query first ("Trust" comes along), the word test after
 		const rows = await repo(Job).find({
 			where: {
-				closedAt: NULL_DATE,
+				...(includeClosed ? {} : { closedAt: NULL_DATE }),
 				$or: [
 					{ title: { $contains: 'rust' } },
 					{ category: { $contains: 'rust' } },
@@ -430,7 +434,8 @@ export class ScrapeController {
 				salaryCurrency: job.salaryCurrency,
 				salaryPeriod: job.salaryPeriod,
 				firstSeenAt: job.firstSeenAt?.toISOString() ?? '',
-				matchedIn
+				matchedIn,
+				closedAt: job.closedAt?.toISOString() ?? null
 			});
 		}
 		return hits;

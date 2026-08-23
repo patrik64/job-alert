@@ -10,15 +10,21 @@
 	// all of them to be shown at once, so there is no window to widen here
 	let jobs = $state<RustJob[]>([]);
 	let loading = $state(true);
+	// the closed ones come back in on request, greyed and badged as on a fund's page
+	let includeClosed = $state(false);
 
 	// local YYYY-MM-DD key so day boundaries follow the viewer's timezone
 	const dayKey = (d: Date) =>
 		`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 	$effect(() => {
-		ScrapeController.rustJobs().then((rows) => {
-			jobs = rows;
-			loading = false;
+		const all = includeClosed;
+		loading = true;
+		ScrapeController.rustJobs(all).then((rows) => {
+			if (all === includeClosed) {
+				jobs = rows;
+				loading = false;
+			}
 		});
 	});
 
@@ -48,6 +54,7 @@
 	});
 
 	const fundCount = $derived(new Set(jobs.map((j) => j.fundSlug)).size);
+	const closedCount = $derived(jobs.filter((j) => j.closedAt).length);
 </script>
 
 <svelte:head>
@@ -57,12 +64,23 @@
 <div class="mx-auto mt-2 w-full max-w-[53rem] px-6 py-4 lg:dashed-frame">
 	<div class="flex flex-wrap items-center justify-between gap-2">
 		<h1 class="text-lg font-semibold text-white">rust jobs</h1>
-		{#if !loading && jobs.length}
-			<span class="text-sm text-white/80">
-				{jobs.length.toLocaleString()} listed {jobs.length === 1 ? 'job' : 'jobs'} · {fundCount}
-				{fundCount === 1 ? 'fund' : 'funds'}
-			</span>
-		{/if}
+		<div class="flex items-center gap-3 text-sm text-white/80">
+			{#if !loading && jobs.length}
+				<span>
+					{(jobs.length - closedCount).toLocaleString()} listed
+					{jobs.length - closedCount === 1 ? 'job' : 'jobs'}
+					{#if closedCount}
+						· {closedCount.toLocaleString()} closed
+					{/if}
+					· {fundCount}
+					{fundCount === 1 ? 'fund' : 'funds'}
+				</span>
+			{/if}
+			<label class="flex cursor-pointer items-center gap-1 text-xs select-none">
+				<input type="checkbox" bind:checked={includeClosed} />
+				include closed
+			</label>
+		</div>
 	</div>
 
 	{#if loading}
@@ -92,7 +110,9 @@
 							<ul class="divide-y divide-gray-200 border-t border-gray-200">
 								{#each group.jobs as job (job.id)}
 									{@const meta = jobMeta(job)}
-									<li class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2">
+									<li
+										class={`flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2 ${job.closedAt ? 'bg-gray-100' : ''}`}
+									>
 										<div class="min-w-0">
 											{#if job.url.startsWith('http')}
 												<a
@@ -115,9 +135,14 @@
 												<span class="ml-2 text-xs text-gray-500 italic">mentions rust</span>
 											{/if}
 										</div>
-										<span class="shrink-0 text-xs text-gray-500">
-											{new Date(job.firstSeenAt).toLocaleTimeString()}
-										</span>
+										<div class="flex shrink-0 items-center gap-3 text-xs text-gray-500">
+											{#if job.closedAt}
+												<span class="rounded-full bg-gray-300 px-2 py-0.5 font-semibold text-gray-700">
+													closed {new Date(job.closedAt).toLocaleDateString()}
+												</span>
+											{/if}
+											<span>{new Date(job.firstSeenAt).toLocaleTimeString()}</span>
+										</div>
 									</li>
 								{/each}
 							</ul>

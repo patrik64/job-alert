@@ -30,7 +30,9 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
 - **rust jobs** (`/rust-jobs`) — the timeline's form over the listed jobs that
   have to do with rust: the language named in the title or job function, or
   mentioned in the description where one is stored (a word match — "Trust"
-  does not count). All of them at once, no window.
+  does not count). All of them at once, no window; a checkbox brings the
+  closed ones back in (by title or function only — a closed job has no
+  description any more).
 - **download** (`/download`) — a JSON file with every listed job grouped by fund
   and company (no descriptions).
 - **about** (`/about`) — what the app does and how the pages fit together.
