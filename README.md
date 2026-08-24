@@ -38,7 +38,8 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
 - **about** (`/about`) — what the app does and how the pages fit together.
 - **rss** (`/rss.xml`) — the nightly newcomer digests as a feed: one item per
   night that found some, naming the jobs under their funds (the first few
-  dozen per fund, counting the rest).
+  dozen per fund, counting the rest). `/rss-devops.xml` is the same feed
+  narrowed to the jobs that say devops in their title or job function.
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -127,7 +128,8 @@ The same digests are served as an RSS feed at `/rss.xml`, straight from the
 database: one item per night that found newcomers, with the jobs named under
 their funds and linked to their pages on the boards. A night still being
 written is held back until it has settled, so readers never cache a
-half-announced one.
+half-announced one. `/rss-devops.xml` serves the digests narrowed to devops
+jobs — "devops" or "dev ops" in the title or the board's job function.
 
 ## Scrapers
 

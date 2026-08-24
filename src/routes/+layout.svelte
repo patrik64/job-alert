@@ -11,6 +11,12 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 	<link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="{SITE_NAME} — devops"
+		href="/rss-devops.xml"
+	/>
 	<title>{SITE_NAME}</title>
 </svelte:head>
 

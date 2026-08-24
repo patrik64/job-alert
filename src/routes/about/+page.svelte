@@ -67,7 +67,9 @@
 		<p>
 			Every night the boards are refreshed automatically; the newcomers of each night go out in
 			the <a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a
-			>, and the new rust jobs among them are announced on bluesky at
+			> (with a <a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
+				>devops-only feed</a
+			> beside it), and the new rust jobs among them are announced on bluesky at
 			<a
 				href={RUST_BLUESKY_URL}
 				target="_blank"

@@ -2,7 +2,8 @@
 // night's headline as the title and the jobs named under their funds, each
 // linking to its page on the board. A night on boards this size can run to
 // thousands of jobs, so a fund's line names the first few dozen and counts
-// the rest.
+// the rest. The same digests exist narrowed to devops jobs as a feed of
+// their own.
 
 import { FUNDS } from '../shared/funds';
 import { LIVE_URL, SITE_NAME } from '../shared/site';
@@ -10,7 +11,6 @@ import { LIVE_URL, SITE_NAME } from '../shared/site';
 // feed readers key items by these urls, so they must not depend on which host
 // served the request
 export const SITE_URL = LIVE_URL;
-export const FEED_URL = `${SITE_URL}/rss.xml`;
 // nights are told apart by the calendar day in the timezone the nightly job
 // keeps (it runs at 4am in Berlin)
 export const TIME_ZONE = 'Europe/Berlin';
@@ -50,6 +50,33 @@ export interface FeedRow {
 	firstSeenAt: Date;
 }
 
+// what tells one feed from the other: its own url, channel title and
+// description, and the wording of a night's headline
+export interface FeedSpec {
+	url: string;
+	title: string;
+	description: string;
+	headline: (n: number) => string;
+}
+
+export const NEWCOMERS_FEED: FeedSpec = {
+	url: `${SITE_URL}/rss.xml`,
+	title: SITE_NAME,
+	description:
+		`New jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
+		'one item per night that found some.',
+	headline: (n) => `${n} new ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
+};
+
+export const DEVOPS_FEED: FeedSpec = {
+	url: `${SITE_URL}/rss-devops.xml`,
+	title: `${SITE_NAME} — devops`,
+	description:
+		`New devops jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
+		'one item per night that found some.',
+	headline: (n) => `${n} new devops ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
+};
+
 const ENTITIES: Record<string, string> = {
 	'&': '&amp;',
 	'<': '&lt;',
@@ -58,8 +85,6 @@ const ENTITIES: Record<string, string> = {
 	"'": '&#39;'
 };
 const escape = (s: string) => s.replace(/[&<>"']/g, (c) => ENTITIES[c]);
-
-const headline = (n: number) => `${n} new ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`;
 
 function groupBy<T>(items: T[], key: (item: T) => string) {
 	const groups = new Map<string, T[]>();
@@ -98,7 +123,12 @@ const describe = (rows: FeedRow[]) => {
 
 // rows are the genuine newcomers (no baseline imports), newest first;
 // latestFetch is when any fund was last refreshed successfully
-export function rssFeed(rows: FeedRow[], latestFetch: Date | undefined, now = new Date()) {
+export function rssFeed(
+	rows: FeedRow[],
+	latestFetch: Date | undefined,
+	now = new Date(),
+	feed: FeedSpec = NEWCOMERS_FEED
+) {
 	const byDay = groupBy(rows, (r) => dayKey(r.firstSeenAt));
 	const latest = Math.max(rows[0]?.firstSeenAt.getTime() ?? 0, latestFetch?.getTime() ?? 0);
 	if (latest && now.getTime() - latest < QUIET_MS) byDay.delete(dayKey(new Date(latest)));
@@ -108,7 +138,7 @@ export function rssFeed(rows: FeedRow[], latestFetch: Date | undefined, now = ne
 		const link = `${SITE_URL}/timeline#${day}`;
 		return [
 			'<item>',
-			`<title>${escape(headline(rows.length))}</title>`,
+			`<title>${escape(feed.headline(rows.length))}</title>`,
 			`<link>${link}</link>`,
 			`<guid>${link}</guid>`,
 			// when the night's last newcomer landed
@@ -118,9 +148,6 @@ export function rssFeed(rows: FeedRow[], latestFetch: Date | undefined, now = ne
 		].join('\n');
 	});
 
-	const description =
-		`New jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
-		'one item per night that found some.';
 	const updated = nights.length
 		? `<lastBuildDate>${nights[0][1][0].firstSeenAt.toUTCString()}</lastBuildDate>\n`
 		: '';
@@ -129,10 +156,10 @@ export function rssFeed(rows: FeedRow[], latestFetch: Date | undefined, now = ne
 		`<?xml version="1.0" encoding="UTF-8"?>\n` +
 		`<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n` +
 		`<channel>\n` +
-		`<title>${escape(SITE_NAME)}</title>\n` +
+		`<title>${escape(feed.title)}</title>\n` +
 		`<link>${SITE_URL}/</link>\n` +
-		`<atom:link href="${FEED_URL}" rel="self" type="application/rss+xml"/>\n` +
-		`<description>${escape(description)}</description>\n` +
+		`<atom:link href="${feed.url}" rel="self" type="application/rss+xml"/>\n` +
+		`<description>${escape(feed.description)}</description>\n` +
 		`<language>en</language>\n` +
 		updated +
 		items.join('\n') +
