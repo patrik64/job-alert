@@ -29,6 +29,12 @@
 		title="{SITE_NAME} — c++"
 		href="/rss-cpp.xml"
 	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="{SITE_NAME} — svelte"
+		href="/rss-svelte.xml"
+	/>
 	<title>{SITE_NAME}</title>
 </svelte:head>
 

@@ -41,7 +41,8 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
   dozen per fund, counting the rest). Narrowed variants sit beside it:
   `/rss-devops.xml` for the jobs that say devops in their title or job
   function, `/rss-rust.xml` for the rust jobs as the rust jobs page counts
-  them, and `/rss-cpp.xml` for the c++ jobs.
+  them, `/rss-cpp.xml` for the c++ jobs, and `/rss-svelte.xml` for the
+  svelte jobs.
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -133,8 +134,10 @@ written is held back until it has settled, so readers never cache a
 half-announced one. Narrowed variants sit beside it: `/rss-devops.xml`
 carries the devops jobs — "devops" or "dev ops" in the title or the board's
 job function — `/rss-rust.xml` the rust jobs, matched as on the rust jobs
-page (title, function, or the stored description), and `/rss-cpp.xml` the
-c++ jobs — "c++" or "cpp" in the title or function.
+page (title, function, or the stored description), `/rss-cpp.xml` the c++
+jobs — "c++" or "cpp" in the title or function — and `/rss-svelte.xml` the
+svelte jobs: "svelte" or "sveltekit" in the title, the function, or the
+stored description, since the framework hardly ever makes a title.
 
 ## Scrapers
 

@@ -55,22 +55,26 @@ export interface RustJob extends SearchHit {
 	isNewcomer: boolean;
 }
 
-// the language as a word — "Rust", "RUST", "Rust/Go" — but not "Trust"
+// the language as a word — "Rust", "RUST", "Rust/Go" — but not "Trust";
+// once for js and once for the database's posix engine
 export const RUST = /\brust\b/i;
+export const RUST_SQL = '\\mrust\\M';
 
-// the ids of the jobs whose stored description mentions the language. The
+// the ids of the jobs whose stored description mentions a language, given as
+// a posix regex, its js twin, and a plain substring the word contains. The
 // descriptions are html by the thousand: the database matches them, on word
 // boundaries, and only the ids travel — unless the data provider is the json
 // fallback of local development, which has no sql
-export async function rustDescribedIds(): Promise<string[]> {
+export async function describedIds(posix: string, substring: string, word: RegExp): Promise<string[]> {
 	const db = remult.dataProvider;
 	return db instanceof SqlDatabase
-		? (await db.execute(`select id from job_details where description ~* '\\mrust\\M'`)).rows.map(
+		? (await db.execute(`select id from job_details where description ~* '${posix}'`)).rows.map(
 				(r) => String(r.id)
 			)
-		: // a substring query first ("Trust" comes along), the word test after
-			(await repo(JobDetail).find({ where: { description: { $contains: 'rust' } }, limit: 100_000 }))
-				.filter((d) => RUST.test(d.description))
+		: // a substring query first ("Trust" would come along for rust), the
+			// word test after
+			(await repo(JobDetail).find({ where: { description: { $contains: substring } }, limit: 100_000 }))
+				.filter((d) => word.test(d.description))
 				.map((d) => d.id);
 }
 
@@ -408,7 +412,7 @@ export class ScrapeController {
 	// description goes when it closes
 	@BackendMethod({ allowed: true })
 	static async rustJobs(includeClosed = false): Promise<RustJob[]> {
-		const described = await rustDescribedIds();
+		const described = await describedIds(RUST_SQL, 'rust', RUST);
 		// a substring query first ("Trust" comes along), the word test after
 		const rows = await repo(Job).find({
 			where: {

@@ -1,7 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { feedResponse } from '../../server/feed';
 import { RUST_FEED } from '../../server/rss';
-import { RUST, rustDescribedIds } from '../../shared/ScrapeController';
+import { describedIds, RUST, RUST_SQL } from '../../shared/ScrapeController';
 
 // GET /rss-rust.xml — the nightly newcomer digests narrowed to rust jobs, by
 // the same notion the rust jobs page and the bluesky announcements hold: the
@@ -11,6 +11,6 @@ import { RUST, rustDescribedIds } from '../../shared/ScrapeController';
 // entry they already fetched
 export const GET = (event: RequestEvent) =>
 	feedResponse(event, RUST_FEED, async () => {
-		const described = new Set(await rustDescribedIds());
+		const described = new Set(await describedIds(RUST_SQL, 'rust', RUST));
 		return (job) => RUST.test(job.title) || RUST.test(job.category) || described.has(job.id);
 	});

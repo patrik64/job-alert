@@ -3,7 +3,7 @@
 // linking to its page on the board. A night on boards this size can run to
 // thousands of jobs, so a fund's line names the first few dozen and counts
 // the rest. The same digests exist narrowed to one trade or language
-// (devops, rust, c++) as feeds of their own.
+// (devops, rust, c++, svelte) as feeds of their own.
 
 import { FUNDS } from '../shared/funds';
 import { LIVE_URL, SITE_NAME } from '../shared/site';
@@ -93,6 +93,15 @@ export const CPP_FEED: FeedSpec = {
 		`New c++ jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
 		'one item per night that found some.',
 	headline: (n) => `${n} new c++ ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
+};
+
+export const SVELTE_FEED: FeedSpec = {
+	url: `${SITE_URL}/rss-svelte.xml`,
+	title: `${SITE_NAME} — svelte`,
+	description:
+		`New svelte jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
+		'one item per night that found some.',
+	headline: (n) => `${n} new svelte ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
 };
 
 const ENTITIES: Record<string, string> = {

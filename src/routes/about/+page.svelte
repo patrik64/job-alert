@@ -71,10 +71,11 @@
 			<a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
 				>devops</a
 			>,
-			<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline">rust</a>
+			<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline">rust</a>,
+			<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline">c++</a>
 			and
-			<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline">c++</a> jobs),
-			and the new rust jobs among them are announced on bluesky at
+			<a href="/rss-svelte.xml" target="_blank" class="font-semibold text-white underline">svelte</a
+			> jobs), and the new rust jobs among them are announced on bluesky at
 			<a
 				href={RUST_BLUESKY_URL}
 				target="_blank"
