@@ -77,7 +77,7 @@
 	{:else}
 		<div class="mt-4 flex flex-col gap-4">
 			{#each groups as group (group.slug)}
-				<details class="rounded-lg bg-white shadow-lg" open>
+				<details class="rounded-lg bg-white shadow-lg">
 					<summary
 						class="cursor-pointer px-4 py-3 font-semibold text-gray-800 transition duration-150 select-none hover:text-tertiary-600"
 					>
