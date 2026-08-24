@@ -17,6 +17,12 @@
 		title="{SITE_NAME} — devops"
 		href="/rss-devops.xml"
 	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="{SITE_NAME} — rust"
+		href="/rss-rust.xml"
+	/>
 	<title>{SITE_NAME}</title>
 </svelte:head>
 

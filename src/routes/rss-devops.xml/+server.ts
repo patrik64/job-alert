@@ -9,4 +9,4 @@ const DEVOPS = /\bdev[\s-]?ops\b/i;
 
 // GET /rss-devops.xml — the nightly newcomer digests narrowed to devops jobs
 export const GET = (event: RequestEvent) =>
-	feedResponse(event, DEVOPS_FEED, (job) => DEVOPS.test(job.title) || DEVOPS.test(job.category));
+	feedResponse(event, DEVOPS_FEED, () => (job) => DEVOPS.test(job.title) || DEVOPS.test(job.category));

@@ -56,7 +56,23 @@ export interface RustJob extends SearchHit {
 }
 
 // the language as a word — "Rust", "RUST", "Rust/Go" — but not "Trust"
-const RUST = /\brust\b/i;
+export const RUST = /\brust\b/i;
+
+// the ids of the jobs whose stored description mentions the language. The
+// descriptions are html by the thousand: the database matches them, on word
+// boundaries, and only the ids travel — unless the data provider is the json
+// fallback of local development, which has no sql
+export async function rustDescribedIds(): Promise<string[]> {
+	const db = remult.dataProvider;
+	return db instanceof SqlDatabase
+		? (await db.execute(`select id from job_details where description ~* '\\mrust\\M'`)).rows.map(
+				(r) => String(r.id)
+			)
+		: // a substring query first ("Trust" comes along), the word test after
+			(await repo(JobDetail).find({ where: { description: { $contains: 'rust' } }, limit: 100_000 }))
+				.filter((d) => RUST.test(d.description))
+				.map((d) => d.id);
+}
 
 // how long one fetch may spend listing a board — the largest getro boards
 // run to well over a thousand paced pages, a good three minutes; the rest of
@@ -384,18 +400,7 @@ export class ScrapeController {
 	// description goes when it closes
 	@BackendMethod({ allowed: true })
 	static async rustJobs(includeClosed = false): Promise<RustJob[]> {
-		// the descriptions are html by the thousand: the database matches them,
-		// on word boundaries, and only the ids travel — unless the data provider
-		// is the json fallback of local development, which has no sql
-		const db = remult.dataProvider;
-		const described =
-			db instanceof SqlDatabase
-				? (await db.execute(`select id from job_details where description ~* '\\mrust\\M'`)).rows.map(
-						(r) => String(r.id)
-					)
-				: (await repo(JobDetail).find({ where: { description: { $contains: 'rust' } }, limit: 100_000 }))
-						.filter((d) => RUST.test(d.description))
-						.map((d) => d.id);
+		const described = await rustDescribedIds();
 		// a substring query first ("Trust" comes along), the word test after
 		const rows = await repo(Job).find({
 			where: {

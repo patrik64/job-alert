@@ -12,8 +12,15 @@ import { Job } from '../shared/Job';
 // first, cover the recent nights in full — a night cut off at the end is left out
 const MAX_ROWS = 20_000;
 
-export const feedResponse = (event: RequestEvent, feed: FeedSpec, match?: (job: Job) => boolean) =>
+export const feedResponse = (
+	event: RequestEvent,
+	feed: FeedSpec,
+	// built inside the request, so it can ask the database first (the rust
+	// feed's description matches), then judges each job
+	narrow?: () => ((job: Job) => boolean) | Promise<(job: Job) => boolean>
+) =>
 	api.withRemult(event, async () => {
+		const match = narrow ? await narrow() : undefined;
 		const now = new Date();
 		const since = new Date(now.getTime() - WINDOW_DAYS * 86_400_000);
 
