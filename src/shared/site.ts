@@ -6,3 +6,6 @@ export const REPO_URL = 'https://github.com/patrik64/job-alert';
 // and the layout and the about page start linking to it
 export const BLUESKY_HANDLE = '';
 export const BLUESKY_URL = BLUESKY_HANDLE ? `https://bsky.app/profile/${BLUESKY_HANDLE}` : '';
+// the rust jobs page announces its newcomers from an account of its own
+export const RUST_BLUESKY_HANDLE = 'rust-job-alert.bsky.social';
+export const RUST_BLUESKY_URL = `https://bsky.app/profile/${RUST_BLUESKY_HANDLE}`;

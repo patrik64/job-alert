@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { FUNDS } from '../../shared/funds';
-	import { BLUESKY_HANDLE, BLUESKY_URL, REPO_URL, SITE_NAME } from '../../shared/site';
+	import {
+		BLUESKY_HANDLE,
+		BLUESKY_URL,
+		REPO_URL,
+		RUST_BLUESKY_HANDLE,
+		RUST_BLUESKY_URL,
+		SITE_NAME
+	} from '../../shared/site';
 	import { ScrapeController } from '../../shared/ScrapeController';
 
 	let jobCount = $state(0);
@@ -78,6 +85,13 @@
 				in the <a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a>,
 				and will be announced on bluesky once that account is set up.
 			{/if}
+			The new rust jobs among them are announced at
+			<a
+				href={RUST_BLUESKY_URL}
+				target="_blank"
+				rel="external noreferrer"
+				class="font-semibold text-white underline">@{RUST_BLUESKY_HANDLE}</a
+			>.
 		</p>
 		<p>
 			Built with SvelteKit, Svelte 5, remult and Tailwind CSS on a Neon postgres database. The
