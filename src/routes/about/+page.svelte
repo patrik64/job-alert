@@ -72,9 +72,12 @@
 				>devops</a
 			>,
 			<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline">rust</a>,
-			<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline">c++</a>
-			and
+			<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline">c++</a>,
 			<a href="/rss-svelte.xml" target="_blank" class="font-semibold text-white underline">svelte</a
+			>
+			and
+			<a href="/rss-product-manager.xml" target="_blank" class="font-semibold text-white underline"
+				>product manager</a
 			> jobs), and the new rust jobs among them are announced on bluesky at
 			<a
 				href={RUST_BLUESKY_URL}

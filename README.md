@@ -41,8 +41,8 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
   dozen per fund, counting the rest). Narrowed variants sit beside it:
   `/rss-devops.xml` for the jobs that say devops in their title or job
   function, `/rss-rust.xml` for the rust jobs as the rust jobs page counts
-  them, `/rss-cpp.xml` for the c++ jobs, and `/rss-svelte.xml` for the
-  svelte jobs.
+  them, `/rss-cpp.xml` for the c++ jobs, `/rss-svelte.xml` for the svelte
+  jobs, and `/rss-product-manager.xml` for the product manager jobs.
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -135,9 +135,13 @@ half-announced one. Narrowed variants sit beside it: `/rss-devops.xml`
 carries the devops jobs — "devops" or "dev ops" in the title or the board's
 job function — `/rss-rust.xml` the rust jobs, matched as on the rust jobs
 page (title, function, or the stored description), `/rss-cpp.xml` the c++
-jobs — "c++" or "cpp" in the title or function — and `/rss-svelte.xml` the
+jobs — "c++" or "cpp" in the title or function — `/rss-svelte.xml` the
 svelte jobs: "svelte" or "sveltekit" in the title, the function, or the
-stored description, since the framework hardly ever makes a title.
+stored description, since the framework hardly ever makes a title — and
+`/rss-product-manager.xml` the product manager jobs: "product manager" or
+"product management" in the title, or a job function saying literally
+"product manager" (the boards' Product Management tag also hangs on
+marketing and production roles, so it does not count on its own).
 
 ## Scrapers
 
