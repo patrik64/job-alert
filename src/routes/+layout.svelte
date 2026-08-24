@@ -94,6 +94,15 @@
 						rss
 					</a>
 					<a
+						href={RUST_BLUESKY_URL}
+						target="_blank"
+						rel="external noreferrer"
+						onclick={() => (menuOpen = false)}
+						class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+					>
+						bluesky
+					</a>
+					<a
 						href={REPO_URL}
 						target="_blank"
 						rel="external noreferrer"
