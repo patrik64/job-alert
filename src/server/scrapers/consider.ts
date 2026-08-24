@@ -1,5 +1,5 @@
 import { atsDetail } from './ats';
-import { fetchWithRetry, normalizePeriod } from './http';
+import { fetchWithRetry, normalizePeriod, sleep } from './http';
 import type { JobBoardScraper, ScrapedJob } from './types';
 
 // Consider (consider.com) powers job boards such as jobs.gv.com: a single-page
@@ -57,18 +57,24 @@ interface Session {
 }
 
 async function handshake(base: string): Promise<Session> {
-	const resp = await fetchWithRetry(`${base}/jobs`);
-	if (!resp.ok) throw new Error(`${base}: the jobs page answered ${resp.status}`);
-	// the api checks a double-submit pair: the secret in the session cookie and
-	// the matching token embedded in the page
-	const cookie = resp.headers
-		.getSetCookie()
-		.map((c) => c.split(';')[0])
-		.filter(Boolean)
-		.join('; ');
-	const csrfToken = (await resp.text()).match(/"csrfToken":"([^"]+)"/)?.[1];
-	if (!cookie || !csrfToken) throw new Error(`${base}: could not read the board's csrf token`);
-	return { cookie, csrfToken };
+	// the page occasionally answers 200 without the token (seen on
+	// careers.ivp.com) — a fresh request straightens that out, which the
+	// status-driven retry in fetchWithRetry never attempts
+	for (let attempt = 1; ; attempt++) {
+		const resp = await fetchWithRetry(`${base}/jobs`);
+		if (!resp.ok) throw new Error(`${base}: the jobs page answered ${resp.status}`);
+		// the api checks a double-submit pair: the secret in the session cookie
+		// and the matching token embedded in the page
+		const cookie = resp.headers
+			.getSetCookie()
+			.map((c) => c.split(';')[0])
+			.filter(Boolean)
+			.join('; ');
+		const csrfToken = (await resp.text()).match(/"csrfToken":"([^"]+)"/)?.[1];
+		if (cookie && csrfToken) return { cookie, csrfToken };
+		if (attempt === 3) throw new Error(`${base}: could not read the board's csrf token`);
+		await sleep(2000 * attempt);
+	}
 }
 
 const label = (x: string | Labeled | null | undefined) =>
