@@ -23,6 +23,12 @@
 		title="{SITE_NAME} — rust"
 		href="/rss-rust.xml"
 	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="{SITE_NAME} — c++"
+		href="/rss-cpp.xml"
+	/>
 	<title>{SITE_NAME}</title>
 </svelte:head>
 

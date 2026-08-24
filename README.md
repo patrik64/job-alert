@@ -38,9 +38,10 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
 - **about** (`/about`) — what the app does and how the pages fit together.
 - **rss** (`/rss.xml`) — the nightly newcomer digests as a feed: one item per
   night that found some, naming the jobs under their funds (the first few
-  dozen per fund, counting the rest). `/rss-devops.xml` is the same feed
-  narrowed to the jobs that say devops in their title or job function, and
-  `/rss-rust.xml` to the rust jobs as the rust jobs page counts them.
+  dozen per fund, counting the rest). Narrowed variants sit beside it:
+  `/rss-devops.xml` for the jobs that say devops in their title or job
+  function, `/rss-rust.xml` for the rust jobs as the rust jobs page counts
+  them, and `/rss-cpp.xml` for the c++ jobs.
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -129,10 +130,11 @@ The same digests are served as an RSS feed at `/rss.xml`, straight from the
 database: one item per night that found newcomers, with the jobs named under
 their funds and linked to their pages on the boards. A night still being
 written is held back until it has settled, so readers never cache a
-half-announced one. Two narrowed variants sit beside it: `/rss-devops.xml`
+half-announced one. Narrowed variants sit beside it: `/rss-devops.xml`
 carries the devops jobs — "devops" or "dev ops" in the title or the board's
-job function — and `/rss-rust.xml` the rust jobs, matched as on the rust jobs
-page (title, function, or the stored description).
+job function — `/rss-rust.xml` the rust jobs, matched as on the rust jobs
+page (title, function, or the stored description), and `/rss-cpp.xml` the
+c++ jobs — "c++" or "cpp" in the title or function.
 
 ## Scrapers
 

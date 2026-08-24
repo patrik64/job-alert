@@ -67,13 +67,14 @@
 		<p>
 			Every night the boards are refreshed automatically; the newcomers of each night go out in
 			the <a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a
-			> (with <a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
-				>devops-only</a
-			>
+			> (with narrowed feeds beside it for
+			<a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
+				>devops</a
+			>,
+			<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline">rust</a>
 			and
-			<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline"
-				>rust-only</a
-			> feeds beside it), and the new rust jobs among them are announced on bluesky at
+			<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline">c++</a> jobs),
+			and the new rust jobs among them are announced on bluesky at
 			<a
 				href={RUST_BLUESKY_URL}
 				target="_blank"

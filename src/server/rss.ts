@@ -2,8 +2,8 @@
 // night's headline as the title and the jobs named under their funds, each
 // linking to its page on the board. A night on boards this size can run to
 // thousands of jobs, so a fund's line names the first few dozen and counts
-// the rest. The same digests exist narrowed to devops jobs and to rust jobs
-// as feeds of their own.
+// the rest. The same digests exist narrowed to one trade or language
+// (devops, rust, c++) as feeds of their own.
 
 import { FUNDS } from '../shared/funds';
 import { LIVE_URL, SITE_NAME } from '../shared/site';
@@ -84,6 +84,15 @@ export const RUST_FEED: FeedSpec = {
 		`New rust jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
 		'one item per night that found some.',
 	headline: (n) => `${n} new rust ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
+};
+
+export const CPP_FEED: FeedSpec = {
+	url: `${SITE_URL}/rss-cpp.xml`,
+	title: `${SITE_NAME} — c++`,
+	description:
+		`New c++ jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
+		'one item per night that found some.',
+	headline: (n) => `${n} new c++ ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
 };
 
 const ENTITIES: Record<string, string> = {
