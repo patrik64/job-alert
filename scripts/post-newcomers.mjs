@@ -1,7 +1,6 @@
 // Announces the newcomers of a nightly fetch on Bluesky. Reads the result file
 // fetch-all.mjs writes, asks the API which jobs the funds gained in that run,
-// and publishes one post — or a short thread when the list is long. Plain
-// Node over the AT Protocol XRPC endpoints, no dependencies.
+// and publishes one post — or a short thread when the list is long.
 //
 //   node scripts/post-newcomers.mjs --dry-run    compose and print, post nothing
 //   node scripts/post-newcomers.mjs              compose and post
@@ -9,25 +8,15 @@
 //                                                newcomers page shows instead
 //   node scripts/post-newcomers.mjs --check      prove the credentials work
 //
-// Credentials come from the environment:
-//   BLUESKY_IDENTIFIER    handle or did (the account is yet to be created;
-//                         the default below is a placeholder)
-//   BLUESKY_APP_PASSWORD  an app password from bsky settings — never the
-//                         account password itself
+// Credentials come from the environment (see bluesky.mjs); the account is yet
+// to be created — the workflow names the handle it will have.
 
 import { readFileSync } from 'node:fs';
+import { checkCredentials, compose, postThread } from './bluesky.mjs';
 
 const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-pax.vercel.app';
-const SERVICE = process.env.BLUESKY_SERVICE ?? 'https://bsky.social';
-const IDENTIFIER = process.env.BLUESKY_IDENTIFIER ?? 'job-alert.bsky.social';
-const PASSWORD = process.env.BLUESKY_APP_PASSWORD;
-
 const NEWCOMERS_URL = `${BASE_URL}/newcomers`;
 const NEWCOMERS_LABEL = NEWCOMERS_URL.replace(/^https?:\/\//, '');
-// bluesky counts graphemes, not characters, and stops at 300
-const POST_LIMIT = 300;
-// beyond a short thread the naming turns into a count per fund instead
-const MAX_POSTS = 3;
 
 const arg = (name) => {
 	const found = process.argv.find((a) => a === name || a.startsWith(`${name}=`));
@@ -36,151 +25,6 @@ const arg = (name) => {
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const RESULTS_FILE = arg('--results') ?? 'fetch-results.json';
-
-const segmenter = new Intl.Segmenter();
-const graphemes = (s) => [...segmenter.segment(s)].length;
-
-// a post is assembled from parts because bluesky addresses its rich text by
-// utf-8 byte offset — recording the parts as they land is cheaper and safer
-// than searching the finished string for the pieces that should be links
-class Post {
-	constructor(limit) {
-		this.limit = limit;
-		this.parts = [];
-		this.hasBody = false;
-	}
-
-	get text() {
-		return this.parts.map((p) => p.text).join('');
-	}
-
-	get length() {
-		return graphemes(this.text);
-	}
-
-	fits(text) {
-		return graphemes(this.text + text) <= this.limit;
-	}
-
-	add(text, uri) {
-		this.parts.push({ text, uri });
-		return this;
-	}
-
-	facets() {
-		const encoder = new TextEncoder();
-		const facets = [];
-		let offset = 0;
-		for (const part of this.parts) {
-			const bytes = encoder.encode(part.text).length;
-			if (part.uri) {
-				facets.push({
-					index: { byteStart: offset, byteEnd: offset + bytes },
-					features: [{ $type: 'app.bsky.richtext.facet#link', uri: part.uri }]
-				});
-			}
-			offset += bytes;
-		}
-		return facets;
-	}
-}
-
-const headline = (total) => `${total} new ${total === 1 ? 'job' : 'jobs'} at vc-backed companies`;
-
-// a fund's line opens right after the headline, under the previous line, or at
-// the very top when it has been carried over into a fresh post
-const openLine = (post, fund) =>
-	`${post.parts.length === 0 ? '' : post.hasBody ? '\n' : '\n\n'}${fund}: `;
-
-// every job by company and title, each linking to its page on the board
-function composeDetailed(groups, total) {
-	const footer = graphemes(`\n\n${NEWCOMERS_LABEL}`);
-	const posts = [];
-	let post = new Post(POST_LIMIT - footer).add(headline(total));
-
-	for (const group of groups) {
-		let open = false;
-		for (const job of group.jobs) {
-			const uri = job.url.startsWith('http') ? job.url : undefined;
-			const lead = open ? ', ' : openLine(post, group.name);
-			if (!post.fits(lead + job.label)) {
-				// the post is full — carry the rest of the group into a new one
-				posts.push(post);
-				post = new Post(POST_LIMIT);
-				post.add(openLine(post, group.name));
-				open = false;
-			} else {
-				post.add(lead);
-			}
-			post.hasBody = true;
-			post.add(job.label, uri);
-			open = true;
-		}
-	}
-	posts.push(post);
-	posts[0].add('\n\n').add(NEWCOMERS_LABEL, NEWCOMERS_URL);
-	return posts;
-}
-
-// a busy night (and most nights are, on boards this size) reads better as
-// counts than as a wall of titles, and fits in a single post
-function composeSummary(groups, total) {
-	const footer = graphemes(`\n\n${NEWCOMERS_LABEL}`);
-	const post = new Post(POST_LIMIT - footer).add(headline(total));
-	const more = (n) => `\n+${n} more fund${n === 1 ? '' : 's'}`;
-
-	let shown = 0;
-	for (const group of groups) {
-		const line = `${post.hasBody ? '\n' : '\n\n'}${group.name}: ${group.jobs.length}`;
-		const rest = groups.length - shown - 1;
-		if (!post.fits(line + (rest > 0 ? more(rest) : ''))) break;
-		post.add(line);
-		post.hasBody = true;
-		shown++;
-	}
-	if (shown < groups.length) post.add(more(groups.length - shown));
-
-	post.add('\n\n').add(NEWCOMERS_LABEL, NEWCOMERS_URL);
-	return [post];
-}
-
-async function login() {
-	const resp = await fetch(`${SERVICE}/xrpc/com.atproto.server.createSession`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ identifier: IDENTIFIER, password: PASSWORD })
-	});
-	if (!resp.ok) {
-		// the body echoes the identifier but never the password
-		throw new Error(`bluesky login failed: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
-	}
-	return resp.json();
-}
-
-async function publish(session, post, reply) {
-	const record = {
-		$type: 'app.bsky.feed.post',
-		text: post.text,
-		createdAt: new Date().toISOString(),
-		langs: ['en']
-	};
-	const facets = post.facets();
-	if (facets.length) record.facets = facets;
-	if (reply) record.reply = reply;
-
-	const resp = await fetch(`${SERVICE}/xrpc/com.atproto.repo.createRecord`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${session.accessJwt}`
-		},
-		body: JSON.stringify({ repo: session.did, collection: 'app.bsky.feed.post', record })
-	});
-	if (!resp.ok) {
-		throw new Error(`bluesky post failed: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
-	}
-	return resp.json();
-}
 
 async function api(path) {
 	const resp = await fetch(`${BASE_URL}/api/${path}`);
@@ -246,14 +90,8 @@ async function groupsFromNewcomers() {
 	}));
 }
 
-// proves the app password works without saying anything out loud
 if (process.argv.includes('--check')) {
-	if (!PASSWORD) {
-		console.error('BLUESKY_APP_PASSWORD is not set');
-		process.exit(1);
-	}
-	const session = await login();
-	console.log(`signed in to bluesky as @${session.handle} (${session.did})`);
+	await checkCredentials();
 	process.exit(0);
 }
 
@@ -270,47 +108,11 @@ if (groups.length === 0) {
 groups.sort((a, b) => b.jobs.length - a.jobs.length || a.name.localeCompare(b.name));
 const total = groups.reduce((n, g) => n + g.jobs.length, 0);
 
-const detailed = composeDetailed(groups, total);
-const posts =
-	detailed.length <= MAX_POSTS && detailed.every((p) => p.length <= POST_LIMIT)
-		? detailed
-		: composeSummary(groups, total);
+const headline = `${total} new ${total === 1 ? 'job' : 'jobs'} at vc-backed companies`;
+const posts = compose(groups, headline, { label: NEWCOMERS_LABEL, url: NEWCOMERS_URL });
+const url = await postThread(posts, { dryRun: DRY_RUN });
 
-for (const [i, post] of posts.entries()) {
-	console.log(`--- post ${i + 1}/${posts.length} (${post.length} graphemes)\n${post.text}\n`);
-	if (!DRY_RUN) continue;
-	// read the links back out of the finished text the way bluesky will
-	const bytes = new TextEncoder().encode(post.text);
-	for (const facet of post.facets()) {
-		const label = new TextDecoder().decode(bytes.slice(facet.index.byteStart, facet.index.byteEnd));
-		console.log(`    link ${JSON.stringify(label)} -> ${facet.features[0].uri}`);
-	}
-	console.log();
-}
-
-if (DRY_RUN) {
-	console.log('dry run — nothing was posted');
-	process.exit(0);
-}
-if (!PASSWORD) {
-	console.log('BLUESKY_APP_PASSWORD is not set — nothing was posted');
-	process.exit(0);
-}
-
-const session = await login();
-let root;
-let parent;
-for (const post of posts) {
-	const reply = root ? { root, parent } : undefined;
-	const created = await publish(session, post, reply);
-	root ??= { uri: created.uri, cid: created.cid };
-	parent = { uri: created.uri, cid: created.cid };
-}
-
-const url = `https://bsky.app/profile/${session.handle}/post/${root.uri.split('/').pop()}`;
-console.log(`posted ${posts.length === 1 ? 'to' : `a ${posts.length}-post thread on`} bluesky: ${url}`);
-
-if (process.env.GITHUB_STEP_SUMMARY) {
+if (url && process.env.GITHUB_STEP_SUMMARY) {
 	const { appendFileSync } = await import('node:fs');
 	appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n[announced ${total} on bluesky](${url})\n`);
 }

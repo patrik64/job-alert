@@ -12,7 +12,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test-scrapers": "tsx scripts/test-scrapers.ts",
 		"fetch-all": "node scripts/fetch-all.mjs",
-		"post-newcomers": "node scripts/post-newcomers.mjs"
+		"post-newcomers": "node scripts/post-newcomers.mjs",
+		"post-rust-jobs": "node scripts/post-rust-jobs.mjs"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.1",

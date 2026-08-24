@@ -64,3 +64,12 @@ jobs:
           # than one run's findings
           MODE: ${{ github.event.inputs.announce_only == 'true' && '--current' || '' }}
         run: node scripts/post-newcomers.mjs $MODE
+
+      # the rust jobs page announces its own newcomers from its own account
+      - if: ${{ !cancelled() && steps.guard.outputs.run == 'true' }}
+        name: announce the rust jobs on bluesky
+        env:
+          BLUESKY_IDENTIFIER: rust-job-alert.bsky.social
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_RUST_APP_PASSWORD }}
+          MODE: ${{ github.event.inputs.announce_only == 'true' && '--current' || '' }}
+        run: node scripts/post-rust-jobs.mjs $MODE

@@ -51,6 +51,8 @@ export const SEARCH_LIMIT = 500;
 export interface RustJob extends SearchHit {
 	matchedIn: 'title' | 'function' | 'description';
 	closedAt: string | null;
+	// the latest fetch's fresh finds — what the nightly announcement names
+	isNewcomer: boolean;
 }
 
 // the language as a word — "Rust", "RUST", "Rust/Go" — but not "Trust"
@@ -435,7 +437,8 @@ export class ScrapeController {
 				salaryPeriod: job.salaryPeriod,
 				firstSeenAt: job.firstSeenAt?.toISOString() ?? '',
 				matchedIn,
-				closedAt: job.closedAt?.toISOString() ?? null
+				closedAt: job.closedAt?.toISOString() ?? null,
+				isNewcomer: job.isNewcomer
 			});
 		}
 		return hits;
