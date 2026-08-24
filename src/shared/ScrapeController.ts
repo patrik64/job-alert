@@ -337,13 +337,15 @@ export class ScrapeController {
 	// location that is exactly that, or a category/sector tag that is — all
 	// case-insensitively. exactness is decided here rather than in the
 	// browser, because the rows a substring query returns are capped and the
-	// exact ones must not be lost behind that cap
+	// exact ones must not be lost behind that cap. matches come in pages of
+	// SEARCH_LIMIT; page asks for the next batch
 	@BackendMethod({ allowed: true })
-	static async searchJobs(term: string): Promise<SearchHit[]> {
+	static async searchJobs(term: string, page = 0): Promise<SearchHit[]> {
 		const q = term.trim();
 		const quoted = q.match(/^"([\s\S]+)"$/) ?? q.match(/^'([\s\S]+)'$/);
 		const needle = (quoted?.[1] ?? q).trim();
 		if (!needle) return [];
+		const batch = Math.max(0, Math.floor(page));
 
 		const rows = await repo(Job).find({
 			where: {
@@ -356,25 +358,31 @@ export class ScrapeController {
 					{ location: { $contains: needle } }
 				]
 			},
-			orderBy: { firstSeenAt: 'desc', company: 'asc', title: 'asc' },
-			limit: quoted ? 100_000 : SEARCH_LIMIT
+			// the id as the last key pins jobs that tie on everything else, so
+			// consecutive pages never overlap or leave a gap
+			orderBy: { firstSeenAt: 'desc', company: 'asc', title: 'asc', id: 'asc' },
+			limit: quoted ? 100_000 : SEARCH_LIMIT,
+			// an exact search filters below, after the fetch — it pages there too
+			...(quoted ? {} : { page: batch + 1 })
 		});
 
 		const key = needle.toLowerCase();
 		const is = (s: string) => s.trim().toLowerCase() === key;
 		const tagged = (tags: string) => tags.toLowerCase().split(',').some((tag) => tag.trim() === key);
 		const hits = quoted
-			? rows.filter(
-					(job) =>
-						is(job.title) ||
-						is(job.company) ||
-						is(job.location) ||
-						tagged(job.category) ||
-						tagged(job.sector)
-				)
+			? rows
+					.filter(
+						(job) =>
+							is(job.title) ||
+							is(job.company) ||
+							is(job.location) ||
+							tagged(job.category) ||
+							tagged(job.sector)
+					)
+					.slice(batch * SEARCH_LIMIT, (batch + 1) * SEARCH_LIMIT)
 			: rows;
 
-		return hits.slice(0, SEARCH_LIMIT).map((job) => ({
+		return hits.map((job) => ({
 			id: job.id,
 			fundSlug: job.fundSlug,
 			company: job.company,

@@ -9,6 +9,11 @@
 	let searching = $state(false);
 	let searched = $state(false);
 	let total = $state(0);
+	// how many pages of the current term are shown, and whether the last one
+	// came back full — a full page may have more behind it
+	let pages = $state(1);
+	let maybeMore = $state(false);
+	let loadingMore = $state(false);
 
 	$effect(() => {
 		ScrapeController.countJobs().then((n) => (total = n));
@@ -20,6 +25,7 @@
 			results = [];
 			searching = false;
 			searched = false;
+			maybeMore = false;
 			return;
 		}
 		searching = true;
@@ -28,12 +34,34 @@
 			const rows = await ScrapeController.searchJobs(q);
 			if (q === search.trim()) {
 				results = rows;
+				pages = 1;
+				maybeMore = rows.length === SEARCH_LIMIT;
 				searching = false;
 				searched = true;
 			}
 		}, 250);
 		return () => clearTimeout(timer);
 	});
+
+	async function loadMore() {
+		if (loadingMore) return;
+		loadingMore = true;
+		const q = search.trim();
+		try {
+			const rows = await ScrapeController.searchJobs(q, pages);
+			// only if the term hasn't changed under the fetch; a job that slid
+			// across the page boundary since the last batch is dropped, since
+			// the list is keyed by id
+			if (q === search.trim()) {
+				const seen = new Set(results.map((r) => r.id));
+				results = [...results, ...rows.filter((r) => !seen.has(r.id))];
+				pages += 1;
+				maybeMore = rows.length === SEARCH_LIMIT;
+			}
+		} finally {
+			loadingMore = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -47,9 +75,9 @@
 			{#if searching}
 				searching…
 			{:else if searched}
-				{results.length === SEARCH_LIMIT
-					? `first ${SEARCH_LIMIT} matches`
-					: `${results.length} matches`}
+				{maybeMore
+					? `first ${results.length.toLocaleString()} matches`
+					: `${results.length.toLocaleString()} matches`}
 			{:else if total}
 				({total.toLocaleString()} jobs)
 			{/if}
@@ -106,5 +134,17 @@
 				</li>
 			{/each}
 		</ul>
+		{#if maybeMore}
+			<div class="mt-4 flex justify-center">
+				<button
+					type="button"
+					onclick={loadMore}
+					disabled={loadingMore}
+					class="text-sm font-semibold text-white underline transition duration-150 hover:text-primary-300 disabled:cursor-default disabled:text-white/50 disabled:no-underline"
+				>
+					{loadingMore ? 'fetching…' : `fetch ${SEARCH_LIMIT} more`}
+				</button>
+			</div>
+		{/if}
 	{/if}
 </div>
