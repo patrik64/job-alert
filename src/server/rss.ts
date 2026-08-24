@@ -1,11 +1,11 @@
-// The newcomers feed: one item per night that turned up new jobs — the same
-// digest scripts/post-newcomers.mjs puts on bluesky, with the headline as the
-// title and the jobs named under their funds, each linking to its page on the
-// board. A night on boards this size can run to thousands of jobs, so a fund's
-// line names the first few dozen and counts the rest.
+// The newcomers feed: one item per night that turned up new jobs, with the
+// night's headline as the title and the jobs named under their funds, each
+// linking to its page on the board. A night on boards this size can run to
+// thousands of jobs, so a fund's line names the first few dozen and counts
+// the rest.
 
 import { FUNDS } from '../shared/funds';
-import { BLUESKY_HANDLE, LIVE_URL, SITE_NAME } from '../shared/site';
+import { LIVE_URL, SITE_NAME } from '../shared/site';
 
 // feed readers key items by these urls, so they must not depend on which host
 // served the request
@@ -120,8 +120,7 @@ export function rssFeed(rows: FeedRow[], latestFetch: Date | undefined, now = ne
 
 	const description =
 		`New jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
-		'one item per night that found some' +
-		(BLUESKY_HANDLE ? `, as announced on bluesky at @${BLUESKY_HANDLE}.` : '.');
+		'one item per night that found some.';
 	const updated = nights.length
 		? `<lastBuildDate>${nights[0][1][0].firstSeenAt.toUTCString()}</lastBuildDate>\n`
 		: '';

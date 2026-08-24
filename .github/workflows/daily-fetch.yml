@@ -51,25 +51,13 @@ jobs:
         run: node scripts/fetch-all.mjs
 
       # a night where too many scrapers broke still found jobs worth
-      # announcing, so this runs even when the refresh above reports failure.
-      # Until the bluesky account exists and its app password is a repository
-      # secret, this step composes nothing and posts nothing
-      - if: ${{ !cancelled() && steps.guard.outputs.run == 'true' }}
-        name: announce the newcomers on bluesky
-        env:
-          # the handle to post as, once the account exists
-          BLUESKY_IDENTIFIER: job-alert.bsky.social
-          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          # by hand, the announcement covers the whole newcomers page rather
-          # than one run's findings
-          MODE: ${{ github.event.inputs.announce_only == 'true' && '--current' || '' }}
-        run: node scripts/post-newcomers.mjs $MODE
-
-      # the rust jobs page announces its own newcomers from its own account
+      # announcing, so this runs even when the refresh above reports failure
       - if: ${{ !cancelled() && steps.guard.outputs.run == 'true' }}
         name: announce the rust jobs on bluesky
         env:
           BLUESKY_IDENTIFIER: rust-job-alert.bsky.social
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_RUST_APP_PASSWORD }}
+          # by hand, the announcement covers every standing rust newcomer
+          # rather than one run's findings
           MODE: ${{ github.event.inputs.announce_only == 'true' && '--current' || '' }}
         run: node scripts/post-rust-jobs.mjs $MODE

@@ -1,4 +1,4 @@
-// The engine the announcement scripts share: posts assembled part by part,
+// The engine behind the bluesky announcements: posts assembled part by part,
 // composed into a short thread — or a single post of counts per fund when the
 // night is too busy for names — and published over the AT Protocol XRPC
 // endpoints. Plain Node, no dependencies.

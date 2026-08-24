@@ -7,8 +7,8 @@
 //   node scripts/fetch-all.mjs                    refresh every fund
 //   node scripts/fetch-all.mjs --only=gv,khosla   refresh a subset (smoke test)
 //
-// What each fund gained lands in fetch-results.json, which post-newcomers.mjs
-// reads to announce the night's finds.
+// What each fund gained lands in fetch-results.json, which post-rust-jobs.mjs
+// reads to announce the night's rust finds.
 
 import { writeFileSync } from 'node:fs';
 
@@ -124,7 +124,7 @@ if (failed.length) {
 	console.log(`failed: ${failed.map((f) => f.slug).join(', ')}`);
 }
 
-// what the run found, for post-newcomers.mjs
+// what the run found, for post-rust-jobs.mjs
 writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
 
 // a summary for the workflow-run page

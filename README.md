@@ -96,36 +96,32 @@ project). `vercel` for a preview deploy, `vercel --prod` for production.
 `scripts/fetch-all.mjs` refreshes every fund against the deployment by calling
 the same endpoints the dashboard's buttons use — the listing, then enrichment
 passes until every new job has its description — and leaves what each fund
-gained in `fetch-results.json`. `scripts/post-newcomers.mjs` then announces the
-finds on Bluesky, naming each job and linking it to its page on the board, as a
-short thread or, on a busy night, as a count per fund.
-`scripts/post-rust-jobs.mjs` does the same for the night's new rust jobs, from
+gained in `fetch-results.json`. `scripts/post-rust-jobs.mjs` then announces the
+night's new rust jobs on Bluesky from
 [rust-job-alert.bsky.social](https://bsky.app/profile/rust-job-alert.bsky.social),
-linking the rust jobs page; a night without any stays quiet. Both share their
-engine, `scripts/bluesky.mjs`.
+naming each job under its fund and linking it to its page on the board — as a
+short thread or, on a busy night, as a count per fund — with the thread linking
+the rust jobs page; a night without any stays quiet. The engine behind the
+posts is `scripts/bluesky.mjs`.
 
 ```sh
 pnpm fetch-all                       # refresh every fund against production
 pnpm fetch-all --only=gv,khosla      # ...or just some of them
-pnpm post-newcomers --dry-run        # compose the bluesky post, post nothing
-pnpm post-newcomers                  # ...and publish it
-pnpm post-newcomers --current        # ...covering the whole newcomers page
-pnpm post-newcomers --check          # prove the app password still works
-pnpm post-rust-jobs --dry-run        # the same flags drive the rust jobs post
+pnpm post-rust-jobs --dry-run        # compose the bluesky post, post nothing
+pnpm post-rust-jobs                  # ...and publish it
+pnpm post-rust-jobs --current        # ...covering every standing rust newcomer
+pnpm post-rust-jobs --check          # prove the app password still works
 ```
 
 `BASE_URL` points both scripts at another deployment (e.g. a local dev
 server).
 
-`.github/workflows/daily-fetch.yml` runs these scripts every night at 4am
+`.github/workflows/daily-fetch.yml` runs the two scripts every night at 4am
 Central European time (GitHub's cron only speaks UTC, so both candidate hours
 fire and a guard keeps whichever is 4am in Berlin); it can also be run by hand
-from the Actions tab. Each announcement signs as its own account with its own
-app password: the rust jobs post as `rust-job-alert.bsky.social` with
-`gh secret set BLUESKY_RUST_APP_PASSWORD`, the all-newcomers post as an
-account still to come, with `BLUESKY_IDENTIFIER` in the workflow and
-`gh secret set BLUESKY_APP_PASSWORD` once it exists. A step without its
-password composes and posts nothing, and the refresh runs on its own.
+from the Actions tab. The announcement signs as `rust-job-alert.bsky.social`
+with the app password in the `BLUESKY_RUST_APP_PASSWORD` secret; without it
+the step composes and posts nothing, and the refresh runs on its own.
 
 The same digests are served as an RSS feed at `/rss.xml`, straight from the
 database: one item per night that found newcomers, with the jobs named under

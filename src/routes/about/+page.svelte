@@ -1,13 +1,6 @@
 <script lang="ts">
 	import { FUNDS } from '../../shared/funds';
-	import {
-		BLUESKY_HANDLE,
-		BLUESKY_URL,
-		REPO_URL,
-		RUST_BLUESKY_HANDLE,
-		RUST_BLUESKY_URL,
-		SITE_NAME
-	} from '../../shared/site';
+	import { REPO_URL, RUST_BLUESKY_HANDLE, RUST_BLUESKY_URL, SITE_NAME } from '../../shared/site';
 	import { ScrapeController } from '../../shared/ScrapeController';
 
 	let jobCount = $state(0);
@@ -72,20 +65,9 @@
 			import; a way to read them here is coming.
 		</p>
 		<p>
-			{#if BLUESKY_URL}
-				Every night the boards are refreshed automatically, and whatever newcomers turn up are
-				announced on bluesky at
-				<a href={BLUESKY_URL} target="_blank" rel="external noreferrer" class="font-semibold text-white underline"
-					>@{BLUESKY_HANDLE}</a
-				>
-				and in the
-				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a>.
-			{:else}
-				Every night the boards are refreshed automatically; the newcomers of each night go out
-				in the <a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a>,
-				and will be announced on bluesky once that account is set up.
-			{/if}
-			The new rust jobs among them are announced at
+			Every night the boards are refreshed automatically; the newcomers of each night go out in
+			the <a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a
+			>, and the new rust jobs among them are announced on bluesky at
 			<a
 				href={RUST_BLUESKY_URL}
 				target="_blank"
