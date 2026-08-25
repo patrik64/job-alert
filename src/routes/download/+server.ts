@@ -16,7 +16,7 @@ export const GET = (event: RequestEvent) => {
 			repo(Job).find({
 				where: { closedAt: NULL_DATE },
 				orderBy: { company: 'asc', title: 'asc' },
-				limit: 200_000
+				limit: 1_000_000
 			}),
 			repo(Fund).find({ limit: 1000 })
 		]);
