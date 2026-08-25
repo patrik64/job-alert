@@ -76,8 +76,12 @@
 					{fundCount === 1 ? 'fund' : 'funds'}
 				</span>
 			{/if}
-			<label class="flex cursor-pointer items-center gap-1 text-xs select-none">
-				<input type="checkbox" bind:checked={includeClosed} />
+			<label class="flex cursor-pointer items-center gap-1.5 text-xs select-none">
+				<input
+					type="checkbox"
+					bind:checked={includeClosed}
+					class="form-checkbox h-4 w-4 cursor-pointer text-primary-600"
+				/>
 				include closed
 			</label>
 		</div>
