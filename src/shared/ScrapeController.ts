@@ -45,6 +45,56 @@ export interface SearchHit {
 
 export const SEARCH_LIMIT = 500;
 
+// one operand of a search term: what to look for, and whether it must match a
+// field exactly (it was written in quotes) or merely appear in one
+interface SearchPart {
+	needle: string;
+	exact: boolean;
+}
+
+// a term parses into an OR of AND-groups: an uppercase OR starts a new group,
+// an uppercase AND separates operands within one — so AND binds tighter — and
+// a quoted stretch is one operand whatever it says inside. lowercase and/or
+// are ordinary text, as is an apostrophe inside a word ("women's health");
+// only a '…' standing free the way a "…" does quotes
+const parseSearch = (term: string): SearchPart[][] => {
+	const groups: SearchPart[][] = [];
+	let group: SearchPart[] = [];
+	let buf = '';
+	const endPart = () => {
+		const q = buf.trim();
+		buf = '';
+		const quoted = q.match(/^"([\s\S]+)"$/) ?? q.match(/^'([\s\S]+)'$/);
+		const needle = (quoted?.[1] ?? q).trim();
+		if (needle) group.push({ needle, exact: !!quoted });
+	};
+	const endGroup = () => {
+		endPart();
+		if (group.length) groups.push(group);
+		group = [];
+	};
+	for (const token of term.match(/"[^"]*"|(?<=^|\s)'[^']*'(?=\s|$)|\s+|[^\s"]+|"/g) ?? []) {
+		if (token === 'OR') endGroup();
+		else if (token === 'AND') endPart();
+		else buf += token;
+	}
+	endGroup();
+	return groups;
+};
+
+// whether one job satisfies one operand, the way the comment on searchJobs
+// spells out
+const partMatches = (job: Job, part: SearchPart): boolean => {
+	const key = part.needle.toLowerCase();
+	if (!part.exact)
+		return [job.title, job.company, job.category, job.sector, job.location].some((s) =>
+			s.toLowerCase().includes(key)
+		);
+	const is = (s: string) => s.trim().toLowerCase() === key;
+	const tagged = (tags: string) => tags.toLowerCase().split(',').some((tag) => tag.trim() === key);
+	return is(job.title) || is(job.company) || is(job.location) || tagged(job.category) || tagged(job.sector);
+};
+
 // a job on the rust jobs page, with where the language turned up: the title,
 // the job function, or — for a job whose description is stored — only there;
 // closedAt travels as an ISO string, null while the job is listed
@@ -357,52 +407,49 @@ export class ScrapeController {
 		}
 	}
 
-	// a term in quotes asks for exact matches only: a title, company or
-	// location that is exactly that, or a category/sector tag that is — all
-	// case-insensitively. exactness is decided here rather than in the
-	// browser, because the rows a substring query returns are capped and the
-	// exact ones must not be lost behind that cap. matches come in pages of
-	// SEARCH_LIMIT; page asks for the next batch
+	// a term is an OR of AND-groups (see parseSearch). An operand matches a
+	// job when any of title, company, category, sector or location contains
+	// it — or, written in quotes, when the title, company or location is
+	// exactly that, or a category/sector tag is — all case-insensitively.
+	// exactness is decided here rather than in the browser, because the rows
+	// a substring query returns are capped and the exact ones must not be
+	// lost behind that cap. matches come in pages of SEARCH_LIMIT; page asks
+	// for the next batch
 	@BackendMethod({ allowed: true })
 	static async searchJobs(term: string, page = 0): Promise<SearchHit[]> {
-		const q = term.trim();
-		const quoted = q.match(/^"([\s\S]+)"$/) ?? q.match(/^'([\s\S]+)'$/);
-		const needle = (quoted?.[1] ?? q).trim();
-		if (!needle) return [];
+		const groups = parseSearch(term);
+		if (groups.length === 0) return [];
 		const batch = Math.max(0, Math.floor(page));
 
+		// the database narrows by substrings — an exact match is one of those
+		// too — and any exact operands are then judged here on the capped rows
+		const anyContains = (needle: string) => ({
+			$or: [
+				{ title: { $contains: needle } },
+				{ company: { $contains: needle } },
+				{ category: { $contains: needle } },
+				{ sector: { $contains: needle } },
+				{ location: { $contains: needle } }
+			]
+		});
+		const hasExact = groups.some((g) => g.some((p) => p.exact));
 		const rows = await repo(Job).find({
 			where: {
 				closedAt: NULL_DATE,
-				$or: [
-					{ title: { $contains: needle } },
-					{ company: { $contains: needle } },
-					{ category: { $contains: needle } },
-					{ sector: { $contains: needle } },
-					{ location: { $contains: needle } }
-				]
+				$or: groups.map((g) => ({ $and: g.map((p) => anyContains(p.needle)) }))
 			},
 			// the id as the last key pins jobs that tie on everything else, so
 			// consecutive pages never overlap or leave a gap
 			orderBy: { firstSeenAt: 'desc', company: 'asc', title: 'asc', id: 'asc' },
-			limit: quoted ? 100_000 : SEARCH_LIMIT,
-			// an exact search filters below, after the fetch — it pages there too
-			...(quoted ? {} : { page: batch + 1 })
+			limit: hasExact ? 100_000 : SEARCH_LIMIT,
+			// with an exact operand the filtering happens below, after the
+			// fetch — it pages there too
+			...(hasExact ? {} : { page: batch + 1 })
 		});
 
-		const key = needle.toLowerCase();
-		const is = (s: string) => s.trim().toLowerCase() === key;
-		const tagged = (tags: string) => tags.toLowerCase().split(',').some((tag) => tag.trim() === key);
-		const hits = quoted
+		const hits = hasExact
 			? rows
-					.filter(
-						(job) =>
-							is(job.title) ||
-							is(job.company) ||
-							is(job.location) ||
-							tagged(job.category) ||
-							tagged(job.sector)
-					)
+					.filter((job) => groups.some((g) => g.every((p) => partMatches(job, p))))
 					.slice(batch * SEARCH_LIMIT, (batch + 1) * SEARCH_LIMIT)
 			: rows;
 

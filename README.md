@@ -24,6 +24,9 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
   (development only) acknowledges the current newcomers.
 - **search** (`/search`) — searches all listed jobs across every board by
   title, company, category, sector or location (server-side, debounced).
+  Terms combine with uppercase `AND` and `OR` (`AND` binds tighter); a term
+  in `"quotes"` must match a title, company or location exactly, or be a
+  whole category/sector tag.
 - **timeline** (`/timeline`) — the newcomers of the last two weeks grouped by
   the day they first appeared and then by fund, newest day first; **show
   earlier** widens the window. A checkbox brings the funds' baseline imports

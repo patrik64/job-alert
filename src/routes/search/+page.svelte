@@ -87,7 +87,7 @@
 	<!-- svelte-ignore a11y_autofocus -->
 	<input
 		type="text"
-		placeholder='search all jobs by title, company, category, sector or location… wrap in "quotes" for exact matches'
+		placeholder='search all jobs by title, company, category, sector or location… "quotes" match exactly, AND / OR combine'
 		bind:value={search}
 		autofocus
 		class="form-input mt-3 w-full focus:shadow-outline-green"
