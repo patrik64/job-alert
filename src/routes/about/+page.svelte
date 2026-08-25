@@ -56,13 +56,11 @@
 			<a href="/search" class="font-semibold text-white underline">search</a> finds jobs across every
 			board by title, company, category, sector or location,
 			<a href="/timeline" class="font-semibold text-white underline">timeline</a> groups them by the
-			day they first appeared,
+			day they first appeared, and
 			<a href="/rust-jobs" class="font-semibold text-white underline">rust jobs</a> picks out, in the
 			same form, the listed jobs that name the language in their title or function — or in their
-			description, where one is kept — and
-			<a href="/download" class="font-semibold text-white underline">download</a> exports everything
-			as JSON. Job descriptions are kept for the jobs that appear after a board's first
-			import; a way to read them here is coming.
+			description, where one is kept. Job descriptions are kept for the jobs that appear after a
+			board's first import; a way to read them here is coming.
 		</p>
 		<p>
 			Every night the boards are refreshed automatically; the newcomers of each night go out in

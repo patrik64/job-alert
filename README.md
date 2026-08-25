@@ -35,7 +35,8 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
   closed ones back in (by title or function only — a closed job has no
   description any more).
 - **download** (`/download`) — a JSON file with every listed job grouped by fund
-  and company (no descriptions).
+  and company (no descriptions). The route works everywhere but is only linked
+  in dev — no icon or menu item in production.
 - **about** (`/about`) — what the app does and how the pages fit together.
 - **rss** (`/rss.xml`) — the nightly newcomer digests as a feed: one item per
   night that found some, naming the jobs under their funds (the first few
