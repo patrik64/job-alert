@@ -78,6 +78,26 @@ export async function describedIds(posix: string, substring: string, word: RegEx
 				.map((d) => d.id);
 }
 
+// the ids of a fund's jobs, each with whether it is closed — all a fetch's
+// diff ever reads of the rows already there. The full rows would be the whole
+// board over again, megabytes a fund off the database every night; these two
+// columns travel instead — unless the data provider is the json fallback of
+// local development, which has no sql and loads them whole
+async function existingJobIds(slug: string): Promise<{ id: string; closed: boolean }[]> {
+	const db = remult.dataProvider;
+	return db instanceof SqlDatabase
+		? // slug is a key of the scraper registry, checked by the caller — never free text
+			(
+				await db.execute(
+					`select id, "closedAt" is not null as closed from jobs where "fundSlug" = '${slug}'`
+				)
+			).rows.map((r) => ({ id: String(r.id), closed: Boolean(r.closed) }))
+		: (await repo(Job).find({ where: { fundSlug: slug }, limit: 200_000 })).map((j) => ({
+				id: j.id,
+				closed: !!j.closedAt
+			}));
+}
+
 // how long one fetch may spend listing a board — the largest getro boards
 // run to well over a thousand paced pages, a good three minutes; the rest of
 // a nightly fetch (diff, a few inserts) fits in the time a serverless
@@ -169,13 +189,13 @@ export class ScrapeController {
 			if (byKey.size === 0) throw new Error(`${entry.name}: the board listed no jobs`);
 
 			const jobs = repo(Job);
-			const existing = await jobs.find({ where: { fundSlug: slug }, limit: 200_000 });
+			const existing = await existingJobIds(slug);
 			const idOf = (key: string) => `${slug}:${key}`;
 			const listedIds = new Set([...byKey.keys()].map(idOf));
 			const existingIds = new Set(existing.map((j) => j.id));
 			const newcomers = [...byKey].filter(([key]) => !existingIds.has(idOf(key)));
-			const toClose = existing.filter((j) => !j.closedAt && !listedIds.has(j.id)).map((j) => j.id);
-			const toReopen = existing.filter((j) => j.closedAt && listedIds.has(j.id)).map((j) => j.id);
+			const toClose = existing.filter((j) => !j.closed && !listedIds.has(j.id)).map((j) => j.id);
+			const toReopen = existing.filter((j) => j.closed && listedIds.has(j.id)).map((j) => j.id);
 			const baseline = existing.length === 0;
 			const now = new Date();
 
