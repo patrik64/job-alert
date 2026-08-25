@@ -87,14 +87,25 @@
 	<!-- svelte-ignore a11y_autofocus -->
 	<input
 		type="text"
-		placeholder='search all jobs by title, company, category, sector or location… "quotes" match exactly, AND / OR combine'
+		placeholder="search all jobs by title, company, category, sector or location…"
 		bind:value={search}
 		autofocus
 		class="form-input mt-3 w-full focus:shadow-outline-green"
 	/>
 
 	{#if !searched && !searching}
-		<p class="mt-6 text-sm text-white/80">type at least 2 characters to search all listed jobs</p>
+		<ul class="mt-6 ml-5 flex list-disc flex-col gap-1.5 text-sm text-white/80">
+			<li>
+				a term in "quotes" matches exactly: a title, company or location that is exactly that, or
+				a whole category/sector tag
+			</li>
+			<li>
+				uppercase <span class="font-semibold">AND</span> and
+				<span class="font-semibold">OR</span> combine terms, AND binding tighter — rust AND berlin,
+				svelte OR react
+			</li>
+			<li>type at least 2 characters to search all listed jobs</li>
+		</ul>
 	{:else if searched && results.length === 0}
 		<p class="mt-6 text-sm text-white/80">no jobs match "{search.trim()}"</p>
 	{:else if results.length > 0}
