@@ -72,7 +72,8 @@
 			<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline">rust</a>,
 			<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline">c++</a>,
 			<a href="/rss-svelte.xml" target="_blank" class="font-semibold text-white underline">svelte</a
-			>
+			>,
+			<a href="/rss-react.xml" target="_blank" class="font-semibold text-white underline">react</a>
 			and
 			<a href="/rss-product-manager.xml" target="_blank" class="font-semibold text-white underline"
 				>product manager</a

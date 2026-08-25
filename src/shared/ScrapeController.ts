@@ -111,16 +111,25 @@ export const RUST = /\brust\b/i;
 export const RUST_SQL = '\\mrust\\M';
 
 // the ids of the jobs whose stored description mentions a language, given as
-// a posix regex, its js twin, and a plain substring the word contains. The
+// a posix regex, its js twin, and a plain substring the word contains. With
+// exactCase the regexes decide about case themselves — React the framework
+// against react the verb — instead of matching insensitively. The
 // descriptions are html by the thousand: the database matches them, on word
 // boundaries, and only the ids travel — unless the data provider is the json
 // fallback of local development, which has no sql
-export async function describedIds(posix: string, substring: string, word: RegExp): Promise<string[]> {
+export async function describedIds(
+	posix: string,
+	substring: string,
+	word: RegExp,
+	exactCase = false
+): Promise<string[]> {
 	const db = remult.dataProvider;
 	return db instanceof SqlDatabase
-		? (await db.execute(`select id from job_details where description ~* '${posix}'`)).rows.map(
-				(r) => String(r.id)
-			)
+		? (
+				await db.execute(
+					`select id from job_details where description ${exactCase ? '~' : '~*'} '${posix}'`
+				)
+			).rows.map((r) => String(r.id))
 		: // a substring query first ("Trust" would come along for rust), the
 			// word test after
 			(await repo(JobDetail).find({ where: { description: { $contains: substring } }, limit: 100_000 }))

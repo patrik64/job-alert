@@ -104,6 +104,15 @@ export const SVELTE_FEED: FeedSpec = {
 	headline: (n) => `${n} new svelte ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
 };
 
+export const REACT_FEED: FeedSpec = {
+	url: `${SITE_URL}/rss-react.xml`,
+	title: `${SITE_NAME} — react`,
+	description:
+		`New react jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
+		'one item per night that found some.',
+	headline: (n) => `${n} new react ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
+};
+
 export const PRODUCT_MANAGER_FEED: FeedSpec = {
 	url: `${SITE_URL}/rss-product-manager.xml`,
 	title: `${SITE_NAME} — product manager`,

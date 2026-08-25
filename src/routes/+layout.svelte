@@ -39,6 +39,12 @@
 	<link
 		rel="alternate"
 		type="application/rss+xml"
+		title="{SITE_NAME} — react"
+		href="/rss-react.xml"
+	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
 		title="{SITE_NAME} — product manager"
 		href="/rss-product-manager.xml"
 	/>
