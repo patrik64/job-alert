@@ -42,6 +42,7 @@ import { board as northzone } from './northzone';
 import { board as norwest } from './norwest';
 import { board as octopus } from './octopus';
 import { board as plugandplay } from './plugandplay';
+import { board as qumra } from './qumra';
 import { board as seedcamp } from './seedcamp';
 import { board as sequoia } from './sequoia';
 import { board as sosv } from './sosv';
@@ -101,6 +102,7 @@ const impls: Record<string, JobBoardScraper> = {
 	norwest,
 	octopus,
 	plugandplay,
+	qumra,
 	seedcamp,
 	sequoia,
 	sosv,
