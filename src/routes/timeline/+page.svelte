@@ -11,6 +11,7 @@
 	// the timeline shows a window of recent days; "show earlier" widens it
 	const WINDOW_DAYS = 14;
 	let windows = $state(1);
+	let includeBaselines = $state(false);
 	let jobs = $state<Job[]>([]);
 	let funds = $state<Fund[]>([]);
 	let loading = $state(true);
@@ -77,15 +78,17 @@
 			if (list) list.push(j);
 			else byDay.set(key, [j]);
 		}
-		// a fund's baseline import lands on its day as a count
+		// a fund's baseline import lands on its day as a count — when asked for
 		const baselines = new Map<string, Map<string, number>>();
-		for (const f of funds) {
-			if (!f.baselineAt || f.baselineAt < since) continue;
-			const key = dayKey(f.baselineAt);
-			if (!byDay.has(key)) byDay.set(key, []);
-			const perFund = baselines.get(key) ?? new Map<string, number>();
-			perFund.set(f.slug, f.baselineCount);
-			baselines.set(key, perFund);
+		if (includeBaselines) {
+			for (const f of funds) {
+				if (!f.baselineAt || f.baselineAt < since) continue;
+				const key = dayKey(f.baselineAt);
+				if (!byDay.has(key)) byDay.set(key, []);
+				const perFund = baselines.get(key) ?? new Map<string, number>();
+				perFund.set(f.slug, f.baselineCount);
+				baselines.set(key, perFund);
+			}
 		}
 		return [...byDay.entries()]
 			.sort((a, b) => (a[0] < b[0] ? 1 : -1))
@@ -112,11 +115,21 @@
 <div class="mx-auto mt-2 w-full max-w-[53rem] px-6 py-4 lg:dashed-frame">
 	<div class="flex flex-wrap items-center justify-between gap-2">
 		<h1 class="text-lg font-semibold text-white">timeline</h1>
-		{#if !loading && total}
-			<span class="text-sm text-white/80">
-				{total.toLocaleString()} listed jobs · since {since.toLocaleDateString()}
-			</span>
-		{/if}
+		<div class="flex flex-wrap items-center gap-4">
+			{#if !loading && total}
+				<span class="text-sm text-white/80">
+					{total.toLocaleString()} listed jobs · since {since.toLocaleDateString()}
+				</span>
+			{/if}
+			<label class="flex cursor-pointer items-center gap-1.5 text-xs text-white select-none">
+				<input
+					type="checkbox"
+					bind:checked={includeBaselines}
+					class="form-checkbox h-4 w-4 cursor-pointer text-primary-600"
+				/>
+				include baseline imports
+			</label>
+		</div>
 	</div>
 
 	{#if loading}
