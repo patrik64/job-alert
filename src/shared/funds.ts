@@ -57,6 +57,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'techstars', name: 'Techstars', url: 'https://jobs.techstars.com/jobs' },
 	{ slug: 'usv', name: 'Union Square Ventures', url: 'https://jobs.usv.com/jobs' },
 	{ slug: 'venrock', name: 'Venrock', url: 'https://jobs.venrock.com/jobs' },
+	{ slug: 'vertex', name: 'Vertex Ventures Israel', url: 'https://jobs.vertexventures.co.il/jobs' },
 	{ slug: 'willow', name: 'Willow Growth Partners', url: 'https://willowgrowth.com/talent/' },
 	{ slug: 'wing', name: 'Wing Venture Capital', url: 'https://careers.wing.vc/jobs' },
 	{ slug: 'xange', name: 'XAnge', url: 'https://www.welcometothejungle.com/en/companies-v1/xange/jobs' },
