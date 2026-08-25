@@ -1,4 +1,5 @@
-import type { RequestEvent } from '@sveltejs/kit';
+import { dev } from '$app/environment';
+import { error, type RequestEvent } from '@sveltejs/kit';
 import { repo } from 'remult';
 import { api } from '../../server/api';
 import { Fund } from '../../shared/Fund';
@@ -6,9 +7,11 @@ import { Job, NULL_DATE } from '../../shared/Job';
 import { FUNDS } from '../../shared/funds';
 
 // GET /download — every listed job grouped by fund and company, served as a
-// JSON attachment (descriptions stay out: they would multiply the size)
-export const GET = (event: RequestEvent) =>
-	api.withRemult(event, async () => {
+// JSON attachment (descriptions stay out: they would multiply the size).
+// A dev convenience: in production the route 404s like the links to it.
+export const GET = (event: RequestEvent) => {
+	if (!dev) error(404, 'Not found');
+	return api.withRemult(event, async () => {
 		const [jobs, fundRows] = await Promise.all([
 			repo(Job).find({
 				where: { closedAt: NULL_DATE },
@@ -66,3 +69,4 @@ export const GET = (event: RequestEvent) =>
 			}
 		});
 	});
+};
