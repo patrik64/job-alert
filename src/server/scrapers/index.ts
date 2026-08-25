@@ -52,6 +52,7 @@ import { board as techstars } from './techstars';
 import { board as usv } from './usv';
 import { board as venrock } from './venrock';
 import { board as vertex } from './vertex';
+import { board as viola } from './viola';
 import { board as visible } from './visible';
 import { board as visiblehands } from './visiblehands';
 import { board as voyager } from './voyager';
@@ -115,6 +116,7 @@ const impls: Record<string, JobBoardScraper> = {
 	usv,
 	venrock,
 	vertex,
+	viola,
 	visiblehands,
 	visible,
 	voyager,
