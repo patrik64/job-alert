@@ -54,7 +54,8 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'techstars', name: 'Techstars', url: 'https://jobs.techstars.com/jobs' },
 	{ slug: 'usv', name: 'Union Square Ventures', url: 'https://jobs.usv.com/jobs' },
 	{ slug: 'venrock', name: 'Venrock', url: 'https://jobs.venrock.com/jobs' },
-	{ slug: 'ycombinator', name: 'Y Combinator', url: 'https://www.ycombinator.com/jobs' }
+	{ slug: 'ycombinator', name: 'Y Combinator', url: 'https://www.ycombinator.com/jobs' },
+	{ slug: 'zetta', name: 'Zetta Venture Partners', url: 'https://careers.zettavp.com/jobs' }
 ];
 
 export const fundName = new Map(FUNDS.map((f) => [f.slug, f.name]));
