@@ -32,6 +32,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'generalcatalyst', name: 'General Catalyst', url: 'https://jobs.generalcatalyst.com/jobs' },
 	{ slug: 'greycroft', name: 'Greycroft', url: 'https://jobs.greycroft.com/jobs' },
 	{ slug: 'greylock', name: 'Greylock', url: 'https://jobs.greylock.com/jobs' },
+	{ slug: 'grove', name: 'Grove Ventures', url: 'https://careers.grovevc.com/jobs' },
 	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
 	{ slug: 'headline', name: 'Headline', url: 'https://jobs.headline.com/jobs' },
 	{ slug: 'htgf', name: 'HTGF', url: 'https://startupjobs.htgf.de/jobs' },
