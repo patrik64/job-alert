@@ -202,6 +202,12 @@ const chunks = <T>(items: T[], size: number): T[][] => {
 	return out;
 };
 
+// getro's sourcing pads boards with postings lifted straight off linkedin —
+// spam and other companies' roles under portfolio names — so a job whose only
+// application path is a bare linkedin posting is not imported; ones already in
+// the database fall out of the listing and are closed by the ordinary diff
+const LINKEDIN_POSTING = /^https?:\/\/([a-z0-9-]+\.)*linkedin\.com\/jobs\/view\//i;
+
 const inFlight = new Set<string>();
 
 export class ScrapeController {
@@ -236,6 +242,7 @@ export class ScrapeController {
 				const key = (j.key ?? '').trim();
 				const title = decodeEntities(j.title ?? '');
 				if (!key || !title || byKey.has(key)) continue;
+				if (LINKEDIN_POSTING.test(j.applyUrl ?? '')) continue;
 				byKey.set(key, {
 					...j,
 					title,

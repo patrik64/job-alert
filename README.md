@@ -175,6 +175,12 @@ descriptions on pages of their own, knows how to fetch a job's detail:
   companies, each company page embeds its current postings — and a job's own
   page is read for its description (markdown).
 
+Jobs whose application link is a bare linkedin posting
+(`…linkedin.com/jobs/view/…`) are skipped at import: getro's sourcing pads
+boards with postings lifted off linkedin — spam and other companies' roles
+under portfolio names — while genuine openings apply through the company's
+own site or applicant tracking system.
+
 Scrapers fail loudly rather than import a partial list (which would mark the
 missing jobs closed, only to have them reappear as newcomers later); a failing
 fund shows its error on the dashboard card while the other fetches continue.
