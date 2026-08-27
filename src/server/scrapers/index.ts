@@ -49,6 +49,7 @@ import { board as sosv } from './sosv';
 import { board as speedinvest } from './speedinvest';
 import { board as stageone } from './stageone';
 import { board as techstars } from './techstars';
+import { board as ulu } from './ulu';
 import { board as uncork } from './uncork';
 import { board as underline } from './underline';
 import { board as upfront } from './upfront';
@@ -119,6 +120,7 @@ const impls: Record<string, JobBoardScraper> = {
 	speedinvest,
 	stageone,
 	techstars,
+	ulu,
 	uncork,
 	underline,
 	upfront,
