@@ -50,6 +50,7 @@ import { board as speedinvest } from './speedinvest';
 import { board as stageone } from './stageone';
 import { board as techstars } from './techstars';
 import { board as usv } from './usv';
+import { board as vamos } from './vamos';
 import { board as venrock } from './venrock';
 import { board as vertex } from './vertex';
 import { board as vestigo } from './vestigo';
@@ -115,6 +116,7 @@ const impls: Record<string, JobBoardScraper> = {
 	stageone,
 	techstars,
 	usv,
+	vamos,
 	venrock,
 	vertex,
 	vestigo,
