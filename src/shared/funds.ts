@@ -59,6 +59,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'usv', name: 'Union Square Ventures', url: 'https://jobs.usv.com/jobs' },
 	{ slug: 'venrock', name: 'Venrock', url: 'https://jobs.venrock.com/jobs' },
 	{ slug: 'vertex', name: 'Vertex Ventures Israel', url: 'https://jobs.vertexventures.co.il/jobs' },
+	{ slug: 'vestigo', name: 'Vestigo Ventures', url: 'https://jobs.vestigoventures.com/jobs' },
 	{ slug: 'viola', name: 'Viola Group', url: 'https://careers.viola-group.com/jobs' },
 	{ slug: 'visiblehands', name: 'Visible Hands', url: 'https://jobs.visiblehands.vc/jobs' },
 	{ slug: 'visible', name: 'Visible Ventures', url: 'https://visibleventures.com/jobs/' },
