@@ -56,6 +56,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'speedinvest', name: 'Speedinvest', url: 'https://careers.speedinvest.com/jobs' },
 	{ slug: 'stageone', name: 'StageOne Ventures', url: 'https://jobs.stageonevc.com/' },
 	{ slug: 'techstars', name: 'Techstars', url: 'https://jobs.techstars.com/jobs' },
+	{ slug: 'tusk', name: 'Tusk Venture Partners', url: 'https://jobs.tusk.vc/jobs' },
 	{ slug: 'type1', name: 'Type One Ventures', url: 'https://jobs.type1ventures.com/jobs' },
 	{ slug: 'ulu', name: 'Ulu Ventures', url: 'https://jobs.uluventures.com/jobs' },
 	{ slug: 'uncork', name: 'Uncork Capital', url: 'https://jobs.uncorkcapital.com/jobs' },
