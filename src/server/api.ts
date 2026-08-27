@@ -9,9 +9,9 @@ import { Job } from '../shared/Job';
 import { JobDetail } from '../shared/JobDetail';
 import { ScrapeController } from '../shared/ScrapeController';
 
-function neonDataProvider() {
+function postgresDataProvider() {
 	if (!env.DATABASE_URL) return undefined; // JSON files under ./db (local dev)
-	// modest pool — DATABASE_URL points at Neon's transaction-mode pooler
+	// modest pool — DATABASE_URL points at Supabase's transaction-mode pooler
 	const pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: 10 });
 	// idle pooled connections can drop (transient network errors); without a
 	// listener, node crashes on the pool's unhandled 'error' event
@@ -30,5 +30,5 @@ export const api = remultApi({
 	entities: [Fund, Job, JobDetail],
 	controllers: [ScrapeController],
 	admin: dev,
-	dataProvider: neonDataProvider()
+	dataProvider: postgresDataProvider()
 });

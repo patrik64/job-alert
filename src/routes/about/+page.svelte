@@ -86,7 +86,7 @@
 			>.
 		</p>
 		<p>
-			Built with SvelteKit, Svelte 5, remult and Tailwind CSS on a Neon postgres database. The
+			Built with SvelteKit, Svelte 5, remult and Tailwind CSS on a Supabase postgres database. The
 			source is on
 			<a href={REPO_URL} target="_blank" rel="external noreferrer" class="font-semibold text-white underline"
 				>github</a

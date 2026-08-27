@@ -1,8 +1,8 @@
 # job-alert
 
 Up-to-date information about the jobs at the portfolio companies of venture
-capital funds. Scrapes each fund's public job board, stores the jobs in Neon
-(postgres), and highlights newcomers — jobs that appeared on a board since the
+capital funds. Scrapes each fund's public job board, stores the jobs in
+Supabase (postgres), and highlights newcomers — jobs that appeared on a board since the
 last fetch. Jobs that leave their board are marked closed.
 
 Built with SvelteKit 2, Svelte 5, remult and Tailwind CSS 4; a close sibling
@@ -76,10 +76,11 @@ Identity is the board's own job id, so refetches are idempotent.
 pnpm install
 ```
 
-Put the Neon postgres connection string in `.env`:
+Put the Supabase postgres connection string (the transaction pooler) in
+`.env`:
 
 ```
-DATABASE_URL=postgresql://<user>:<password>@<endpoint>-pooler.<region>.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgresql://postgres.<project-ref>:<password>@aws-1-<region>.pooler.supabase.com:6543/postgres
 ```
 
 Without `DATABASE_URL`, remult falls back to JSON files in `./db/` — handy for
