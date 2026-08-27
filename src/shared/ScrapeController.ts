@@ -1,6 +1,7 @@
 import { BackendMethod, SqlDatabase, remult, repo } from 'remult';
 import type { ScrapedJob } from '../server/scrapers/types';
 import { Fund } from './Fund';
+import { FUNDS } from './funds';
 import { Job, NULL_DATE } from './Job';
 import { JobDetail } from './JobDetail';
 
@@ -549,6 +550,13 @@ export class ScrapeController {
 	@BackendMethod({ allowed: true })
 	static async countJobs(): Promise<number> {
 		return repo(Job).count({ closedAt: NULL_DATE });
+	}
+
+	// every board the registry knows — also one added to the code that has no
+	// fund row yet, which the nightly fetch-all baselines on its first pass
+	@BackendMethod({ allowed: true })
+	static async listBoards(): Promise<{ slug: string; name: string }[]> {
+		return FUNDS.map(({ slug, name }) => ({ slug, name }));
 	}
 
 	// "clean" on the newcomers page: acknowledge the current newcomers so the

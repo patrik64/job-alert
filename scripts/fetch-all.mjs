@@ -36,14 +36,15 @@ const arg = (name) => {
 const only = arg('--only')?.split(',').filter(Boolean);
 const RESULTS_FILE = arg('--results') ?? 'fetch-results.json';
 
-const fundsResp = await fetch(`${BASE_URL}/api/funds?_limit=1000`);
-if (!fundsResp.ok) {
-	console.error(`failed to list funds: ${fundsResp.status}`);
+// every board the server's registry knows — including one just added to the
+// code that has never been fetched: its first fetch imports the baseline
+let funds;
+try {
+	funds = await call('listBoards', []);
+} catch (err) {
+	console.error(`failed to list the boards: ${err instanceof Error ? err.message : err}`);
 	process.exit(1);
 }
-let funds = await fundsResp.json();
-// --only names the funds to refresh — including a board that has never been
-// fetched and so has no row yet; the server knows it from its registry
 if (only) {
 	const known = new Map(funds.map((f) => [f.slug, f]));
 	funds = only.map((slug) => known.get(slug) ?? { slug, name: slug });
@@ -81,7 +82,8 @@ async function worker() {
 		try {
 			const data = await call('fetchFund', [fund.slug]);
 			console.log(
-				`ok   ${fund.slug.padEnd(10)} ${elapsed()}s  ${data.total} jobs, ${data.added} new, ${data.closed} closed` +
+				`ok   ${fund.slug.padEnd(10)} ${elapsed()}s  ${data.total} jobs, ` +
+					(data.baseline ? 'baseline import' : `${data.added} new, ${data.closed} closed`) +
 					(data.pending ? `, ${data.pending} awaiting details` : '')
 			);
 			let enriched = 0;
@@ -136,6 +138,7 @@ if (process.env.GITHUB_STEP_SUMMARY) {
 		...results
 			.filter((r) => r.added > 0)
 			.map((r) => `- **${r.slug}**: ${r.added} new, ${r.closed} closed`),
+		...results.filter((r) => r.baseline).map((r) => `- **${r.slug}**: baseline import, ${r.total} jobs`),
 		...failed.map((f) => `- ❌ **${f.slug}**: ${f.error}`)
 	];
 	appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');

@@ -108,7 +108,9 @@ project). `vercel` for a preview deploy, `vercel --prod` for production.
 `scripts/fetch-all.mjs` refreshes every fund against the deployment by calling
 the same endpoints the dashboard's buttons use — the listing, then enrichment
 passes until every new job has its description — and leaves what each fund
-gained in `fetch-results.json`. `scripts/post-rust-jobs.mjs` then announces the
+gained in `fetch-results.json`. A board just added to the code is picked up
+too: its first fetch imports the baseline (the biggest boards are still best
+imported locally first — see Setup). `scripts/post-rust-jobs.mjs` then announces the
 night's new rust jobs on Bluesky from
 [rust-job-alert.bsky.social](https://bsky.app/profile/rust-job-alert.bsky.social),
 naming each job under its fund and linking it to its page on the board — as a
