@@ -49,6 +49,7 @@ import { board as sequoia } from './sequoia';
 import { board as sosv } from './sosv';
 import { board as speedinvest } from './speedinvest';
 import { board as stageone } from './stageone';
+import { board as tau } from './tau';
 import { board as techstars } from './techstars';
 import { board as thirdrock } from './thirdrock';
 import { board as tlv } from './tlv';
@@ -130,6 +131,7 @@ const impls: Record<string, JobBoardScraper> = {
 	sosv,
 	speedinvest,
 	stageone,
+	tau,
 	techstars,
 	thirdrock,
 	tlv,
