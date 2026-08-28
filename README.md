@@ -41,15 +41,17 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
   and company (no descriptions). A dev-only convenience: in production the
   route 404s and neither the icon nor the menu item appears.
 - **about** (`/about`) — what the app does and how the pages fit together.
-- **rss** (`/rss.xml`) — the nightly newcomer digests as a feed: one item per
-  night that found some, naming the jobs under their funds (the first few
-  dozen per fund, counting the rest). Narrowed variants sit beside it:
-  `/rss-devops.xml` for the jobs that say devops in their title or job
-  function, `/rss-rust.xml` for the rust jobs as the rust jobs page counts
-  them, `/rss-cpp.xml` for the c++ jobs, `/rss-svelte.xml` for the svelte
-  jobs, `/rss-kotlin.xml` for the kotlin jobs, `/rss-react.xml` for the react
-  jobs (in a description only as the framework's proper name — react is also
-  just a verb), and `/rss-product-manager.xml` for the product manager jobs.
+- **rss** — the nightly newcomer digests as feeds: one item per night that
+  found some, naming the jobs under their funds (the first few dozen per
+  fund, counting the rest).
+  - `/rss-rust.xml` — rust jobs
+  - `/rss-svelte.xml` — svelte jobs
+  - `/rss-cpp.xml` — c++ jobs
+  - `/rss-devops.xml` — devops jobs
+  - `/rss-kotlin.xml` — kotlin jobs
+  - `/rss-react.xml` — react jobs
+  - `/rss-product-manager.xml` — product manager jobs
+  - `/rss.xml` — all new jobs
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -137,22 +139,27 @@ from the Actions tab. The announcement signs as `rust-job-alert.bsky.social`
 with the app password in the `BLUESKY_RUST_APP_PASSWORD` secret; without it
 the step composes and posts nothing, and the refresh runs on its own.
 
-The same digests are served as an RSS feed at `/rss.xml`, straight from the
-database: one item per night that found newcomers, with the jobs named under
-their funds and linked to their pages on the boards. A night still being
-written is held back until it has settled, so readers never cache a
-half-announced one. Narrowed variants sit beside it: `/rss-devops.xml`
-carries the devops jobs — "devops" or "dev ops" in the title or the board's
-job function — `/rss-rust.xml` the rust jobs, matched as on the rust jobs
-page (title, function, or the stored description), `/rss-cpp.xml` the c++
-jobs — "c++" or "cpp" in the title or function — `/rss-svelte.xml` the
-svelte jobs: "svelte" or "sveltekit" in the title, the function, or the
-stored description, since the framework hardly ever makes a title —
-`/rss-kotlin.xml` the kotlin jobs, matched the same way — and
-`/rss-product-manager.xml` the product manager jobs: "product manager" or
-"product management" in the title, or a job function saying literally
-"product manager" (the boards' Product Management tag also hangs on
-marketing and production roles, so it does not count on its own).
+The same digests are served as RSS feeds, straight from the database: one
+item per night that found newcomers, with the jobs named under their funds
+and linked to their pages on the boards. A night still being written is held
+back until it has settled, so readers never cache a half-announced one.
+
+- `/rss-rust.xml` — the rust jobs, matched as on the rust jobs page (title,
+  function, or the stored description)
+- `/rss-svelte.xml` — the svelte jobs: "svelte" or "sveltekit" in the title,
+  the function, or the stored description, since the framework hardly ever
+  makes a title
+- `/rss-cpp.xml` — the c++ jobs: "c++" or "cpp" in the title or function
+- `/rss-devops.xml` — the devops jobs: "devops" or "dev ops" in the title or
+  the board's job function
+- `/rss-kotlin.xml` — the kotlin jobs, matched like the svelte ones
+- `/rss-react.xml` — the react jobs: in a description only as the
+  framework's proper name, since react is also just a verb
+- `/rss-product-manager.xml` — the product manager jobs: "product manager"
+  or "product management" in the title, or a job function saying literally
+  "product manager" (the boards' Product Management tag also hangs on
+  marketing and production roles, so it does not count on its own)
+- `/rss.xml` — all new jobs, unnarrowed
 
 ## Scrapers
 
