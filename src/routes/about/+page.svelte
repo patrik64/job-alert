@@ -88,6 +88,11 @@
 				> — devops jobs
 			</li>
 			<li>
+				<a href="/rss-kotlin.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-kotlin.xml</a
+				> — kotlin jobs
+			</li>
+			<li>
 				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss.xml</a>
 				— all new jobs
 			</li>

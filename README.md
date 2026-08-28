@@ -47,9 +47,9 @@ of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
   `/rss-devops.xml` for the jobs that say devops in their title or job
   function, `/rss-rust.xml` for the rust jobs as the rust jobs page counts
   them, `/rss-cpp.xml` for the c++ jobs, `/rss-svelte.xml` for the svelte
-  jobs, `/rss-react.xml` for the react jobs (in a description only as the
-  framework's proper name — react is also just a verb), and
-  `/rss-product-manager.xml` for the product manager jobs.
+  jobs, `/rss-kotlin.xml` for the kotlin jobs, `/rss-react.xml` for the react
+  jobs (in a description only as the framework's proper name — react is also
+  just a verb), and `/rss-product-manager.xml` for the product manager jobs.
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -147,7 +147,8 @@ job function — `/rss-rust.xml` the rust jobs, matched as on the rust jobs
 page (title, function, or the stored description), `/rss-cpp.xml` the c++
 jobs — "c++" or "cpp" in the title or function — `/rss-svelte.xml` the
 svelte jobs: "svelte" or "sveltekit" in the title, the function, or the
-stored description, since the framework hardly ever makes a title — and
+stored description, since the framework hardly ever makes a title —
+`/rss-kotlin.xml` the kotlin jobs, matched the same way — and
 `/rss-product-manager.xml` the product manager jobs: "product manager" or
 "product management" in the title, or a job function saying literally
 "product manager" (the boards' Product Management tag also hangs on
