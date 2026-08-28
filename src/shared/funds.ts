@@ -58,6 +58,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'primary', name: 'Primary Venture Partners', url: 'https://jobs.primary.vc/jobs' },
 	{ slug: 'qumra', name: 'Qumra Capital', url: 'https://jobs.qumracapital.com/jobs' },
 	{ slug: 'rally', name: 'Rally Ventures', url: 'https://jobs.rallyventures.com/jobs' },
+	{ slug: 'reach', name: 'Reach Capital', url: 'https://jobs.reachcapital.com/jobs' },
 	{ slug: 'redsea', name: 'Red Sea Ventures', url: 'https://jobs.redseaventures.com/jobs' },
 	{ slug: 'redpoint', name: 'Redpoint Ventures', url: 'https://careers.redpoint.com/jobs' },
 	{ slug: 'ret', name: 'RET Ventures', url: 'https://jobs.ret.vc/jobs' },

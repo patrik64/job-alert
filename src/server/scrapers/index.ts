@@ -51,6 +51,7 @@ import { board as plugandplay } from './plugandplay';
 import { board as primary } from './primary';
 import { board as qumra } from './qumra';
 import { board as rally } from './rally';
+import { board as reach } from './reach';
 import { board as redpoint } from './redpoint';
 import { board as redsea } from './redsea';
 import { board as ret } from './ret';
@@ -162,6 +163,7 @@ const impls: Record<string, JobBoardScraper> = {
 	primary,
 	qumra,
 	rally,
+	reach,
 	redpoint,
 	redsea,
 	ret,
