@@ -52,6 +52,7 @@ import { board as qumra } from './qumra';
 import { board as seedcamp } from './seedcamp';
 import { board as sequoia } from './sequoia';
 import { board as sixty8 } from './sixty8';
+import { board as socialleverage } from './socialleverage';
 import { board as sogal } from './sogal';
 import { board as soma } from './soma';
 import { board as sosv } from './sosv';
@@ -146,6 +147,7 @@ const impls: Record<string, JobBoardScraper> = {
 	seedcamp,
 	sequoia,
 	sixty8,
+	socialleverage,
 	sogal,
 	soma,
 	sosv,
