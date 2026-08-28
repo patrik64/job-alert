@@ -56,6 +56,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'octopus', name: 'Octopus Ventures', url: 'https://talent.octopusventures.com/jobs' },
 	{ slug: 'plugandplay', name: 'Plug and Play', url: 'https://jobs.pnptc.com/jobs' },
 	{ slug: 'qumra', name: 'Qumra Capital', url: 'https://jobs.qumracapital.com/jobs' },
+	{ slug: 'scifi', name: 'SciFi VC', url: 'https://scifi.vc/#jobs' },
 	{ slug: 'scribble', name: 'Scribble Ventures', url: 'https://jobs.scribble.vc/jobs' },
 	{ slug: 'seedcamp', name: 'Seedcamp', url: 'https://talent.seedcamp.com/jobs' },
 	{ slug: 'sentiero', name: 'Sentiero Ventures', url: 'https://adde.sentiero.vc/public/jobs' },
