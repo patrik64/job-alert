@@ -3,6 +3,7 @@ import type { JobBoardScraper } from './types';
 // these slugs lead with a digit, so the bindings can't be named after them
 import { board as zeroonea } from './01a';
 import { board as twentyonefifty } from './2150';
+import { board as eightvc } from './8vc';
 import { board as a16z } from './a16z';
 import { board as accel } from './accel';
 import { board as airbus } from './airbus';
@@ -93,6 +94,7 @@ import { board as zetta } from './zetta';
 const impls: Record<string, JobBoardScraper> = {
 	'01a': zeroonea,
 	'2150': twentyonefifty,
+	'8vc': eightvc,
 	a16z,
 	accel,
 	airbus,
