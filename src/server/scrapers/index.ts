@@ -49,6 +49,7 @@ import { board as norwest } from './norwest';
 import { board as octopus } from './octopus';
 import { board as plugandplay } from './plugandplay';
 import { board as qumra } from './qumra';
+import { board as sandbox } from './sandbox';
 import { board as scifi } from './scifi';
 import { board as scribble } from './scribble';
 import { board as seedcamp } from './seedcamp';
@@ -149,6 +150,7 @@ const impls: Record<string, JobBoardScraper> = {
 	octopus,
 	plugandplay,
 	qumra,
+	sandbox,
 	scifi,
 	scribble,
 	seedcamp,
