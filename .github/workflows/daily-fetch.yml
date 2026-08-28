@@ -3,9 +3,11 @@ name: daily fetch
 on:
   schedule:
     # cron runs in UTC while 4am Central European time moves with DST, so
-    # both candidate hours fire and the guard keeps whichever is 4am local
-    - cron: '0 2 * * *'
-    - cron: '0 3 * * *'
+    # both candidate hours fire and the guard keeps whichever is 4am local;
+    # :02 rather than :00 because github's scheduler is most congested on
+    # the hour and has started runs ten hours late from there
+    - cron: '2 2 * * *'
+    - cron: '2 3 * * *'
   workflow_dispatch:
     inputs:
       announce_only:
@@ -34,8 +36,8 @@ jobs:
           # starts a scheduled run an hour or more late, which once made a
           # run-time hour check skip every night
           offset=$(TZ=Europe/Berlin date +%z)
-          want='0 3 * * *'
-          [ "$offset" = "+0200" ] && want='0 2 * * *'
+          want='2 3 * * *'
+          [ "$offset" = "+0200" ] && want='2 2 * * *'
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.schedule }}" = "$want" ]; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
