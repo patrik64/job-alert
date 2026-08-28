@@ -57,6 +57,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'plugandplay', name: 'Plug and Play', url: 'https://jobs.pnptc.com/jobs' },
 	{ slug: 'qumra', name: 'Qumra Capital', url: 'https://jobs.qumracapital.com/jobs' },
 	{ slug: 'seedcamp', name: 'Seedcamp', url: 'https://talent.seedcamp.com/jobs' },
+	{ slug: 'sentiero', name: 'Sentiero Ventures', url: 'https://adde.sentiero.vc/public/jobs' },
 	{ slug: 'sequoia', name: 'Sequoia Capital', url: 'https://jobs.sequoiacap.com/jobs' },
 	{ slug: 'shield', name: 'Shield Capital', url: 'https://portfoliocareers.shieldcap.com/jobs' },
 	{ slug: 'shima', name: 'Shima Capital', url: 'https://jobs.shima.capital/jobs' },
