@@ -57,6 +57,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'sequoia', name: 'Sequoia Capital', url: 'https://jobs.sequoiacap.com/jobs' },
 	{ slug: 'sosv', name: 'SOSV', url: 'https://techjobs.sosv.com/jobs' },
 	{ slug: 'speedinvest', name: 'Speedinvest', url: 'https://careers.speedinvest.com/jobs' },
+	{ slug: 'springtime', name: 'SpringTime Ventures', url: 'https://careers.springtimeventures.com/jobs' },
 	{ slug: 'stageone', name: 'StageOne Ventures', url: 'https://jobs.stageonevc.com/' },
 	{ slug: 'supermoon', name: 'Supermoon Capital', url: 'https://jobs.supermooncapital.com/jobs' },
 	{ slug: 'tau', name: 'Tau Ventures', url: 'https://www.tauventures.com/careers' },
