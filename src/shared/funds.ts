@@ -57,6 +57,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'plugandplay', name: 'Plug and Play', url: 'https://jobs.pnptc.com/jobs' },
 	{ slug: 'primary', name: 'Primary Venture Partners', url: 'https://jobs.primary.vc/jobs' },
 	{ slug: 'qumra', name: 'Qumra Capital', url: 'https://jobs.qumracapital.com/jobs' },
+	{ slug: 'radical', name: 'Radical Ventures', url: 'https://radical.getro.com/jobs' },
 	{ slug: 'rainfall', name: 'Rainfall', url: 'https://careers.rainfall.com/jobs' },
 	{ slug: 'rally', name: 'Rally Ventures', url: 'https://jobs.rallyventures.com/jobs' },
 	{ slug: 'reach', name: 'Reach Capital', url: 'https://jobs.reachcapital.com/jobs' },

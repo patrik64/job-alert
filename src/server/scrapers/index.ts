@@ -50,6 +50,7 @@ import { board as octopus } from './octopus';
 import { board as plugandplay } from './plugandplay';
 import { board as primary } from './primary';
 import { board as qumra } from './qumra';
+import { board as radical } from './radical';
 import { board as rainfall } from './rainfall';
 import { board as rally } from './rally';
 import { board as reach } from './reach';
@@ -163,6 +164,7 @@ const impls: Record<string, JobBoardScraper> = {
 	plugandplay,
 	primary,
 	qumra,
+	radical,
 	rainfall,
 	rally,
 	reach,
