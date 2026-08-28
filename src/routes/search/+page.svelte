@@ -101,7 +101,7 @@
 			</li>
 			<li>
 				uppercase <span class="font-semibold">AND</span> and
-				<span class="font-semibold">OR</span> combine terms, AND binding tighter — rust AND berlin,
+				<span class="font-semibold">OR</span> combine terms — rust AND vienna,
 				svelte OR react
 			</li>
 			<li>type at least 2 characters to search all listed jobs</li>
