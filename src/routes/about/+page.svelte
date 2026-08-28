@@ -68,18 +68,14 @@
 		</p>
 		<ul class="ml-5 flex list-disc flex-col gap-1">
 			<li>
-				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss.xml</a>
-				— all new jobs
-			</li>
-			<li>
-				<a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
-					>rss-devops.xml</a
-				> — devops jobs
-			</li>
-			<li>
 				<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline"
 					>rss-rust.xml</a
 				> — rust jobs
+			</li>
+			<li>
+				<a href="/rss-svelte.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-svelte.xml</a
+				> — svelte jobs
 			</li>
 			<li>
 				<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline"
@@ -87,9 +83,13 @@
 				> — c++ jobs
 			</li>
 			<li>
-				<a href="/rss-svelte.xml" target="_blank" class="font-semibold text-white underline"
-					>rss-svelte.xml</a
-				> — svelte jobs
+				<a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-devops.xml</a
+				> — devops jobs
+			</li>
+			<li>
+				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss.xml</a>
+				— all new jobs
 			</li>
 			<li>
 				<a href="/rss-react.xml" target="_blank" class="font-semibold text-white underline"
