@@ -27,6 +27,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'dcvc', name: 'DCVC', url: 'https://jobs.dcvc.com/jobs' },
 	{ slug: 'e14', name: 'E14 Fund', url: 'https://jobs.e14.vc/jobs' },
 	{ slug: 'earlybird', name: 'Earlybird Venture Capital', url: 'https://jobs.earlybird.com/jobs' },
+	{ slug: 'emergence', name: 'Emergence Capital', url: 'https://talent.emcap.com/jobs' },
 	{ slug: 'f2', name: 'F2 Venture Capital', url: 'https://jobs.f2vc.com/jobs' },
 	{ slug: 'felicis', name: 'Felicis', url: 'https://jobs.felicis.com/jobs' },
 	{ slug: 'flagship', name: 'Flagship Pioneering', url: 'https://www.flagshippioneering.com/join/roles' },

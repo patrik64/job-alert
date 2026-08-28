@@ -20,6 +20,7 @@ import { board as creandum } from './creandum';
 import { board as dcvc } from './dcvc';
 import { board as e14 } from './e14';
 import { board as earlybird } from './earlybird';
+import { board as emergence } from './emergence';
 import { board as f2 } from './f2';
 import { board as felicis } from './felicis';
 import { board as flagship } from './flagship';
@@ -104,6 +105,7 @@ const impls: Record<string, JobBoardScraper> = {
 	dcvc,
 	e14,
 	earlybird,
+	emergence,
 	f2,
 	felicis,
 	flagship,
