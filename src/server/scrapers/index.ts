@@ -52,6 +52,7 @@ import { board as seedcamp } from './seedcamp';
 import { board as sequoia } from './sequoia';
 import { board as sosv } from './sosv';
 import { board as speedinvest } from './speedinvest';
+import { board as springtide } from './springtide';
 import { board as springtime } from './springtime';
 import { board as stageone } from './stageone';
 import { board as supermoon } from './supermoon';
@@ -141,6 +142,7 @@ const impls: Record<string, JobBoardScraper> = {
 	sequoia,
 	sosv,
 	speedinvest,
+	springtide,
 	springtime,
 	stageone,
 	supermoon,
