@@ -5,8 +5,11 @@ capital funds. Scrapes each fund's public job board, stores the jobs in
 Supabase (postgres), and highlights newcomers — jobs that appeared on a board since the
 last fetch. Jobs that leave their board are marked closed.
 
-Built with SvelteKit 2, Svelte 5, remult and Tailwind CSS 4; a close sibling
-of [portfolio-alert](https://github.com/patrik64/portfolio-alert).
+Built with SvelteKit 2, Svelte 5, remult and Tailwind CSS 4
+
+## Try
+
+live at https://job-alert-pax.vercel.app/
 
 ## Pages
 
