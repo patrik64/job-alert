@@ -58,6 +58,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'qumra', name: 'Qumra Capital', url: 'https://jobs.qumracapital.com/jobs' },
 	{ slug: 'seedcamp', name: 'Seedcamp', url: 'https://talent.seedcamp.com/jobs' },
 	{ slug: 'sequoia', name: 'Sequoia Capital', url: 'https://jobs.sequoiacap.com/jobs' },
+	{ slug: 'sixty8', name: 'Sixty8 Capital', url: 'https://jobs.sixty8.capital/jobs' },
 	{ slug: 'sogal', name: 'SoGal Ventures', url: 'https://jobs.sogalventures.com/jobs' },
 	{ slug: 'soma', name: 'Soma Capital', url: 'https://jobs.somacap.com/jobs' },
 	{ slug: 'sosv', name: 'SOSV', url: 'https://techjobs.sosv.com/jobs' },
