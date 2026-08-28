@@ -93,10 +93,6 @@
 				> — kotlin jobs
 			</li>
 			<li>
-				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss.xml</a>
-				— all new jobs
-			</li>
-			<li>
 				<a href="/rss-react.xml" target="_blank" class="font-semibold text-white underline"
 					>rss-react.xml</a
 				> — react jobs
@@ -105,6 +101,10 @@
 				<a href="/rss-product-manager.xml" target="_blank" class="font-semibold text-white underline"
 					>rss-product-manager.xml</a
 				> — product manager jobs
+			</li>
+			<li>
+				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss.xml</a>
+				— all new jobs
 			</li>
 		</ul>
 		<p>
