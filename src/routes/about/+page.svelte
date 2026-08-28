@@ -63,21 +63,47 @@
 			board's first import; a way to read them here is coming.
 		</p>
 		<p>
-			Every night the boards are refreshed automatically; the newcomers of each night go out in
-			the <a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss feed</a
-			> (with narrowed feeds beside it for
-			<a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
-				>devops</a
-			>,
-			<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline">rust</a>,
-			<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline">c++</a>,
-			<a href="/rss-svelte.xml" target="_blank" class="font-semibold text-white underline">svelte</a
-			>,
-			<a href="/rss-react.xml" target="_blank" class="font-semibold text-white underline">react</a>
-			and
-			<a href="/rss-product-manager.xml" target="_blank" class="font-semibold text-white underline"
-				>product manager</a
-			> jobs), and the new rust jobs among them are announced on bluesky at
+			Every night the boards are refreshed automatically; the newcomers of each night go out in the
+			rss feeds:
+		</p>
+		<ul class="ml-5 flex list-disc flex-col gap-1">
+			<li>
+				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss.xml</a>
+				— all new jobs
+			</li>
+			<li>
+				<a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-devops.xml</a
+				> — devops jobs
+			</li>
+			<li>
+				<a href="/rss-rust.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-rust.xml</a
+				> — rust jobs
+			</li>
+			<li>
+				<a href="/rss-cpp.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-cpp.xml</a
+				> — c++ jobs
+			</li>
+			<li>
+				<a href="/rss-svelte.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-svelte.xml</a
+				> — svelte jobs
+			</li>
+			<li>
+				<a href="/rss-react.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-react.xml</a
+				> — react jobs
+			</li>
+			<li>
+				<a href="/rss-product-manager.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-product-manager.xml</a
+				> — product manager jobs
+			</li>
+		</ul>
+		<p>
+			The new rust jobs among them are announced on bluesky at
 			<a
 				href={RUST_BLUESKY_URL}
 				target="_blank"
