@@ -56,6 +56,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'octopus', name: 'Octopus Ventures', url: 'https://talent.octopusventures.com/jobs' },
 	{ slug: 'plugandplay', name: 'Plug and Play', url: 'https://jobs.pnptc.com/jobs' },
 	{ slug: 'qumra', name: 'Qumra Capital', url: 'https://jobs.qumracapital.com/jobs' },
+	{ slug: 'redsea', name: 'Red Sea Ventures', url: 'https://jobs.redseaventures.com/jobs' },
 	{ slug: 'ret', name: 'RET Ventures', url: 'https://jobs.ret.vc/jobs' },
 	{ slug: 'riverpark', name: 'RiverPark Ventures', url: 'https://jobs.riverparkvc.com/jobs' },
 	{ slug: 'rockhealth', name: 'Rock Health Capital', url: 'https://rockhealthcapital.com/job-board/' },
