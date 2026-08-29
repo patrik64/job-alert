@@ -16,8 +16,11 @@ const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-pax.vercel.app';
 // one fund at a time: the boards on the same platform share one paced
 // request budget, and two of them listing at once crowd each other out
 const CONCURRENCY = 1;
-// fetchFund aborts its listing after 4 minutes; give the request a little more
-const REQUEST_TIMEOUT = 300_000;
+// fetchFund aborts its listing after 4 minutes, but a big board's diff and
+// insert run on past that, up to the function's 800-second cap on vercel;
+// give the request a little more, and only give up on a function that is
+// certainly dead
+const REQUEST_TIMEOUT = 840_000;
 // one enrichment pass stops taking on jobs after this long; a board of ten
 // thousand jobs needs a handful of passes on its first night, a few seconds
 // after that. The pass may overrun a little while its last jobs finish, so
