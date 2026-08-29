@@ -1,8 +1,6 @@
 import { api } from '../../../server/api';
 
-// vercel kills a function at 300 seconds by default — not enough for the
-// biggest board's fetch (accel lists ~25k jobs), which then dies before it
-// can even record its error. 800 is as high as the platform allows.
-export const config = { maxDuration: 800 };
-
+// vercel's hobby plan kills a function at 300 seconds and rejects any higher
+// maxDuration at build time — the biggest board's fetch has to fit, and the
+// nightly script retries the ones that don't
 export const { GET, POST, PUT, DELETE } = api;

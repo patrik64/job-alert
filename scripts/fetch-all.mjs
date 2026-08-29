@@ -16,11 +16,8 @@ const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-pax.vercel.app';
 // one fund at a time: the boards on the same platform share one paced
 // request budget, and two of them listing at once crowd each other out
 const CONCURRENCY = 1;
-// fetchFund aborts its listing after 4 minutes, but a big board's diff and
-// insert run on past that, up to the function's 800-second cap on vercel;
-// give the request a little more, and only give up on a function that is
-// certainly dead
-const REQUEST_TIMEOUT = 840_000;
+// fetchFund aborts its listing after 4 minutes; give the request a little more
+const REQUEST_TIMEOUT = 300_000;
 // one enrichment pass stops taking on jobs after this long; a board of ten
 // thousand jobs needs a handful of passes on its first night, a few seconds
 // after that. The pass may overrun a little while its last jobs finish, so
@@ -121,6 +118,20 @@ async function worker() {
 }
 
 await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
+// one more chance for whatever failed: the biggest boards ride close to
+// vercel's 300-second function cap, and a slow night on their platform
+// pushes one over — a second attempt usually fits. A broadly failing night
+// is not retried; that is something actually broken
+const firstTry = results.filter((r) => r.error);
+if (firstTry.length && firstTry.length <= results.length * 0.2) {
+	console.log(`\nretrying: ${firstTry.map((f) => f.slug).join(', ')}`);
+	for (const f of firstTry) {
+		results.splice(results.indexOf(f), 1);
+		queue.push({ slug: f.slug, name: f.name });
+	}
+	await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+}
 
 const failed = results.filter((r) => r.error);
 const added = results.reduce((n, r) => n + (r.added ?? 0), 0);
