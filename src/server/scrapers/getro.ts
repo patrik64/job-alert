@@ -94,7 +94,11 @@ async function refreshBuildId(host: string, stale: string): Promise<string> {
 	return buildIdOf(host);
 }
 
-function toJob(host: string, j: ListJob): ScrapedJob | null {
+// where a job and its company live on the board; a board with no pages of
+// its own sends both to the fund's jobs page
+type PageUrls = (orgSlug: string, jobSlug: string) => { companyUrl: string; url: string };
+
+function toJob(pages: PageUrls, j: ListJob): ScrapedJob | null {
 	const org = j.organization ?? {};
 	const orgSlug = org.slug ?? '';
 	if (!j.id || !j.slug || !orgSlug) return null;
@@ -116,9 +120,8 @@ function toJob(host: string, j: ListJob): ScrapedJob | null {
 	return {
 		key: String(j.id),
 		company: org.name ?? '',
-		companyUrl: `https://${host}/companies/${orgSlug}`,
+		...pages(orgSlug, j.slug),
 		title: j.title ?? '',
-		url: `https://${host}/companies/${orgSlug}/jobs/${j.slug}`,
 		applyUrl: j.url ?? '',
 		// the job functions travel with the detail only
 		category: '',
@@ -129,13 +132,7 @@ function toJob(host: string, j: ListJob): ScrapedJob | null {
 	};
 }
 
-export function getroBoard({
-	host,
-	collectionId
-}: {
-	host: string;
-	collectionId: number;
-}): JobBoardScraper {
+function collectionList(collectionId: number, label: string, pageUrls: PageUrls) {
 	const searchUrl = `${API}/${collectionId}/search/jobs`;
 	const page = async (n: number) => {
 		await paceSearch();
@@ -146,34 +143,67 @@ export function getroBoard({
 		});
 	};
 
-	return {
-		async list() {
-			const first = await page(0);
-			const count = first.results?.count ?? 0;
-			if (!count) throw new Error(`${host}: the board lists no jobs`);
-			const pages = Math.ceil(count / PAGE_SIZE);
-			const rest = await mapConcurrent(
-				Array.from({ length: pages - 1 }, (_, i) => i + 1),
-				LIST_CONCURRENCY,
-				(n) => page(n)
-			);
+	return async () => {
+		const first = await page(0);
+		const count = first.results?.count ?? 0;
+		if (!count) throw new Error(`${label}: the board lists no jobs`);
+		const pages = Math.ceil(count / PAGE_SIZE);
+		const rest = await mapConcurrent(
+			Array.from({ length: pages - 1 }, (_, i) => i + 1),
+			LIST_CONCURRENCY,
+			(n) => page(n)
+		);
 
-			// the list shifts while it is being paged (new jobs land on top), so
-			// a job can show up twice and another slip between two pages
-			const byKey = new Map<string, ScrapedJob>();
-			for (const resp of [first, ...rest]) {
-				for (const raw of resp.results?.jobs ?? []) {
-					const job = toJob(host, raw);
-					if (job && !byKey.has(job.key)) byKey.set(job.key, job);
-				}
+		// the list shifts while it is being paged (new jobs land on top), so
+		// a job can show up twice and another slip between two pages
+		const byKey = new Map<string, ScrapedJob>();
+		for (const resp of [first, ...rest]) {
+			for (const raw of resp.results?.jobs ?? []) {
+				const job = toJob(pageUrls, raw);
+				if (job && !byKey.has(job.key)) byKey.set(job.key, job);
 			}
-			// fail loudly rather than importing a partial list: the jobs missed
-			// now would be marked closed, only to reappear as newcomers later
-			if (byKey.size < count * 0.95) {
-				throw new Error(`${host}: collected ${byKey.size} of ${count} jobs`);
-			}
-			return [...byKey.values()];
-		},
+		}
+		// fail loudly rather than importing a partial list: the jobs missed
+		// now would be marked closed, only to reappear as newcomers later
+		if (byKey.size < count * 0.95) {
+			throw new Error(`${label}: collected ${byKey.size} of ${count} jobs`);
+		}
+		return [...byKey.values()];
+	};
+}
+
+// A network that retired its getro front-end still answers on the search
+// api, but its jobs have no pages of their own any more: they link to the
+// fund's jobs page, and a description can only come from the posting's
+// applicant tracking system.
+export function getroApiBoard({
+	collectionId,
+	jobsPage
+}: {
+	collectionId: number;
+	jobsPage: string;
+}): JobBoardScraper {
+	return {
+		list: collectionList(collectionId, jobsPage, () => ({ companyUrl: '', url: jobsPage })),
+
+		detail(job) {
+			return job.applyUrl ? atsDetail(job.applyUrl) : Promise.resolve(null);
+		}
+	};
+}
+
+export function getroBoard({
+	host,
+	collectionId
+}: {
+	host: string;
+	collectionId: number;
+}): JobBoardScraper {
+	return {
+		list: collectionList(collectionId, host, (orgSlug, jobSlug) => ({
+			companyUrl: `https://${host}/companies/${orgSlug}`,
+			url: `https://${host}/companies/${orgSlug}/jobs/${jobSlug}`
+		})),
 
 		async detail(job) {
 			const m = job.url.match(/\/companies\/([^/]+)\/jobs\/([^/?#]+)/);
