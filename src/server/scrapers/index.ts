@@ -47,6 +47,7 @@ import { board as nfx } from './nfx';
 import { board as northzone } from './northzone';
 import { board as norwest } from './norwest';
 import { board as octopus } from './octopus';
+import { board as pear } from './pear';
 import { board as playground } from './playground';
 import { board as plugandplay } from './plugandplay';
 import { board as point72 } from './point72';
@@ -166,6 +167,7 @@ const impls: Record<string, JobBoardScraper> = {
 	northzone,
 	norwest,
 	octopus,
+	pear,
 	playground,
 	plugandplay,
 	point72,
