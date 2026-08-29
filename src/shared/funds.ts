@@ -55,6 +55,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'northzone', name: 'Northzone', url: 'https://portfolio.northzone.com/jobs' },
 	{ slug: 'norwest', name: 'Norwest Venture Partners', url: 'https://careers.norwest.com/jobs' },
 	{ slug: 'octopus', name: 'Octopus Ventures', url: 'https://talent.octopusventures.com/jobs' },
+	{ slug: 'omnivore', name: 'Omnivore', url: 'https://jobs.omnivore.vc/jobs' },
 	{ slug: 'origin', name: 'Origin Ventures', url: 'https://jobs.originventures.com/jobs' },
 	{ slug: 'outsiders', name: 'Outsiders Fund', url: 'https://jobs.outsidersfund.com/jobs' },
 	{ slug: 'paleblue', name: 'Pale Blue Dot', url: 'https://paleblue.vc/jobs' },
