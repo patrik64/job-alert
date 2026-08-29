@@ -49,6 +49,7 @@ import { board as norwest } from './norwest';
 import { board as octopus } from './octopus';
 import { board as playground } from './playground';
 import { board as plugandplay } from './plugandplay';
+import { board as point72 } from './point72';
 import { board as primary } from './primary';
 import { board as qed } from './qed';
 import { board as quiet } from './quiet';
@@ -167,6 +168,7 @@ const impls: Record<string, JobBoardScraper> = {
 	octopus,
 	playground,
 	plugandplay,
+	point72,
 	primary,
 	qed,
 	quiet,

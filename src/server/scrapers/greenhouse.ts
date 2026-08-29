@@ -6,7 +6,9 @@ import type { JobBoardScraper, ScrapedJob, ScrapedSalary } from './types';
 // greenhouse board whose "offices" are the portfolio companies and whose
 // departments are the job functions. The board api lists every posting in one
 // request — with its description, which the enrichment pass reads back
-// through the greenhouse resolver in ats.ts.
+// through the greenhouse resolver in ats.ts. A board may also be a firm
+// hiring for itself — its offices are then real offices, and `owner` names
+// the one company every posting belongs to.
 
 const API = 'https://boards-api.greenhouse.io/v1/boards';
 
@@ -46,7 +48,13 @@ function salaryOf(job: GreenhouseJob): ScrapedSalary | null {
 const names = (list: Named[] | null | undefined) =>
 	(list ?? []).map((x) => (x.name ?? '').trim()).filter(Boolean);
 
-export function greenhouseBoard({ token }: { token: string }): JobBoardScraper {
+export function greenhouseBoard({
+	token,
+	owner
+}: {
+	token: string;
+	owner?: { name: string; url: string };
+}): JobBoardScraper {
 	return {
 		async list() {
 			const data = await fetchJson<{ jobs?: GreenhouseJob[] }>(`${API}/${token}/jobs?content=true`, {
@@ -64,8 +72,8 @@ export function greenhouseBoard({ token }: { token: string }): JobBoardScraper {
 					key: String(j.id),
 					// the offices are the portfolio companies; failing those, the
 					// board's owner
-					company: offices[0] ?? (j.company_name ?? '').trim(),
-					companyUrl: '',
+					company: owner?.name ?? offices[0] ?? (j.company_name ?? '').trim(),
+					companyUrl: owner?.url ?? '',
 					title,
 					url,
 					applyUrl: url,
