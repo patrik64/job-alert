@@ -32,6 +32,12 @@
 	<link
 		rel="alternate"
 		type="application/rss+xml"
+		title="{SITE_NAME} — go"
+		href="/rss-go.xml"
+	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
 		title="{SITE_NAME} — svelte"
 		href="/rss-svelte.xml"
 	/>

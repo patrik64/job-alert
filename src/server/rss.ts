@@ -3,8 +3,8 @@
 // linking to its page on the board. A night on boards this size can run to
 // thousands of jobs, so a fund's line names the first few dozen and counts
 // the rest. Every feed is narrowed to one trade or language (devops, rust,
-// c++, svelte, product manager) — an unnarrowed feed of such nights would be
-// unreadable.
+// go, c++, svelte, product manager) — an unnarrowed feed of such nights
+// would be unreadable.
 
 import { FUNDS } from '../shared/funds';
 import { LIVE_URL, SITE_NAME } from '../shared/site';
@@ -85,6 +85,15 @@ export const CPP_FEED: FeedSpec = {
 		`New c++ jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
 		'one item per night that found some.',
 	headline: (n) => `${n} new c++ ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
+};
+
+export const GO_FEED: FeedSpec = {
+	url: `${SITE_URL}/rss-go.xml`,
+	title: `${SITE_NAME} — go`,
+	description:
+		`New go jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
+		'one item per night that found some.',
+	headline: (n) => `${n} new go ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
 };
 
 export const SVELTE_FEED: FeedSpec = {

@@ -83,6 +83,11 @@
 				> — c++ jobs
 			</li>
 			<li>
+				<a href="/rss-go.xml" target="_blank" class="font-semibold text-white underline"
+					>rss-go.xml</a
+				> — go jobs
+			</li>
+			<li>
 				<a href="/rss-devops.xml" target="_blank" class="font-semibold text-white underline"
 					>rss-devops.xml</a
 				> — devops jobs

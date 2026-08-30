@@ -50,6 +50,7 @@ live at https://job-alert-pax.vercel.app/
   - `/rss-rust.xml` — rust jobs
   - `/rss-svelte.xml` — svelte jobs
   - `/rss-cpp.xml` — c++ jobs
+  - `/rss-go.xml` — go jobs
   - `/rss-devops.xml` — devops jobs
   - `/rss-kotlin.xml` — kotlin jobs
   - `/rss-react.xml` — react jobs
@@ -152,6 +153,9 @@ back until it has settled, so readers never cache a half-announced one.
   the function, or the stored description, since the framework hardly ever
   makes a title
 - `/rss-cpp.xml` — the c++ jobs: "c++" or "cpp" in the title or function
+- `/rss-go.xml` — the go jobs: "go" or "golang" in the title or function
+  (go-to-market roles excluded), or "golang" in the stored description —
+  prose uses go for too much else to count the bare word there
 - `/rss-devops.xml` — the devops jobs: "devops" or "dev ops" in the title or
   the board's job function
 - `/rss-kotlin.xml` — the kotlin jobs, matched like the svelte ones
