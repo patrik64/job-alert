@@ -1,9 +1,10 @@
-// The newcomers feed: one item per night that turned up new jobs, with the
-// night's headline as the title and the jobs named under their funds, each
+// The newcomer digest feeds: one item per night that turned up new jobs, with
+// the night's headline as the title and the jobs named under their funds, each
 // linking to its page on the board. A night on boards this size can run to
 // thousands of jobs, so a fund's line names the first few dozen and counts
-// the rest. The same digests exist narrowed to one trade or language
-// (devops, rust, c++, svelte, product manager) as feeds of their own.
+// the rest. Every feed is narrowed to one trade or language (devops, rust,
+// c++, svelte, product manager) — an unnarrowed feed of such nights would be
+// unreadable.
 
 import { FUNDS } from '../shared/funds';
 import { LIVE_URL, SITE_NAME } from '../shared/site';
@@ -58,15 +59,6 @@ export interface FeedSpec {
 	description: string;
 	headline: (n: number) => string;
 }
-
-export const NEWCOMERS_FEED: FeedSpec = {
-	url: `${SITE_URL}/rss.xml`,
-	title: SITE_NAME,
-	description:
-		`New jobs at the portfolio companies of ${FUNDS.length} venture capital funds: ` +
-		'one item per night that found some.',
-	headline: (n) => `${n} new ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
-};
 
 export const DEVOPS_FEED: FeedSpec = {
 	url: `${SITE_URL}/rss-devops.xml`,
@@ -181,7 +173,7 @@ export function rssFeed(
 	rows: FeedRow[],
 	latestFetch: Date | undefined,
 	now = new Date(),
-	feed: FeedSpec = NEWCOMERS_FEED
+	feed: FeedSpec
 ) {
 	const byDay = groupBy(rows, (r) => dayKey(r.firstSeenAt));
 	const latest = Math.max(rows[0]?.firstSeenAt.getTime() ?? 0, latestFetch?.getTime() ?? 0);

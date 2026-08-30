@@ -102,10 +102,6 @@
 					>rss-product-manager.xml</a
 				> — product manager jobs
 			</li>
-			<li>
-				<a href="/rss.xml" target="_blank" class="font-semibold text-white underline">rss.xml</a>
-				— all new jobs
-			</li>
 		</ul>
 		<p>
 			The new rust jobs among them are announced on bluesky at

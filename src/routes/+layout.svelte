@@ -11,7 +11,6 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
 	<link
 		rel="alternate"
 		type="application/rss+xml"
@@ -131,7 +130,7 @@
 						</a>
 					{/if}
 					<a
-						href="/rss.xml"
+						href="/rss-rust.xml"
 						target="_blank"
 						onclick={() => (menuOpen = false)}
 						class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
@@ -221,10 +220,10 @@
 				</a>
 			{/if}
 			<a
-				href="/rss.xml"
+				href="/rss-rust.xml"
 				target="_blank"
-				aria-label="rss"
-				title="rss"
+				aria-label="rust jobs rss"
+				title="rust jobs rss"
 				class="transition duration-150 hover:text-primary-300"
 			>
 				<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">

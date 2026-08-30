@@ -1,5 +1,5 @@
-// One handler behind both rss routes: load the recent newcomers, narrow them
-// when the feed asks for a slice (the devops feed), and render the digests.
+// One handler behind the rss routes: load the recent newcomers, narrow them
+// to the feed's slice, and render the digests.
 
 import type { RequestEvent } from '@sveltejs/kit';
 import { remult, repo, SqlDatabase } from 'remult';
