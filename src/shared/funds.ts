@@ -49,6 +49,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'lakestar', name: 'Lakestar', url: 'https://consider.com/boards/vc/lakestar/jobs' },
 	{ slug: 'lightspeed', name: 'Lightspeed Venture Partners', url: 'https://jobs.lsvp.com/jobs' },
 	{ slug: 'lux', name: 'Lux Capital', url: 'https://jobs.luxcapital.com/jobs' },
+	{ slug: 'mcj', name: 'MCJ', url: 'https://jobs.mcj.vc/jobs' },
 	{ slug: 'orbit', name: 'MIT Orbit', url: 'https://jobs.orbit.mit.edu/jobs' },
 	{ slug: 'necessary', name: 'Necessary Ventures', url: 'https://jobs.necessary.vc/jobs' },
 	{ slug: 'nea', name: 'New Enterprise Associates', url: 'https://careers.nea.com/jobs' },
