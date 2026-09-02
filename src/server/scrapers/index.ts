@@ -58,6 +58,7 @@ import { board as moderne } from './moderne';
 import { board as moneta } from './moneta';
 import { board as morpheus } from './morpheus';
 import { board as moxxie } from './moxxie';
+import { board as mseq } from './mseq';
 import { board as nea } from './nea';
 import { board as necessary } from './necessary';
 import { board as newfund } from './newfund';
@@ -206,6 +207,7 @@ const impls: Record<string, JobBoardScraper> = {
 	moneta,
 	morpheus,
 	moxxie,
+	mseq,
 	nea,
 	necessary,
 	newfund,
