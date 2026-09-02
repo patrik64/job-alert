@@ -48,6 +48,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'khosla', name: 'Khosla Ventures', url: 'https://jobs.khoslaventures.com/jobs' },
 	{ slug: 'lakestar', name: 'Lakestar', url: 'https://consider.com/boards/vc/lakestar/jobs' },
 	{ slug: 'lightspeed', name: 'Lightspeed Venture Partners', url: 'https://jobs.lsvp.com/jobs' },
+	{ slug: 'lowercarbon', name: 'Lowercarbon Capital', url: 'https://lowercarbon.getro.com/jobs' },
 	{ slug: 'lux', name: 'Lux Capital', url: 'https://jobs.luxcapital.com/jobs' },
 	{ slug: 'm13', name: 'M13', url: 'https://jobs.m13.co/jobs' },
 	{ slug: 'mac', name: 'MaC Venture Capital', url: 'https://jobs.macventurecapital.com/jobs' },
