@@ -46,6 +46,7 @@ import { board as nea } from './nea';
 import { board as nfx } from './nfx';
 import { board as northzone } from './northzone';
 import { board as norwest } from './norwest';
+import { board as nyca } from './nyca';
 import { board as octopus } from './octopus';
 import { board as offline } from './offline';
 import { board as omnivore } from './omnivore';
@@ -173,6 +174,7 @@ const impls: Record<string, JobBoardScraper> = {
 	nfx,
 	northzone,
 	norwest,
+	nyca,
 	octopus,
 	offline,
 	omnivore,
