@@ -41,6 +41,7 @@ import { board as ivp } from './ivp';
 import { board as khosla } from './khosla';
 import { board as lakestar } from './lakestar';
 import { board as lightspeed } from './lightspeed';
+import { board as link } from './link';
 import { board as longjourney } from './longjourney';
 import { board as lorimer } from './lorimer';
 import { board as lowercarbon } from './lowercarbon';
@@ -196,6 +197,7 @@ const impls: Record<string, JobBoardScraper> = {
 	khosla,
 	lakestar,
 	lightspeed,
+	link,
 	longjourney,
 	lorimer,
 	lowercarbon,
