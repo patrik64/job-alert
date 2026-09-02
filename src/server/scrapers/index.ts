@@ -82,6 +82,7 @@ import { board as outsiders } from './outsiders';
 import { board as paleblue } from './paleblue';
 import { board as paypal } from './paypal';
 import { board as pear } from './pear';
+import { board as phoenixcourt } from './phoenixcourt';
 import { board as playground } from './playground';
 import { board as plugandplay } from './plugandplay';
 import { board as point72 } from './point72';
@@ -236,6 +237,7 @@ const impls: Record<string, JobBoardScraper> = {
 	paleblue,
 	paypal,
 	pear,
+	phoenixcourt,
 	playground,
 	plugandplay,
 	point72,

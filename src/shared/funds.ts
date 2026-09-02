@@ -89,6 +89,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'paleblue', name: 'Pale Blue Dot', url: 'https://paleblue.vc/jobs' },
 	{ slug: 'paypal', name: 'PayPal Ventures', url: 'https://jobs.paypal.vc/jobs' },
 	{ slug: 'pear', name: 'Pear VC', url: 'https://jobs.ashbyhq.com/Pear-VC' },
+	{ slug: 'phoenixcourt', name: 'Phoenix Court', url: 'https://jobs.phoenixcourt.vc/jobs' },
 	{ slug: 'playground', name: 'Playground Global', url: 'https://careers.playground.global/jobs' },
 	{ slug: 'plugandplay', name: 'Plug and Play', url: 'https://jobs.pnptc.com/jobs' },
 	{ slug: 'point72', name: 'Point72', url: 'https://careers.point72.com/' },
