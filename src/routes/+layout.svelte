@@ -59,6 +59,7 @@
 		title="{SITE_NAME} — product manager"
 		href="/rss-product-manager.xml"
 	/>
+	<link rel="alternate" type="application/rss+xml" title="{SITE_NAME} — ux" href="/rss-ux.xml" />
 	<title>{SITE_NAME}</title>
 </svelte:head>
 

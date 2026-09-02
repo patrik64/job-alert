@@ -55,6 +55,7 @@ live at https://job-alert-pax.vercel.app/
   - `/rss-kotlin.xml` — kotlin jobs
   - `/rss-react.xml` — react jobs
   - `/rss-product-manager.xml` — product manager jobs
+  - `/rss-ux.xml` — ux & graphic design jobs
 
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
@@ -165,6 +166,9 @@ back until it has settled, so readers never cache a half-announced one.
   or "product management" in the title, or a job function saying literally
   "product manager" (the boards' Product Management tag also hangs on
   marketing and production roles, so it does not count on its own)
+- `/rss-ux.xml` — the ux & graphic design jobs: "ux", "user experience" or
+  "graphic design(er)" in the title or function — never in the description,
+  where every second engineering posting promises close work with the ux team
 
 ## Scrapers
 

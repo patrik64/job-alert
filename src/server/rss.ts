@@ -132,6 +132,16 @@ export const PRODUCT_MANAGER_FEED: FeedSpec = {
 	headline: (n) => `${n} new product manager ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
 };
 
+export const UX_FEED: FeedSpec = {
+	url: `${SITE_URL}/rss-ux.xml`,
+	title: `${SITE_NAME} — ux`,
+	description:
+		`New ux and graphic design jobs at the portfolio companies of ${FUNDS.length} ` +
+		'venture capital funds: one item per night that found some.',
+	headline: (n) =>
+		`${n} new ux & graphic design ${n === 1 ? 'job' : 'jobs'} at vc-backed companies`
+};
+
 const ENTITIES: Record<string, string> = {
 	'&': '&amp;',
 	'<': '&lt;',
