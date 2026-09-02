@@ -162,7 +162,8 @@ function groupBy<T>(items: T[], key: (item: T) => string) {
 	return groups;
 }
 
-// a night's finds, fund by fund — the loudest funds first, as on bluesky
+// a night's finds, fund by fund — the loudest funds first, as on bluesky;
+// each fund a linked heading with its jobs as a bullet list under it
 const describe = (rows: FeedRow[]) => {
 	const names = new Map(FUNDS.map((f) => [f.slug, f.name]));
 	return [...groupBy(rows, (r) => r.fundSlug)]
@@ -177,11 +178,14 @@ const describe = (rows: FeedRow[]) => {
 		.map((g) => {
 			const named = g.jobs.slice(0, MAX_PER_FUND).map((j) => {
 				const label = escape(`${j.company} – ${j.title}`);
-				return j.url.startsWith('http') ? `<a href="${escape(j.url)}">${label}</a>` : label;
+				return `<li>${j.url.startsWith('http') ? `<a href="${escape(j.url)}">${label}</a>` : label}</li>`;
 			});
 			const rest = g.jobs.length - named.length;
-			const more = rest > 0 ? `, and ${rest} more` : '';
-			return `<p><a href="${SITE_URL}/funds/${g.slug}">${escape(g.name)}</a> (${g.jobs.length}): ${named.join(', ')}${more}</p>`;
+			if (rest > 0) named.push(`<li>and ${rest} more</li>`);
+			return (
+				`<p><strong><a href="${SITE_URL}/funds/${g.slug}">${escape(g.name)}</a></strong> (${g.jobs.length})</p>\n` +
+				`<ul>\n${named.join('\n')}\n</ul>`
+			);
 		})
 		.join('\n');
 };
