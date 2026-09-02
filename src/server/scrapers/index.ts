@@ -43,6 +43,7 @@ import { board as lakestar } from './lakestar';
 import { board as lightspeed } from './lightspeed';
 import { board as lux } from './lux';
 import { board as nea } from './nea';
+import { board as necessary } from './necessary';
 import { board as newfund } from './newfund';
 import { board as newmarkets } from './newmarkets';
 import { board as nextview } from './nextview';
@@ -174,6 +175,7 @@ const impls: Record<string, JobBoardScraper> = {
 	lightspeed,
 	lux,
 	nea,
+	necessary,
 	newfund,
 	newmarkets,
 	nextview,
