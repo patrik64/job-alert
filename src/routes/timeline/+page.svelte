@@ -9,10 +9,11 @@
 	import { ScrapeController } from '../../shared/ScrapeController';
 
 	// the timeline shows a window of recent days; "show earlier" pulls the
-	// next fourteen onto the page — each click reads only its own stretch off
-	// the database, the days already shown stay as they are
-	const WINDOW_DAYS = 14;
-	const MAX_WINDOWS = 8;
+	// next three onto the page — each click reads only its own stretch off
+	// the database, the days already shown stay as they are. The cap keeps
+	// the rss deep link's auto-extension within the feeds' thirty-day reach
+	const WINDOW_DAYS = 3;
+	const MAX_WINDOWS = 10;
 	let pagesLoaded = $state(0);
 	let older = $state(false);
 	let loadingMore = $state(false);
