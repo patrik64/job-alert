@@ -108,7 +108,16 @@ async function worker() {
 				);
 				if (r.enriched === 0) break;
 			}
-			results.push({ slug: fund.slug, name: fund.name, ...data, enriched, remaining });
+			// when this fund's fetch began — newcomer flags outlive one run now,
+			// and the announcement only names what landed after this moment
+			results.push({
+				slug: fund.slug,
+				name: fund.name,
+				startedAt: new Date(started).toISOString(),
+				...data,
+				enriched,
+				remaining
+			});
 		} catch (err) {
 			const message = String(err instanceof Error ? err.message : err).slice(0, 200);
 			results.push({ slug: fund.slug, name: fund.name, error: message });

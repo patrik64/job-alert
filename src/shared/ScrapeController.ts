@@ -102,7 +102,8 @@ const partMatches = (job: Job, part: SearchPart): boolean => {
 export interface RustJob extends SearchHit {
 	matchedIn: 'title' | 'function' | 'description';
 	closedAt: string | null;
-	// the latest fetch's fresh finds — what the nightly announcement names
+	// the last half-day's fresh finds — the announcement narrows them further,
+	// to the jobs its own run landed
 	isNewcomer: boolean;
 }
 
@@ -163,6 +164,10 @@ async function existingJobIds(slug: string): Promise<{ id: string; closed: boole
 // a nightly fetch (diff, a few inserts) fits in the time a serverless
 // function has left after that
 const LIST_TIMEOUT_MS = 270_000;
+// how long a newcomer flag survives later fetches — long enough that a
+// second run the same morning keeps the night's finds, short enough that
+// the next night starts afresh
+const KEEP_NEWCOMER_MS = 12 * 3_600_000;
 // how many jobs one enrichment pass picks up at most, how many detail
 // requests it keeps in flight, and how long it runs unless told otherwise
 const ENRICH_BATCH = 3000;
@@ -267,9 +272,17 @@ export class ScrapeController {
 			const now = new Date();
 
 			// the previous batch is no longer "new" — cleared only now that the
-			// scrape succeeded, so a failed fetch keeps the last newcomer set intact
+			// scrape succeeded, so a failed fetch keeps the last newcomer set
+			// intact. Github's scheduler double-fires and runs late often enough
+			// for a second run to land the same morning, and it must not eat the
+			// night's finds: a flag younger than half a day survives, and the
+			// next night's run is far enough away to clear it
 			await jobs.updateMany({
-				where: { fundSlug: slug, isNewcomer: true },
+				where: {
+					fundSlug: slug,
+					isNewcomer: true,
+					firstSeenAt: { $lt: new Date(now.getTime() - KEEP_NEWCOMER_MS) }
+				},
 				set: { isNewcomer: false }
 			});
 			// jobs that left the board are closed — and their descriptions go with
@@ -321,12 +334,15 @@ export class ScrapeController {
 			const pending = entry.board.detail
 				? await jobs.count({ fundSlug: slug, enrichedAt: NULL_DATE, closedAt: NULL_DATE })
 				: 0;
+			// the fund's chip counts every standing newcomer, the survivors of
+			// earlier runs of the morning included — as the newcomers page does
+			const standing = baseline ? 0 : await jobs.count({ fundSlug: slug, isNewcomer: true });
 			await repo(Fund).upsert({
 				where: { slug },
 				set: {
 					name: entry.name,
 					jobCount: byKey.size,
-					newCount: added,
+					newCount: standing,
 					lastFetchedAt: now,
 					lastError: '',
 					...(baseline ? { baselineAt: now, baselineCount: newcomers.length } : {})

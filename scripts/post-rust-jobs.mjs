@@ -51,8 +51,19 @@ if (!process.argv.includes('--current')) {
 		console.log(`no fetch results at ${RESULTS_FILE} — nothing to announce`);
 		process.exit(0);
 	}
-	const gained = new Set(results.filter((r) => r.added > 0).map((r) => r.slug));
-	fresh = fresh.filter((h) => gained.has(h.fundSlug));
+	// newcomer flags survive half a day of fetches, so a fund that gained
+	// again hours later still carries the morning's announced finds — only
+	// the jobs that landed after this run began are named (with a few
+	// minutes' grace between the runner's clock and the database's)
+	const gained = new Map(
+		results
+			.filter((r) => r.added > 0)
+			.map((r) => [r.slug, (Date.parse(r.startedAt ?? '') || 0) - 5 * 60_000])
+	);
+	fresh = fresh.filter((h) => {
+		const since = gained.get(h.fundSlug);
+		return since !== undefined && Date.parse(h.firstSeenAt) >= since;
+	});
 }
 
 if (fresh.length === 0) {
