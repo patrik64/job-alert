@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { jobMeta } from '$lib/jobs';
 	import { FUNDS } from '../../shared/funds';
@@ -8,16 +7,16 @@
 
 	// the timeline's form — days, funds under them, jobs under those — over the
 	// listed jobs that have to do with rust, three days at a time: the full
-	// list grew long enough that loading it whole weighed on the database, so
-	// older stretches sit behind the link at the bottom (?page=1, 2, …)
+	// list grew long enough that loading it whole weighed on the database. The
+	// link at the bottom pulls three more days onto the page each time
 	let jobs = $state<RustJob[]>([]);
 	let older = $state(false);
 	let loading = $state(true);
+	let loadingMore = $state(false);
+	// how many windows the page holds — read only in the handlers, so plain
+	let pagesLoaded = 0;
 	// the closed ones come back in on request, greyed and badged as on a fund's page
 	let includeClosed = $state(false);
-
-	const pageNum = $derived(Math.max(0, Number(page.url.searchParams.get('page') ?? '0') || 0));
-	const pageHref = (n: number) => (n > 0 ? `/rust-jobs?page=${n}` : '/rust-jobs');
 
 	// local YYYY-MM-DD key so day boundaries follow the viewer's timezone
 	const dayKey = (d: Date) =>
@@ -25,16 +24,32 @@
 
 	$effect(() => {
 		const all = includeClosed;
-		const n = pageNum;
 		loading = true;
-		ScrapeController.rustJobs(all, n).then((window) => {
-			if (all === includeClosed && n === pageNum) {
+		ScrapeController.rustJobs(all, 0).then((window) => {
+			if (all === includeClosed) {
 				jobs = window.jobs;
 				older = window.older;
+				pagesLoaded = 1;
 				loading = false;
 			}
 		});
 	});
+
+	async function loadMore() {
+		if (loadingMore) return;
+		loadingMore = true;
+		const all = includeClosed;
+		const window = await ScrapeController.rustJobs(all, pagesLoaded);
+		if (all === includeClosed) {
+			// the windows drift with the clock between requests, so the seam
+			// can serve a row twice
+			const seen = new Set(jobs.map((j) => j.id));
+			jobs = [...jobs, ...window.jobs.filter((j) => !seen.has(j.id))];
+			older = window.older;
+			pagesLoaded += 1;
+		}
+		loadingMore = false;
+	}
 
 	const days = $derived.by(() => {
 		const byDay = new Map<string, RustJob[]>();
@@ -98,9 +113,7 @@
 	{#if loading}
 		<Spinner label="loading rust jobs" />
 	{:else if days.length === 0}
-		<p class="mt-6 text-sm text-white/80">
-			{pageNum > 0 ? 'no rust jobs in this stretch' : 'no rust jobs in the last three days'}
-		</p>
+		<p class="mt-6 text-sm text-white/80">no rust jobs in the last three days</p>
 	{:else}
 		{#each days as day (day.day)}
 			<div id={day.day} class="mt-6 scroll-mt-4">
@@ -167,24 +180,16 @@
 		{/each}
 	{/if}
 
-	{#if !loading && (pageNum > 0 || older)}
-		<div class="mt-8 flex flex-col items-center gap-2 text-sm">
-			{#if older}
-				<a
-					href={pageHref(pageNum + 1)}
-					class="font-semibold text-white transition duration-150 hover:text-primary-300"
-				>
-					more rust jobs
-				</a>
-			{/if}
-			{#if pageNum > 0}
-				<a
-					href={pageHref(pageNum - 1)}
-					class="text-white/80 transition duration-150 hover:text-primary-300"
-				>
-					← newer rust jobs
-				</a>
-			{/if}
+	{#if !loading && older}
+		<div class="mt-8 flex justify-center text-sm">
+			<button
+				type="button"
+				onclick={loadMore}
+				disabled={loadingMore}
+				class="cursor-pointer font-semibold text-white transition duration-150 hover:text-primary-300 disabled:opacity-50"
+			>
+				{loadingMore ? 'loading…' : 'more rust jobs'}
+			</button>
 		</div>
 	{/if}
 </div>
