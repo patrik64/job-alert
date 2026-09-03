@@ -8,9 +8,14 @@
 	import { SITE_NAME } from '../../shared/site';
 	import { ScrapeController } from '../../shared/ScrapeController';
 
-	// the timeline shows a window of recent days; "show earlier" widens it
+	// the timeline shows a window of recent days; "show earlier" pulls the
+	// next fourteen onto the page — each click reads only its own stretch off
+	// the database, the days already shown stay as they are
 	const WINDOW_DAYS = 14;
-	let windows = $state(1);
+	const MAX_WINDOWS = 8;
+	let pagesLoaded = $state(0);
+	let older = $state(false);
+	let loadingMore = $state(false);
 	let includeBaselines = $state(false);
 	let jobs = $state<Job[]>([]);
 	let funds = $state<Fund[]>([]);
@@ -21,49 +26,66 @@
 	const dayKey = (d: Date) =>
 		`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-	// the first local midnight inside the window
-	const since = $derived.by(() => {
+	// the first local midnight of the nth window back from today
+	const windowStart = (n: number) => {
 		const d = new Date();
 		d.setHours(0, 0, 0, 0);
-		d.setDate(d.getDate() - WINDOW_DAYS * windows + 1);
+		d.setDate(d.getDate() - (WINDOW_DAYS * (n + 1) - 1));
 		return d;
-	});
+	};
+	const since = $derived(windowStart(Math.max(pagesLoaded, 1) - 1));
+
+	async function loadWindow(n: number) {
+		const start = windowStart(n);
+		// a fund's baseline import is thousands of rows; it is shown from the
+		// fund's count instead, so only the genuine newcomers are loaded
+		// (explicit limit — remult's REST API defaults to 100 rows per page)
+		const rows = await repo(Job).find({
+			where: {
+				baseline: false,
+				// the newest window stays open at the top; midnight passing
+				// between clicks makes the seams overlap, and the id dedupe
+				// below absorbs it
+				firstSeenAt: n === 0 ? { $gte: start } : { $gte: start, $lt: windowStart(n - 1) }
+			},
+			orderBy: { firstSeenAt: 'desc' },
+			limit: 100_000
+		});
+		const seen = new Set(jobs.map((j) => j.id));
+		jobs = [...jobs, ...rows.filter((j) => !seen.has(j.id))];
+		// whether an earlier stretch still holds something — a count, so no
+		// rows travel
+		older = (await repo(Job).count({ baseline: false, firstSeenAt: { $lt: start } })) > 0;
+		pagesLoaded = n + 1;
+	}
+
+	async function loadMore() {
+		if (loadingMore) return;
+		loadingMore = true;
+		await loadWindow(pagesLoaded);
+		loadingMore = false;
+	}
 
 	$effect(() => {
 		ScrapeController.countJobs().then((n) => (total = n));
 	});
 
 	$effect(() => {
-		const from = since;
 		loading = true;
-		Promise.all([
-			// a fund's baseline import is thousands of rows; it is shown from the
-			// fund's count instead, so only the genuine newcomers are loaded
-			// (explicit limit — remult's REST API defaults to 100 rows per page)
-			repo(Job).find({
-				where: { baseline: false, firstSeenAt: { $gte: from } },
-				orderBy: { firstSeenAt: 'desc' },
-				limit: 100_000
-			}),
-			repo(Fund).find({ limit: 1000 })
-		]).then(([rows, fundRows]) => {
-			if (from === since) {
-				jobs = rows;
-				funds = fundRows;
-				loading = false;
-			}
-		});
+		Promise.all([loadWindow(0), repo(Fund).find({ limit: 1000 }).then((f) => (funds = f))]).then(
+			() => (loading = false)
+		);
 	});
 
 	// the rss feed links a night as /timeline#YYYY-MM-DD; the days only exist
 	// once the rows are in, so the jump happens here rather than on page load —
-	// widening the window first when the night lies beyond it
+	// pulling earlier windows first when the night lies beyond what is shown
 	$effect(() => {
 		if (loading || days.length === 0) return;
 		const target = location.hash.slice(1);
 		if (!target) return;
-		if (target < dayKey(since) && windows < 8) {
-			windows += 1;
+		if (target < dayKey(since) && pagesLoaded < MAX_WINDOWS) {
+			void loadMore();
 			return;
 		}
 		document.getElementById(target)?.scrollIntoView();
@@ -203,14 +225,17 @@
 				</div>
 			</div>
 		{/each}
-		<div class="mt-6 flex justify-center">
-			<button
-				type="button"
-				onclick={() => (windows += 1)}
-				class="rounded-md px-3 py-1 text-sm font-semibold text-white transition duration-150 ease-in-out hover:bg-white/20 focus:shadow-outline-green focus:outline-none"
-			>
-				show earlier
-			</button>
-		</div>
+		{#if older}
+			<div class="mt-6 flex justify-center">
+				<button
+					type="button"
+					onclick={loadMore}
+					disabled={loadingMore}
+					class="rounded-md px-3 py-1 text-sm font-semibold text-white transition duration-150 ease-in-out hover:bg-white/20 focus:shadow-outline-green focus:outline-none disabled:opacity-50"
+				>
+					{loadingMore ? 'loading…' : 'show earlier'}
+				</button>
+			</div>
+		{/if}
 	{/if}
 </div>
