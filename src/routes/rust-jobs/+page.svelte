@@ -168,23 +168,21 @@
 	{/if}
 
 	{#if !loading && (pageNum > 0 || older)}
-		<div class="mt-8 flex items-center justify-between text-sm">
+		<div class="mt-8 flex flex-col items-center gap-2 text-sm">
+			{#if older}
+				<a
+					href={pageHref(pageNum + 1)}
+					class="font-semibold text-white transition duration-150 hover:text-primary-300"
+				>
+					more rust jobs
+				</a>
+			{/if}
 			{#if pageNum > 0}
 				<a
 					href={pageHref(pageNum - 1)}
 					class="text-white/80 transition duration-150 hover:text-primary-300"
 				>
 					← newer rust jobs
-				</a>
-			{:else}
-				<span></span>
-			{/if}
-			{#if older}
-				<a
-					href={pageHref(pageNum + 1)}
-					class="text-white/80 transition duration-150 hover:text-primary-300"
-				>
-					next rust jobs →
 				</a>
 			{/if}
 		</div>
