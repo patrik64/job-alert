@@ -40,10 +40,10 @@
 		<p>
 			<span class="font-semibold">{SITE_NAME}</span> watches the job boards of {FUNDS.length}
 			venture capital funds — the openings at their portfolio companies. It reads each board's
-			public listing, keeps every job it has ever seen, and highlights
+			public listing, keeps the jobs it currently lists, and highlights
 			<a href="/newcomers" class="font-semibold text-white underline">newcomers</a> — jobs that
-			appeared on a board since the last fetch. A job that leaves its board is marked closed and
-			drops out of the listings.
+			appeared on a board since the last fetch. A job that leaves its board leaves the listings
+			with it.
 		</p>
 		<p>
 			The <a href="/" class="font-semibold text-white underline">dashboard</a> shows one card per

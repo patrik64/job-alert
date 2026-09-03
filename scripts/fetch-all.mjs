@@ -83,7 +83,7 @@ async function worker() {
 			const data = await call('fetchFund', [fund.slug]);
 			console.log(
 				`ok   ${fund.slug.padEnd(10)} ${elapsed()}s  ${data.total} jobs, ` +
-					(data.baseline ? 'baseline import' : `${data.added} new, ${data.closed} closed`) +
+					(data.baseline ? 'baseline import' : `${data.added} new, ${data.removed} removed`) +
 					(data.pending ? `, ${data.pending} awaiting details` : '')
 			);
 			let enriched = 0;
@@ -160,7 +160,7 @@ if (process.env.GITHUB_STEP_SUMMARY) {
 		'',
 		...results
 			.filter((r) => r.added > 0)
-			.map((r) => `- **${r.slug}**: ${r.added} new, ${r.closed} closed`),
+			.map((r) => `- **${r.slug}**: ${r.added} new, ${r.removed} removed`),
 		...results.filter((r) => r.baseline).map((r) => `- **${r.slug}**: baseline import, ${r.total} jobs`),
 		...failed.map((f) => `- ❌ **${f.slug}**: ${f.error}`)
 	];

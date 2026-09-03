@@ -3,7 +3,7 @@
 Up-to-date information about the jobs at the portfolio companies of venture
 capital funds. Scrapes each fund's public job board, stores the jobs in
 Supabase (postgres), and highlights newcomers — jobs that appeared on a board since the
-last fetch. Jobs that leave their board are marked closed.
+last fetch. Jobs that leave their board leave the database with them.
 
 Built with SvelteKit 2, Svelte 5, remult and Tailwind CSS 4
 
@@ -20,7 +20,7 @@ live at https://job-alert-pax.vercel.app/
 - **fund** (`/funds/[slug]`) — the fund's listed jobs grouped by company, with
   each job's function, location and pay where the board publishes them, a link
   to the job's page on the board and one to the posting itself; a search box
-  narrows the list and a checkbox brings the closed jobs back in.
+  narrows the list.
 - **newcomers** (`/newcomers`) — jobs found by the latest fetch that were not
   in the database before, grouped by fund. The very first fetch of a fund is a
   baseline import and is not counted as newcomers. A **clean** button
@@ -37,9 +37,8 @@ live at https://job-alert-pax.vercel.app/
 - **rust jobs** (`/rust-jobs`) — the timeline's form over the listed jobs that
   have to do with rust: the language named in the title or job function, or
   mentioned in the description where one is stored (a word match — "Trust"
-  does not count). All of them at once, no window; a checkbox brings the
-  closed ones back in (by title or function only — a closed job has no
-  description any more).
+  does not count). Three days at a time; a link at the bottom pulls three
+  more onto the page.
 - **download** (`/download`) — a JSON file with every listed job grouped by fund
   and company (no descriptions). A dev-only convenience: in production the
   route 404s and neither the icon nor the menu item appears.
@@ -67,7 +66,7 @@ descriptions are collected too, but not shown yet.
 - `jobs` — one row per job ever seen, keyed `fund:board-job-id`: company,
   title, the job's page on the board, the posting's own url, category (job
   function), sector (the company's industry tags), location, salary range,
-  posted date, and the newcomer / baseline / closed / enriched state.
+  posted date, and the newcomer / baseline / enriched state.
 - `job_details` — the job's description (html or markdown, as the board
   delivers it), kept apart so listing and diffing never drag descriptions
   along — and kept only for the jobs that appear after a board's baseline
@@ -202,5 +201,5 @@ under portfolio names — while genuine openings apply through the company's
 own site or applicant tracking system.
 
 Scrapers fail loudly rather than import a partial list (which would mark the
-missing jobs closed, only to have them reappear as newcomers later); a failing
+missing jobs removed, only to have them reappear as newcomers later); a failing
 fund shows its error on the dashboard card while the other fetches continue.

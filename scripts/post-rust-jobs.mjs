@@ -39,7 +39,7 @@ if (process.argv.includes('--check')) {
 const resp = await fetch(`${BASE_URL}/api/rustJobs`, {
 	method: 'POST',
 	headers: { 'content-type': 'application/json' },
-	body: JSON.stringify({ args: [false, 0] })
+	body: JSON.stringify({ args: [0] })
 });
 if (!resp.ok) throw new Error(`POST /api/rustJobs — ${resp.status}`);
 const { data } = await resp.json();

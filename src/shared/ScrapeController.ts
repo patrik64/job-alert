@@ -10,8 +10,8 @@ export interface FetchResult {
 	// jobs the board listed
 	total: number;
 	added: number;
-	closed: number;
-	reopened: number;
+	// jobs that left the board — their rows go with them
+	removed: number;
 	// jobs still waiting for their detail (see enrichFund)
 	pending: number;
 	// the first fetch of a fund imports a baseline: nothing is marked as new
@@ -97,11 +97,9 @@ const partMatches = (job: Job, part: SearchPart): boolean => {
 };
 
 // a job on the rust jobs page, with where the language turned up: the title,
-// the job function, or — for a job whose description is stored — only there;
-// closedAt travels as an ISO string, null while the job is listed
+// the job function, or — for a job whose description is stored — only there
 export interface RustJob extends SearchHit {
 	matchedIn: 'title' | 'function' | 'description';
-	closedAt: string | null;
 	// the last half-day's fresh finds — the announcement narrows them further,
 	// to the jobs its own run landed
 	isNewcomer: boolean;
@@ -148,24 +146,19 @@ export async function describedIds(
 				.map((d) => d.id);
 }
 
-// the ids of a fund's jobs, each with whether it is closed — all a fetch's
-// diff ever reads of the rows already there. The full rows would be the whole
-// board over again, megabytes a fund off the database every night; these two
-// columns travel instead — unless the data provider is the json fallback of
-// local development, which has no sql and loads them whole
-async function existingJobIds(slug: string): Promise<{ id: string; closed: boolean }[]> {
+// the ids of a fund's jobs — all a fetch's diff ever reads of the rows
+// already there. The full rows would be the whole board over again,
+// megabytes a fund off the database every night; one column travels
+// instead — unless the data provider is the json fallback of local
+// development, which has no sql and loads them whole
+async function existingJobIds(slug: string): Promise<string[]> {
 	const db = remult.dataProvider;
 	return db instanceof SqlDatabase
 		? // slug is a key of the scraper registry, checked by the caller — never free text
-			(
-				await db.execute(
-					`select id, "closedAt" is not null as closed from jobs where "fundSlug" = '${slug}'`
-				)
-			).rows.map((r) => ({ id: String(r.id), closed: Boolean(r.closed) }))
-		: (await repo(Job).find({ where: { fundSlug: slug }, limit: 200_000 })).map((j) => ({
-				id: j.id,
-				closed: !!j.closedAt
-			}));
+			(await db.execute(`select id from jobs where "fundSlug" = '${slug}'`)).rows.map((r) =>
+				String(r.id)
+			)
+		: (await repo(Job).find({ where: { fundSlug: slug }, limit: 200_000 })).map((j) => j.id);
 }
 
 // how long one fetch may spend listing a board — the largest getro boards
@@ -273,10 +266,9 @@ export class ScrapeController {
 			const existing = await existingJobIds(slug);
 			const idOf = (key: string) => `${slug}:${key}`;
 			const listedIds = new Set([...byKey.keys()].map(idOf));
-			const existingIds = new Set(existing.map((j) => j.id));
+			const existingIds = new Set(existing);
 			const newcomers = [...byKey].filter(([key]) => !existingIds.has(idOf(key)));
-			const toClose = existing.filter((j) => !j.closed && !listedIds.has(j.id)).map((j) => j.id);
-			const toReopen = existing.filter((j) => j.closed && listedIds.has(j.id)).map((j) => j.id);
+			const departed = existing.filter((id) => !listedIds.has(id));
 			const baseline = existing.length === 0;
 			const now = new Date();
 
@@ -294,17 +286,12 @@ export class ScrapeController {
 				},
 				set: { isNewcomer: false }
 			});
-			// jobs that left the board are closed — and their descriptions go with
-			// them; jobs that came back are reopened, and described afresh
-			for (const ids of chunks(toClose, 500)) {
-				await jobs.updateMany({ where: { id: { $in: ids } }, set: { closedAt: now } });
+			// jobs that left the board leave the database, descriptions and all —
+			// the rows were most of its weight. One that comes back later is a
+			// stranger again, and gets announced as new
+			for (const ids of chunks(departed, 500)) {
 				await repo(JobDetail).deleteMany({ where: { id: { $in: ids } } });
-			}
-			for (const ids of chunks(toReopen, 500)) {
-				await jobs.updateMany({
-					where: { id: { $in: ids } },
-					set: { closedAt: null, ...(entry.board.detail ? { enrichedAt: null } : {}) }
-				});
+				await jobs.deleteMany({ where: { id: { $in: ids } } });
 			}
 
 			// chunked concurrent inserts; the pg pool bounds real concurrency
@@ -341,7 +328,7 @@ export class ScrapeController {
 
 			const added = baseline ? 0 : newcomers.length;
 			const pending = entry.board.detail
-				? await jobs.count({ fundSlug: slug, enrichedAt: NULL_DATE, closedAt: NULL_DATE })
+				? await jobs.count({ fundSlug: slug, enrichedAt: NULL_DATE })
 				: 0;
 			// the fund's chip counts every standing newcomer, the survivors of
 			// earlier runs of the morning included — as the newcomers page does
@@ -361,8 +348,7 @@ export class ScrapeController {
 				slug,
 				total: byKey.size,
 				added,
-				closed: toClose.length,
-				reopened: toReopen.length,
+				removed: departed.length,
 				pending,
 				baseline
 			};
@@ -397,7 +383,7 @@ export class ScrapeController {
 			const jobs = repo(Job);
 			// newest first: the newcomers of this run are what gets announced
 			const queue = await jobs.find({
-				where: { fundSlug: slug, enrichedAt: NULL_DATE, closedAt: NULL_DATE, baseline: false },
+				where: { fundSlug: slug, enrichedAt: NULL_DATE, baseline: false },
 				orderBy: { firstSeenAt: 'desc' },
 				limit: ENRICH_BATCH
 			});
@@ -430,7 +416,7 @@ export class ScrapeController {
 								});
 							} else {
 								// gone from the board: nothing to describe — the next
-								// fetch closes it
+								// fetch removes it
 								await jobs.updateMany({ where: { id: job.id }, set: { enrichedAt: when } });
 							}
 							enriched++;
@@ -442,7 +428,7 @@ export class ScrapeController {
 					}
 				})
 			);
-			const remaining = await jobs.count({ fundSlug: slug, enrichedAt: NULL_DATE, closedAt: NULL_DATE });
+			const remaining = await jobs.count({ fundSlug: slug, enrichedAt: NULL_DATE });
 			return { slug, enriched, failed, remaining };
 		} finally {
 			inFlight.delete(lock);
@@ -477,7 +463,6 @@ export class ScrapeController {
 		const hasExact = groups.some((g) => g.some((p) => p.exact));
 		const rows = await repo(Job).find({
 			where: {
-				closedAt: NULL_DATE,
 				$or: groups.map((g) => ({ $and: g.map((p) => anyContains(p.needle)) }))
 			},
 			// the id as the last key pins jobs that tie on everything else, so
@@ -516,20 +501,17 @@ export class ScrapeController {
 
 	// the listed jobs that have to do with rust: the language named in the
 	// title or the job function, or mentioned in the description — of the jobs
-	// whose description is stored, that is (see fetchFund). With includeClosed
-	// the closed ones come along — by title or function only, since a job's
-	// description goes when it closes. Served a window at a time: each page is
-	// three days of first sightings counted back from the moment of asking —
-	// the full list grew long enough that reading it whole on every visit
-	// weighed on the database's egress
+	// whose description is stored, that is (see fetchFund). Served a window at
+	// a time: each page is three days of first sightings counted back from the
+	// moment of asking — the full list grew long enough that reading it whole
+	// on every visit weighed on the database's egress
 	@BackendMethod({ allowed: true })
-	static async rustJobs(includeClosed = false, page = 0): Promise<RustJobsWindow> {
+	static async rustJobs(page = 0): Promise<RustJobsWindow> {
 		const described = await describedIds(RUST_SQL, 'rust', RUST);
 		const now = Date.now();
 		const start = new Date(now - (page + 1) * RUST_WINDOW_MS);
 		// a substring query first ("Trust" comes along), the word test after
 		const matchesRust = {
-			...(includeClosed ? {} : { closedAt: NULL_DATE }),
 			$or: [
 				{ title: { $contains: 'rust' } },
 				{ category: { $contains: 'rust' } },
@@ -577,7 +559,6 @@ export class ScrapeController {
 				salaryPeriod: job.salaryPeriod,
 				firstSeenAt: job.firstSeenAt?.toISOString() ?? '',
 				matchedIn,
-				closedAt: job.closedAt?.toISOString() ?? null,
 				isNewcomer: job.isNewcomer
 			});
 		}
@@ -592,7 +573,7 @@ export class ScrapeController {
 	// boards counts on each)
 	@BackendMethod({ allowed: true })
 	static async countJobs(): Promise<number> {
-		return repo(Job).count({ closedAt: NULL_DATE });
+		return repo(Job).count();
 	}
 
 	// every board the registry knows — also one added to the code that has no

@@ -3,7 +3,7 @@ import { error, type RequestEvent } from '@sveltejs/kit';
 import { repo } from 'remult';
 import { api } from '../../server/api';
 import { Fund } from '../../shared/Fund';
-import { Job, NULL_DATE } from '../../shared/Job';
+import { Job } from '../../shared/Job';
 import { FUNDS } from '../../shared/funds';
 
 // GET /download — every listed job grouped by fund and company, served as a
@@ -14,7 +14,6 @@ export const GET = (event: RequestEvent) => {
 	return api.withRemult(event, async () => {
 		const [jobs, fundRows] = await Promise.all([
 			repo(Job).find({
-				where: { closedAt: NULL_DATE },
 				orderBy: { company: 'asc', title: 'asc' },
 				limit: 1_000_000
 			}),

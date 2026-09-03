@@ -15,39 +15,31 @@
 	let loadingMore = $state(false);
 	// how many windows the page holds — read only in the handlers, so plain
 	let pagesLoaded = 0;
-	// the closed ones come back in on request, greyed and badged as on a fund's page
-	let includeClosed = $state(false);
 
 	// local YYYY-MM-DD key so day boundaries follow the viewer's timezone
 	const dayKey = (d: Date) =>
 		`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 	$effect(() => {
-		const all = includeClosed;
 		loading = true;
-		ScrapeController.rustJobs(all, 0).then((window) => {
-			if (all === includeClosed) {
-				jobs = window.jobs;
-				older = window.older;
-				pagesLoaded = 1;
-				loading = false;
-			}
+		ScrapeController.rustJobs(0).then((window) => {
+			jobs = window.jobs;
+			older = window.older;
+			pagesLoaded = 1;
+			loading = false;
 		});
 	});
 
 	async function loadMore() {
 		if (loadingMore) return;
 		loadingMore = true;
-		const all = includeClosed;
-		const window = await ScrapeController.rustJobs(all, pagesLoaded);
-		if (all === includeClosed) {
-			// the windows drift with the clock between requests, so the seam
-			// can serve a row twice
-			const seen = new Set(jobs.map((j) => j.id));
-			jobs = [...jobs, ...window.jobs.filter((j) => !seen.has(j.id))];
-			older = window.older;
-			pagesLoaded += 1;
-		}
+		const window = await ScrapeController.rustJobs(pagesLoaded);
+		// the windows drift with the clock between requests, so the seam can
+		// serve a row twice
+		const seen = new Set(jobs.map((j) => j.id));
+		jobs = [...jobs, ...window.jobs.filter((j) => !seen.has(j.id))];
+		older = window.older;
+		pagesLoaded += 1;
 		loadingMore = false;
 	}
 
@@ -77,7 +69,6 @@
 	});
 
 	const fundCount = $derived(new Set(jobs.map((j) => j.fundSlug)).size);
-	const closedCount = $derived(jobs.filter((j) => j.closedAt).length);
 </script>
 
 <svelte:head>
@@ -90,23 +81,12 @@
 		<div class="flex items-center gap-3 text-sm text-white/80">
 			{#if !loading && jobs.length}
 				<span>
-					{(jobs.length - closedCount).toLocaleString()} listed
-					{jobs.length - closedCount === 1 ? 'job' : 'jobs'}
-					{#if closedCount}
-						· {closedCount.toLocaleString()} closed
-					{/if}
+					{jobs.length.toLocaleString()}
+					{jobs.length === 1 ? 'job' : 'jobs'}
 					· {fundCount}
 					{fundCount === 1 ? 'fund' : 'funds'}
 				</span>
 			{/if}
-			<label class="flex cursor-pointer items-center gap-1.5 text-xs select-none">
-				<input
-					type="checkbox"
-					bind:checked={includeClosed}
-					class="form-checkbox h-4 w-4 cursor-pointer text-primary-600"
-				/>
-				include closed
-			</label>
 		</div>
 	</div>
 
@@ -137,9 +117,7 @@
 							<ul class="divide-y divide-gray-200 border-t border-gray-200">
 								{#each group.jobs as job (job.id)}
 									{@const meta = jobMeta(job)}
-									<li
-										class={`flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2 ${job.closedAt ? 'bg-gray-100' : ''}`}
-									>
+									<li class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2">
 										<div class="min-w-0">
 											{#if job.url.startsWith('http')}
 												<a
@@ -162,14 +140,9 @@
 												<span class="ml-2 text-xs text-gray-500 italic">mentions rust</span>
 											{/if}
 										</div>
-										<div class="flex shrink-0 items-center gap-3 text-xs text-gray-500">
-											{#if job.closedAt}
-												<span class="rounded-full bg-gray-300 px-2 py-0.5 font-semibold text-gray-700">
-													closed {new Date(job.closedAt).toLocaleDateString()}
-												</span>
-											{/if}
-											<span>{new Date(job.firstSeenAt).toLocaleTimeString()}</span>
-										</div>
+										<span class="shrink-0 text-xs text-gray-500">
+											{new Date(job.firstSeenAt).toLocaleTimeString()}
+										</span>
 									</li>
 								{/each}
 							</ul>

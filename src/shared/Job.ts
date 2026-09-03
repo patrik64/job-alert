@@ -79,11 +79,6 @@ export class Job {
 	@Fields.createdAt()
 	firstSeenAt?: Date;
 
-	// set when a successful fetch no longer finds the job on the board;
-	// cleared again should it reappear
-	@Fields.date({ allowNull: true })
-	closedAt: Date | null = null;
-
 	// when the job's detail (description, functions) was fetched; null while
 	// that is still pending
 	@Fields.date({ allowNull: true })

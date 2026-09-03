@@ -3,7 +3,7 @@
 	import { repo } from 'remult';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { jobMeta } from '$lib/jobs';
-	import { Job, NULL_DATE } from '../../../shared/Job';
+	import { Job } from '../../../shared/Job';
 	import { fundBySlug } from '../../../shared/funds';
 	import { SITE_NAME } from '../../../shared/site';
 
@@ -14,24 +14,22 @@
 	let jobs = $state<Job[]>([]);
 	let loading = $state(true);
 	let search = $state('');
-	let includeClosed = $state(false);
 	// the company groups the reader has opened; rows are rendered for those
 	// only — and for every group while a search is narrowing them down
 	let opened = $state<Record<string, boolean>>({});
 
 	$effect(() => {
 		const current = slug;
-		const all = includeClosed;
 		loading = true;
 		repo(Job)
 			// explicit limit — remult's REST API defaults to 100 rows per page
 			.find({
-				where: { fundSlug: current, ...(all ? {} : { closedAt: NULL_DATE }) },
+				where: { fundSlug: current },
 				orderBy: { company: 'asc', title: 'asc' },
 				limit: 100_000
 			})
 			.then((rows) => {
-				if (current === slug && all === includeClosed) {
+				if (current === slug) {
 					jobs = rows;
 					loading = false;
 				}
@@ -92,14 +90,6 @@
 					{filtered.length.toLocaleString()} of {jobs.length.toLocaleString()} jobs · {groups.length} companies
 				</span>
 			{/if}
-			<label class="flex cursor-pointer items-center gap-1.5 text-xs select-none">
-				<input
-					type="checkbox"
-					bind:checked={includeClosed}
-					class="form-checkbox h-4 w-4 cursor-pointer text-primary-600"
-				/>
-				include closed
-			</label>
 		</div>
 	</div>
 
@@ -155,7 +145,7 @@
 							{#each group.jobs as job (job.id)}
 								{@const meta = jobMeta(job)}
 								<li
-									class={`flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2 ${job.closedAt ? 'bg-gray-100' : ''}`}
+									class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2"
 								>
 									<div class="min-w-0">
 										{#if job.url.startsWith('http')}
@@ -178,11 +168,6 @@
 										{#if job.isNewcomer}
 											<span class="rounded-full bg-warning-500 px-2 py-0.5 font-semibold text-white">
 												new
-											</span>
-										{/if}
-										{#if job.closedAt}
-											<span class="rounded-full bg-gray-300 px-2 py-0.5 font-semibold text-gray-700">
-												closed {job.closedAt.toLocaleDateString()}
 											</span>
 										{/if}
 										{#if job.applyUrl.startsWith('http')}
