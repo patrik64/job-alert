@@ -162,16 +162,33 @@ function groupBy<T>(items: T[], key: (item: T) => string) {
 	return groups;
 }
 
+// a fund's rows with the repeats folded away: boards re-list a posting under
+// a fresh id, and a board without pages of its own sends every job to the
+// same address — either way the wording and the link come out identical, and
+// one bullet says it
+const uniqueRows = (jobs: FeedRow[]) => {
+	const seen = new Set<string>();
+	return jobs.filter((j) => {
+		const key = `${j.company} – ${j.title}\n${j.url}`;
+		if (seen.has(key)) return false;
+		seen.add(key);
+		return true;
+	});
+};
+
 // a night's finds, fund by fund — the loudest funds first, as on bluesky;
-// each fund a linked heading with its jobs as a bullet list under it
+// each fund a linked heading with its jobs as a bullet list under it. The
+// counts describe the bullets, so they too leave the repeats out
 const describe = (rows: FeedRow[]) => {
 	const names = new Map(FUNDS.map((f) => [f.slug, f.name]));
 	return [...groupBy(rows, (r) => r.fundSlug)]
 		.map(([slug, jobs]) => ({
 			slug,
 			name: names.get(slug) ?? slug,
-			jobs: [...jobs].sort(
-				(a, b) => a.company.localeCompare(b.company) || a.title.localeCompare(b.title)
+			jobs: uniqueRows(
+				[...jobs].sort(
+					(a, b) => a.company.localeCompare(b.company) || a.title.localeCompare(b.title)
+				)
 			)
 		}))
 		.sort((a, b) => b.jobs.length - a.jobs.length || a.name.localeCompare(b.name))
