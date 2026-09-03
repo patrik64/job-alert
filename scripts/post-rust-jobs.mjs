@@ -33,14 +33,17 @@ if (process.argv.includes('--check')) {
 	process.exit(0);
 }
 
-// the backend method behind the rust jobs page, newcomer flags included
+// the backend method behind the rust jobs page, newcomer flags included —
+// its newest three-day window, which covers every standing newcomer, since
+// the flags themselves only live half a day
 const resp = await fetch(`${BASE_URL}/api/rustJobs`, {
 	method: 'POST',
 	headers: { 'content-type': 'application/json' },
-	body: JSON.stringify({ args: [false] })
+	body: JSON.stringify({ args: [false, 0] })
 });
 if (!resp.ok) throw new Error(`POST /api/rustJobs — ${resp.status}`);
-const { data: hits } = await resp.json();
+const { data } = await resp.json();
+const hits = data.jobs;
 
 let fresh = hits.filter((h) => h.isNewcomer);
 if (!process.argv.includes('--current')) {

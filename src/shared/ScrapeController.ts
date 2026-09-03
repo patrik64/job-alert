@@ -107,6 +107,15 @@ export interface RustJob extends SearchHit {
 	isNewcomer: boolean;
 }
 
+// one three-day window of the rust jobs, and whether older windows remain
+export interface RustJobsWindow {
+	jobs: RustJob[];
+	older: boolean;
+}
+
+// how far one page of the rust jobs page reaches
+const RUST_WINDOW_MS = 3 * 86_400_000;
+
 // the language as a word — "Rust", "RUST", "Rust/Go" — but not "Trust";
 // once for js and once for the database's posix engine
 export const RUST = /\brust\b/i;
@@ -509,19 +518,33 @@ export class ScrapeController {
 	// title or the job function, or mentioned in the description — of the jobs
 	// whose description is stored, that is (see fetchFund). With includeClosed
 	// the closed ones come along — by title or function only, since a job's
-	// description goes when it closes
+	// description goes when it closes. Served a window at a time: each page is
+	// three days of first sightings counted back from the moment of asking —
+	// the full list grew long enough that reading it whole on every visit
+	// weighed on the database's egress
 	@BackendMethod({ allowed: true })
-	static async rustJobs(includeClosed = false): Promise<RustJob[]> {
+	static async rustJobs(includeClosed = false, page = 0): Promise<RustJobsWindow> {
 		const described = await describedIds(RUST_SQL, 'rust', RUST);
+		const now = Date.now();
+		const start = new Date(now - (page + 1) * RUST_WINDOW_MS);
 		// a substring query first ("Trust" comes along), the word test after
+		const matchesRust = {
+			...(includeClosed ? {} : { closedAt: NULL_DATE }),
+			$or: [
+				{ title: { $contains: 'rust' } },
+				{ category: { $contains: 'rust' } },
+				...chunks(described, 500).map((ids) => ({ id: { $in: ids } }))
+			]
+		};
 		const rows = await repo(Job).find({
 			where: {
-				...(includeClosed ? {} : { closedAt: NULL_DATE }),
-				$or: [
-					{ title: { $contains: 'rust' } },
-					{ category: { $contains: 'rust' } },
-					...chunks(described, 500).map((ids) => ({ id: { $in: ids } }))
-				]
+				...matchesRust,
+				// the newest window stays open at the top, so a row stamped a
+				// moment ahead of this clock is not lost
+				firstSeenAt:
+					page > 0
+						? { $gte: start, $lt: new Date(now - page * RUST_WINDOW_MS) }
+						: { $gte: start }
 			},
 			orderBy: { firstSeenAt: 'desc', company: 'asc', title: 'asc' },
 			limit: 100_000
@@ -558,7 +581,11 @@ export class ScrapeController {
 				isNewcomer: job.isNewcomer
 			});
 		}
-		return hits;
+		// whether an older window still holds something, for the page's
+		// onward link — a count, so no rows travel
+		const older =
+			(await repo(Job).count({ ...matchesRust, firstSeenAt: { $lt: start } })) > 0;
+		return { jobs: hits, older };
 	}
 
 	// the jobs currently listed across all boards (a posting that sits on two

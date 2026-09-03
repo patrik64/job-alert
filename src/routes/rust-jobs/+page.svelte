@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { jobMeta } from '$lib/jobs';
 	import { FUNDS } from '../../shared/funds';
@@ -6,12 +7,17 @@
 	import { ScrapeController, type RustJob } from '../../shared/ScrapeController';
 
 	// the timeline's form — days, funds under them, jobs under those — over the
-	// listed jobs that have to do with rust. The language is rare enough for
-	// all of them to be shown at once, so there is no window to widen here
+	// listed jobs that have to do with rust, three days at a time: the full
+	// list grew long enough that loading it whole weighed on the database, so
+	// older stretches sit behind the link at the bottom (?page=1, 2, …)
 	let jobs = $state<RustJob[]>([]);
+	let older = $state(false);
 	let loading = $state(true);
 	// the closed ones come back in on request, greyed and badged as on a fund's page
 	let includeClosed = $state(false);
+
+	const pageNum = $derived(Math.max(0, Number(page.url.searchParams.get('page') ?? '0') || 0));
+	const pageHref = (n: number) => (n > 0 ? `/rust-jobs?page=${n}` : '/rust-jobs');
 
 	// local YYYY-MM-DD key so day boundaries follow the viewer's timezone
 	const dayKey = (d: Date) =>
@@ -19,10 +25,12 @@
 
 	$effect(() => {
 		const all = includeClosed;
+		const n = pageNum;
 		loading = true;
-		ScrapeController.rustJobs(all).then((rows) => {
-			if (all === includeClosed) {
-				jobs = rows;
+		ScrapeController.rustJobs(all, n).then((window) => {
+			if (all === includeClosed && n === pageNum) {
+				jobs = window.jobs;
+				older = window.older;
 				loading = false;
 			}
 		});
@@ -90,7 +98,9 @@
 	{#if loading}
 		<Spinner label="loading rust jobs" />
 	{:else if days.length === 0}
-		<p class="mt-6 text-sm text-white/80">no rust jobs</p>
+		<p class="mt-6 text-sm text-white/80">
+			{pageNum > 0 ? 'no rust jobs in this stretch' : 'no rust jobs in the last three days'}
+		</p>
 	{:else}
 		{#each days as day (day.day)}
 			<div id={day.day} class="mt-6 scroll-mt-4">
@@ -155,5 +165,28 @@
 				</div>
 			</div>
 		{/each}
+	{/if}
+
+	{#if !loading && (pageNum > 0 || older)}
+		<div class="mt-8 flex items-center justify-between text-sm">
+			{#if pageNum > 0}
+				<a
+					href={pageHref(pageNum - 1)}
+					class="text-white/80 transition duration-150 hover:text-primary-300"
+				>
+					← newer rust jobs
+				</a>
+			{:else}
+				<span></span>
+			{/if}
+			{#if older}
+				<a
+					href={pageHref(pageNum + 1)}
+					class="text-white/80 transition duration-150 hover:text-primary-300"
+				>
+					next rust jobs →
+				</a>
+			{/if}
+		</div>
 	{/if}
 </div>
