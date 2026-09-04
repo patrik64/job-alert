@@ -177,14 +177,16 @@ const uniqueRows = (jobs: FeedRow[]) => {
 };
 
 // a night's finds, fund by fund — the loudest funds first, as on bluesky;
-// each fund a linked heading with its jobs as a bullet list under it. The
-// counts describe the bullets, so they too leave the repeats out
+// each fund a heading linking its own job board, with the jobs as a bullet
+// list under it. The counts describe the bullets, so they too leave the
+// repeats out
 const describe = (rows: FeedRow[]) => {
-	const names = new Map(FUNDS.map((f) => [f.slug, f.name]));
+	const funds = new Map(FUNDS.map((f) => [f.slug, f]));
 	return [...groupBy(rows, (r) => r.fundSlug)]
 		.map(([slug, jobs]) => ({
 			slug,
-			name: names.get(slug) ?? slug,
+			name: funds.get(slug)?.name ?? slug,
+			boardUrl: funds.get(slug)?.url ?? `${SITE_URL}/funds/${slug}`,
 			jobs: uniqueRows(
 				[...jobs].sort(
 					(a, b) => a.company.localeCompare(b.company) || a.title.localeCompare(b.title)
@@ -200,7 +202,7 @@ const describe = (rows: FeedRow[]) => {
 			const rest = g.jobs.length - named.length;
 			if (rest > 0) named.push(`<li>and ${rest} more</li>`);
 			return (
-				`<p><strong><a href="${SITE_URL}/funds/${g.slug}">${escape(g.name)}</a></strong> (${g.jobs.length})</p>\n` +
+				`<p><strong><a href="${escape(g.boardUrl)}">${escape(g.name)}</a></strong> (${g.jobs.length})</p>\n` +
 				`<ul>\n${named.join('\n')}\n</ul>`
 			);
 		})
