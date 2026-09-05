@@ -171,9 +171,11 @@ const LIST_TIMEOUT_MS = 270_000;
 // the next night starts afresh
 const KEEP_NEWCOMER_MS = 12 * 3_600_000;
 // how many jobs one enrichment pass picks up at most, how many detail
-// requests it keeps in flight, and how long it runs unless told otherwise
+// requests it keeps in flight, how long it runs unless told otherwise, and
+// how long a job may stay undescribed before the passes stop asking
 const ENRICH_BATCH = 3000;
 const ENRICH_CONCURRENCY = 8;
+const ENRICH_GIVE_UP_MS = 3 * 86_400_000;
 const ENRICH_BUDGET_MS = 200_000;
 // descriptions are html and can run long; beyond this they are cut
 const DESCRIPTION_LIMIT = 200_000;
@@ -381,6 +383,18 @@ export class ScrapeController {
 		try {
 			const deadline = Date.now() + Math.min(Math.max(budgetMs, 1_000), 280_000);
 			const jobs = repo(Job);
+			// a job still undescribed after days of nightly passes is never going
+			// to be — thousands of them were being asked again every night; they
+			// stay without a description, like jobs on systems we cannot read
+			await jobs.updateMany({
+				where: {
+					fundSlug: slug,
+					enrichedAt: NULL_DATE,
+					baseline: false,
+					firstSeenAt: { $lt: new Date(Date.now() - ENRICH_GIVE_UP_MS) }
+				},
+				set: { enrichedAt: new Date() }
+			});
 			// newest first: the newcomers of this run are what gets announced
 			const queue = await jobs.find({
 				where: { fundSlug: slug, enrichedAt: NULL_DATE, baseline: false },

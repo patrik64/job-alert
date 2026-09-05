@@ -1,8 +1,9 @@
 // Nightly fetch-all: refreshes every fund on the production deployment by
-// calling the same endpoints the dashboard's "fetch all" button uses, one
-// fund at a time — first the listing, then the enrichment passes that fetch
-// the descriptions a board keeps on pages of their own, until none remain.
-// Plain Node, no dependencies — runs on a bare CI runner.
+// calling the same endpoints the dashboard's "fetch all" button uses, in two
+// lanes side by side — one lists the boards one after the other, the other
+// works through the enrichment passes that fetch the descriptions a board
+// keeps on pages of their own, until none remain. Plain Node, no
+// dependencies — runs on a bare CI runner.
 //
 //   node scripts/fetch-all.mjs                    refresh every fund
 //   node scripts/fetch-all.mjs --only=gv,khosla   refresh a subset (smoke test)
@@ -13,9 +14,6 @@
 import { writeFileSync } from 'node:fs';
 
 const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-pax.vercel.app';
-// one fund at a time: the boards on the same platform share one paced
-// request budget, and two of them listing at once crowd each other out
-const CONCURRENCY = 1;
 // fetchFund aborts its listing after 4 minutes; give the request a little more
 const REQUEST_TIMEOUT = 300_000;
 // one enrichment pass stops taking on jobs after this long; a board of ten
@@ -74,8 +72,15 @@ async function call(method, args, timeout = REQUEST_TIMEOUT) {
 
 const results = [];
 const queue = [...funds];
+// funds whose descriptions are still owed, waiting for the enrichment lane
+const enrichQueue = [];
+let fetching = true;
 
-async function worker() {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// one board after the other: boards on the same platform share one paced
+// request budget, and two of them listing at once crowd each other out
+async function fetchLane() {
 	for (let fund = queue.shift(); fund; fund = queue.shift()) {
 		const started = Date.now();
 		const elapsed = () => Math.round((Date.now() - started) / 1000);
@@ -86,38 +91,18 @@ async function worker() {
 					(data.baseline ? 'baseline import' : `${data.added} new, ${data.removed} removed`) +
 					(data.pending ? `, ${data.pending} awaiting details` : '')
 			);
-			let enriched = 0;
-			let remaining = data.pending;
-			let failures = 0;
-			for (let pass = 0; remaining > 0 && pass < ENRICH_PASSES; pass++) {
-				let r;
-				try {
-					r = await call('enrichFund', [fund.slug, ENRICH_BUDGET_MS], ENRICH_TIMEOUT);
-				} catch (err) {
-					const message = String(err instanceof Error ? err.message : err).slice(0, 120);
-					console.log(`     ${fund.slug.padEnd(10)} ${elapsed()}s  pass failed: ${message}`);
-					if (++failures >= ENRICH_FAILURES) break;
-					continue;
-				}
-				failures = 0;
-				enriched += r.enriched;
-				remaining = r.remaining;
-				console.log(
-					`     ${fund.slug.padEnd(10)} ${elapsed()}s  detailed ${r.enriched}, ${r.remaining} left` +
-						(r.failed ? `, ${r.failed} failed` : '')
-				);
-				if (r.enriched === 0) break;
-			}
-			// when this fund's fetch began — newcomer flags outlive one run now,
+			// when this fund's fetch began — newcomer flags outlive one run,
 			// and the announcement only names what landed after this moment
-			results.push({
+			const entry = {
 				slug: fund.slug,
 				name: fund.name,
 				startedAt: new Date(started).toISOString(),
 				...data,
-				enriched,
-				remaining
-			});
+				enriched: 0,
+				remaining: data.pending ?? 0
+			};
+			results.push(entry);
+			if (entry.remaining > 0) enrichQueue.push({ fund, entry, started });
 		} catch (err) {
 			const message = String(err instanceof Error ? err.message : err).slice(0, 200);
 			results.push({ slug: fund.slug, name: fund.name, error: message });
@@ -126,7 +111,48 @@ async function worker() {
 	}
 }
 
-await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+// the descriptions come from the portfolio companies' own hiring systems,
+// never from the platform api the listings hit — so this lane runs alongside
+// the fetches without crowding them. Enrichment used to wait its turn behind
+// every listing, and the two together outgrew the workflow's two hours
+async function enrichLane() {
+	while (fetching || enrichQueue.length) {
+		const item = enrichQueue.shift();
+		if (!item) {
+			await sleep(2000);
+			continue;
+		}
+		const { fund, entry, started } = item;
+		const elapsed = () => Math.round((Date.now() - started) / 1000);
+		let failures = 0;
+		for (let pass = 0; entry.remaining > 0 && pass < ENRICH_PASSES; pass++) {
+			let r;
+			try {
+				r = await call('enrichFund', [fund.slug, ENRICH_BUDGET_MS], ENRICH_TIMEOUT);
+			} catch (err) {
+				const message = String(err instanceof Error ? err.message : err).slice(0, 120);
+				console.log(`     ${fund.slug.padEnd(10)} ${elapsed()}s  pass failed: ${message}`);
+				if (++failures >= ENRICH_FAILURES) break;
+				continue;
+			}
+			failures = 0;
+			entry.enriched += r.enriched;
+			entry.remaining = r.remaining;
+			console.log(
+				`     ${fund.slug.padEnd(10)} ${elapsed()}s  detailed ${r.enriched}, ${r.remaining} left` +
+					(r.failed ? `, ${r.failed} failed` : '')
+			);
+			if (r.enriched === 0) break;
+		}
+	}
+}
+
+async function run() {
+	fetching = true;
+	await Promise.all([fetchLane().finally(() => (fetching = false)), enrichLane()]);
+}
+
+await run();
 
 // one more chance for whatever failed: the biggest boards ride close to
 // vercel's 300-second function cap, and a slow night on their platform
@@ -139,7 +165,7 @@ if (firstTry.length && firstTry.length <= results.length * 0.2) {
 		results.splice(results.indexOf(f), 1);
 		queue.push({ slug: f.slug, name: f.name });
 	}
-	await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+	await run();
 }
 
 const failed = results.filter((r) => r.error);
