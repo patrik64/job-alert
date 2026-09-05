@@ -4,6 +4,7 @@ import { SqlDatabase } from 'remult';
 import { remultApi } from 'remult/remult-sveltekit';
 import { PostgresDataProvider } from 'remult/postgres';
 import pg from 'pg';
+import { FeedRender } from '../shared/FeedRender';
 import { Fund } from '../shared/Fund';
 import { Job } from '../shared/Job';
 import { JobDetail } from '../shared/JobDetail';
@@ -27,7 +28,7 @@ function postgresDataProvider() {
 }
 
 export const api = remultApi({
-	entities: [Fund, Job, JobDetail],
+	entities: [FeedRender, Fund, Job, JobDetail],
 	controllers: [ScrapeController],
 	admin: dev,
 	dataProvider: postgresDataProvider()

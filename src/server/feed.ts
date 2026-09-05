@@ -27,7 +27,7 @@ export interface FeedJob {
 // the window's newcomers, newest first — as the few columns above, since the
 // full rows would be megabytes a request off the database; the json fallback
 // of local development has no sql and loads them whole
-const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
+export const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
 	const db = remult.dataProvider;
 	if (db instanceof SqlDatabase) {
 		const { rows } = await db.execute(

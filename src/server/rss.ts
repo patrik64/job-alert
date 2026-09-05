@@ -210,16 +210,19 @@ const describe = (rows: FeedRow[]) => {
 };
 
 // rows are the genuine newcomers (no baseline imports), newest first;
-// latestFetch is when any fund was last refreshed successfully
+// latestFetch is when any fund was last refreshed successfully. A settled
+// render — made once the nightly run is done — keeps its freshest night;
+// only a live render holds a night that may still be being written
 export function rssFeed(
 	rows: FeedRow[],
 	latestFetch: Date | undefined,
 	now = new Date(),
-	feed: FeedSpec
+	feed: FeedSpec,
+	settled = false
 ) {
 	const byDay = groupBy(rows, (r) => dayKey(r.firstSeenAt));
 	const latest = Math.max(rows[0]?.firstSeenAt.getTime() ?? 0, latestFetch?.getTime() ?? 0);
-	if (latest && now.getTime() - latest < QUIET_MS) byDay.delete(dayKey(new Date(latest)));
+	if (!settled && latest && now.getTime() - latest < QUIET_MS) byDay.delete(dayKey(new Date(latest)));
 
 	const nights = [...byDay].sort(([a], [b]) => (a < b ? 1 : -1)).slice(0, MAX_ITEMS);
 	const items = nights.map(([day, rows]) => {

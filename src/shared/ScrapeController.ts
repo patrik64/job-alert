@@ -146,6 +146,39 @@ export async function describedIds(
 				.map((d) => d.id);
 }
 
+// what an enrichment pass reads of its queue: the id to write back by and
+// the two links a detail fetch needs — the full rows would be megabytes a
+// pass off the database (remult cannot project columns, so sql does); the
+// json fallback of local development has no sql and loads them whole
+interface PendingJob {
+	id: string;
+	url: string;
+	applyUrl: string;
+}
+async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
+	const db = remult.dataProvider;
+	if (db instanceof SqlDatabase) {
+		// slug is a key of the scraper registry, checked by the caller
+		const { rows } = await db.execute(
+			`select id, url, "applyUrl" from jobs
+			 where "fundSlug" = '${slug}' and "enrichedAt" is null and baseline = false
+			 order by "firstSeenAt" desc limit ${ENRICH_BATCH}`
+		);
+		return rows.map((r) => ({
+			id: String(r.id),
+			url: String(r.url),
+			applyUrl: String(r.applyUrl)
+		}));
+	}
+	return (
+		await repo(Job).find({
+			where: { fundSlug: slug, enrichedAt: NULL_DATE, baseline: false },
+			orderBy: { firstSeenAt: 'desc' },
+			limit: ENRICH_BATCH
+		})
+	).map((j) => ({ id: j.id, url: j.url, applyUrl: j.applyUrl }));
+}
+
 // the ids of a fund's jobs — all a fetch's diff ever reads of the rows
 // already there. The full rows would be the whole board over again,
 // megabytes a fund off the database every night; one column travels
@@ -396,16 +429,12 @@ export class ScrapeController {
 				set: { enrichedAt: new Date() }
 			});
 			// newest first: the newcomers of this run are what gets announced
-			const queue = await jobs.find({
-				where: { fundSlug: slug, enrichedAt: NULL_DATE, baseline: false },
-				orderBy: { firstSeenAt: 'desc' },
-				limit: ENRICH_BATCH
-			});
+			const queue = await pendingDetailJobs(slug);
 			let enriched = 0;
 			let failed = 0;
 			await Promise.all(
 				Array.from({ length: ENRICH_CONCURRENCY }, async () => {
-					let job: Job | undefined;
+					let job: PendingJob | undefined;
 					while (Date.now() < deadline && (job = queue.shift())) {
 						try {
 							const d = await detail(job);
@@ -595,6 +624,16 @@ export class ScrapeController {
 	@BackendMethod({ allowed: true })
 	static async listBoards(): Promise<{ slug: string; name: string }[]> {
 		return FUNDS.map(({ slug, name }) => ({ slug, name }));
+	}
+
+	// render the rss feeds into their stored rows — called by the nightly run
+	// once its fetches are done, so one reading of the newcomer window serves
+	// every feed request until the next night (see server/feeds.ts)
+	@BackendMethod({ allowed: true, transactional: false })
+	static async renderFeeds(): Promise<{ feeds: number }> {
+		if (!import.meta.env.SSR) throw new Error('renderFeeds only runs on the server');
+		const { renderAllFeeds } = await import('../server/feeds');
+		return { feeds: await renderAllFeeds() };
 	}
 
 	// "clean" on the newcomers page: acknowledge the current newcomers so the

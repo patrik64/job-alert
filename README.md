@@ -143,8 +143,10 @@ the step composes and posts nothing, and the refresh runs on its own.
 
 The same digests are served as RSS feeds, straight from the database: one
 item per night that found newcomers, with the jobs named under their funds
-and linked to their pages on the boards. A night still being written is held
-back until it has settled, so readers never cache a half-announced one.
+and linked to their pages on the boards. The feeds are rendered once at the
+end of the nightly run — after the night has settled — and stored, so
+serving them costs the database one small row rather than the whole newcomer
+window per request.
 
 - `/rss-rust.xml` — the rust jobs, matched as on the rust jobs page (title,
   function, or the stored description)

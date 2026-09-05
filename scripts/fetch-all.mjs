@@ -168,6 +168,18 @@ if (firstTry.length && firstTry.length <= results.length * 0.2) {
 	await run();
 }
 
+// the rss feeds are rendered once, now that the night has settled — the
+// routes serve the stored renderings until the next run. A smoke-test
+// subset leaves the standing renderings alone
+if (!only) {
+	try {
+		await call('renderFeeds', []);
+		console.log('\nfeeds rendered');
+	} catch (err) {
+		console.log(`\nfeed rendering failed: ${String(err instanceof Error ? err.message : err).slice(0, 120)}`);
+	}
+}
+
 const failed = results.filter((r) => r.error);
 const added = results.reduce((n, r) => n + (r.added ?? 0), 0);
 console.log(`\n${results.length - failed.length}/${results.length} funds refreshed, ${added} newcomers`);
