@@ -2,12 +2,11 @@ name: daily fetch
 
 on:
   schedule:
-    # one firing a day, at a fixed utc hour: 4am in Vienna through the
-    # summer, 3am through the winter — the hour's drift matters less than
-    # github's scheduler, which routinely starts the run hours late anyway.
-    # :02 rather than :00 because the scheduler is most congested on the
-    # hour and has started runs ten hours late from there
-    - cron: '2 2 * * *'
+    # one firing a day, at a fixed utc hour — local time is nothing to us,
+    # and github's scheduler adds hours of drift of its own anyway. An
+    # off-hour minute, because the scheduler is most congested on the hour
+    # and has started runs ten hours late from there
+    - cron: '3 1 * * *'
   workflow_dispatch:
     inputs:
       announce_only:

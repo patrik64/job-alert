@@ -12,8 +12,8 @@ import { LIVE_URL, SITE_NAME } from '../shared/site';
 // feed readers key items by these urls, so they must not depend on which host
 // served the request
 export const SITE_URL = LIVE_URL;
-// nights are told apart by the calendar day in the timezone the nightly job
-// keeps (it runs at 4am in Vienna)
+// nights are told apart by the calendar day in Vienna — the nightly job
+// fires in the small hours of that clock, so a night's finds land on one day
 export const TIME_ZONE = 'Europe/Vienna';
 // how far back the feed reaches at most, at most how many nights it carries,
 // and how many jobs a fund's line names before it counts the rest
