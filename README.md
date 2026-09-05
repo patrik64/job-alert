@@ -136,7 +136,7 @@ pnpm post-rust-jobs --check          # prove the app password still works
 server).
 
 `.github/workflows/daily-fetch.yml` runs the two scripts every night at 02:02
-UTC — 4am in Berlin through the summer, 3am through the winter, before
+UTC — 4am in Vienna through the summer, 3am through the winter, before
 GitHub's scheduler adds its own hours of delay; it can also be run by hand
 from the Actions tab. The announcement signs as `rust-job-alert.bsky.social`
 with the app password in the `BLUESKY_RUST_APP_PASSWORD` secret; without it

@@ -13,8 +13,8 @@ import { LIVE_URL, SITE_NAME } from '../shared/site';
 // served the request
 export const SITE_URL = LIVE_URL;
 // nights are told apart by the calendar day in the timezone the nightly job
-// keeps (it runs at 4am in Berlin)
-export const TIME_ZONE = 'Europe/Berlin';
+// keeps (it runs at 4am in Vienna)
+export const TIME_ZONE = 'Europe/Vienna';
 // how far back the feed reaches at most, at most how many nights it carries,
 // and how many jobs a fund's line names before it counts the rest
 export const WINDOW_DAYS = 30;
@@ -34,12 +34,12 @@ const clock = new Intl.DateTimeFormat('en', {
 	hour: '2-digit',
 	hourCycle: 'h23'
 });
-const inBerlin = (d: Date) =>
+const inVienna = (d: Date) =>
 	Object.fromEntries(clock.formatToParts(d).map((p) => [p.type, p.value]));
 
-// YYYY-MM-DD in Berlin
+// YYYY-MM-DD in Vienna
 export const dayKey = (d: Date) => {
-	const t = inBerlin(d);
+	const t = inVienna(d);
 	return `${t.year}-${t.month}-${t.day}`;
 };
 

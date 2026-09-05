@@ -2,7 +2,7 @@ name: daily fetch
 
 on:
   schedule:
-    # one firing a day, at a fixed utc hour: 4am in Berlin through the
+    # one firing a day, at a fixed utc hour: 4am in Vienna through the
     # summer, 3am through the winter — the hour's drift matters less than
     # github's scheduler, which routinely starts the run hours late anyway.
     # :02 rather than :00 because the scheduler is most congested on the
