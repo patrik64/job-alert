@@ -81,8 +81,18 @@ const withDescribed =
 	(re: RegExp, posix: string, substring: string, word: RegExp, exactCase = false): Narrow =>
 	async () => {
 		const described = new Set(await describedIds(posix, substring, word, exactCase));
-		return (job) => re.test(job.title) || re.test(job.category) || described.has(job.id);
+		return (job) => re.test(job.title) || re.test(job.category) || described.has(job.detailKey);
 	};
+
+// whether a description is worth keeping at all: only the five feeds above
+// with described ids ever read stored text, so enrichment stores a
+// description only when one of their patterns speaks up
+export const mentionsTrackedLanguage = (text: string) =>
+	RUST.test(text) ||
+	SVELTE.test(text) ||
+	KOTLIN.test(text) ||
+	GO_DESCRIBED.test(text) ||
+	REACT_DESCRIBED.test(text);
 
 export const FEEDS: { slug: string; spec: FeedSpec; narrow: Narrow }[] = [
 	{ slug: 'rss-rust', spec: RUST_FEED, narrow: withDescribed(RUST, RUST_SQL, 'rust', RUST) },

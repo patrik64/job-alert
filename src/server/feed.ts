@@ -21,6 +21,8 @@ export interface FeedJob {
 	title: string;
 	url: string;
 	category: string;
+	// the posting's key — descriptions are stored under it (see Job.detailKey)
+	detailKey: string;
 	firstSeenAt: Date;
 }
 
@@ -31,7 +33,7 @@ export const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
 	const db = remult.dataProvider;
 	if (db instanceof SqlDatabase) {
 		const { rows } = await db.execute(
-			`select id, "fundSlug", company, title, url, category, "firstSeenAt" from jobs
+			`select id, "fundSlug", company, title, url, category, "detailKey", "firstSeenAt" from jobs
 			 where baseline = false and "firstSeenAt" >= '${since.toISOString()}'
 			 order by "firstSeenAt" desc limit ${MAX_ROWS}`
 		);
@@ -42,6 +44,7 @@ export const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
 			title: String(r.title),
 			url: String(r.url),
 			category: String(r.category),
+			detailKey: String(r.detailKey),
 			firstSeenAt: new Date(r.firstSeenAt)
 		}));
 	}
@@ -60,6 +63,7 @@ export const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
 						title: j.title,
 						url: j.url,
 						category: j.category,
+						detailKey: j.detailKey,
 						firstSeenAt: j.firstSeenAt
 					}
 				]

@@ -67,11 +67,13 @@ descriptions are collected too, but not shown yet.
   title, the job's page on the board, the posting's own url, category (job
   function), sector (the company's industry tags), location, salary range,
   posted date, and the newcomer / baseline / enriched state.
-- `job_details` — the job's description (html or markdown, as the board
-  delivers it), kept apart so listing and diffing never drag descriptions
-  along — and kept only for the jobs that appear after a board's baseline
-  import (a baseline is thousands of jobs a board, more than a small database
-  has room for; it is the newcomers that get read), dropped when a job closes.
+- `job_details` — job descriptions (html or markdown, as the board delivers
+  them), kept apart so listing and diffing never drag them along. Stored
+  only when a description-reading feed's language turns up in the text —
+  nothing else ever reads it — and one copy per posting, keyed by the apply
+  link the funds share (`jobs.detailKey`), for the jobs that appear after a
+  board's baseline import. A nightly sweep drops the descriptions nobody
+  references or that fall out of the feeds' thirty-day reach.
 
 Identity is the board's own job id, so refetches are idempotent.
 

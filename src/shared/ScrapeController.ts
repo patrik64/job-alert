@@ -119,7 +119,8 @@ const RUST_WINDOW_MS = 3 * 86_400_000;
 export const RUST = /\brust\b/i;
 export const RUST_SQL = '\\mrust\\M';
 
-// the ids of the jobs whose stored description mentions a language, given as
+// the posting keys (job_details ids — see Job.detailKey) whose stored
+// description mentions a language, given as
 // a posix regex, its js twin, and a plain substring the word contains. With
 // exactCase the regexes decide about case themselves — React the framework
 // against react the verb — instead of matching insensitively. The
@@ -154,20 +155,22 @@ interface PendingJob {
 	id: string;
 	url: string;
 	applyUrl: string;
+	detailKey: string;
 }
 async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
 	const db = remult.dataProvider;
 	if (db instanceof SqlDatabase) {
 		// slug is a key of the scraper registry, checked by the caller
 		const { rows } = await db.execute(
-			`select id, url, "applyUrl" from jobs
+			`select id, url, "applyUrl", "detailKey" from jobs
 			 where "fundSlug" = '${slug}' and "enrichedAt" is null and baseline = false
 			 order by "firstSeenAt" desc limit ${ENRICH_BATCH}`
 		);
 		return rows.map((r) => ({
 			id: String(r.id),
 			url: String(r.url),
-			applyUrl: String(r.applyUrl)
+			applyUrl: String(r.applyUrl),
+			detailKey: String(r.detailKey)
 		}));
 	}
 	return (
@@ -176,7 +179,7 @@ async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
 			orderBy: { firstSeenAt: 'desc' },
 			limit: ENRICH_BATCH
 		})
-	).map((j) => ({ id: j.id, url: j.url, applyUrl: j.applyUrl }));
+	).map((j) => ({ id: j.id, url: j.url, applyUrl: j.applyUrl, detailKey: j.detailKey }));
 }
 
 // the ids of a fund's jobs — all a fetch's diff ever reads of the rows
@@ -243,6 +246,13 @@ const chunks = <T>(items: T[], size: number): T[][] => {
 	const out: T[][] = [];
 	for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
 	return out;
+};
+
+// the key a job's description is stored under — see Job.detailKey
+const postingKey = (applyUrl: string, id: string) => {
+	const url = applyUrl.trim();
+	if (!/^https?:\/\//i.test(url)) return id;
+	return url.split('#')[0].split('?')[0];
 };
 
 // getro's sourcing pads boards with postings lifted straight off linkedin —
@@ -321,11 +331,12 @@ export class ScrapeController {
 				},
 				set: { isNewcomer: false }
 			});
-			// jobs that left the board leave the database, descriptions and all —
-			// the rows were most of its weight. One that comes back later is a
-			// stranger again, and gets announced as new
+			// jobs that left the board leave the database — the rows were most of
+			// its weight. One that comes back later is a stranger again, and gets
+			// announced as new. Their descriptions may still serve another fund
+			// listing the same posting; the nightly sweep (tidyDetails) takes the
+			// ones nobody references any more
 			for (const ids of chunks(departed, 500)) {
-				await repo(JobDetail).deleteMany({ where: { id: { $in: ids } } });
 				await jobs.deleteMany({ where: { id: { $in: ids } } });
 			}
 
@@ -349,6 +360,7 @@ export class ScrapeController {
 							salaryCurrency: j.salary?.currency ?? '',
 							salaryPeriod: j.salary?.period ?? '',
 							postedAt: j.postedAt ?? null,
+							detailKey: postingKey(j.applyUrl ?? '', idOf(key)),
 							isNewcomer: !baseline,
 							baseline,
 							// descriptions are kept for the jobs that turn up after a board's
@@ -428,6 +440,19 @@ export class ScrapeController {
 				},
 				set: { enrichedAt: new Date() }
 			});
+			// a posting several funds list is described once: a copy whose text
+			// is already in is done without another fetch — as long as its own
+			// listing brought a category, the one thing the fetch would add
+			const db = remult.dataProvider;
+			if (db instanceof SqlDatabase) {
+				await db.execute(
+					`update jobs set "enrichedAt" = now()
+					 where "fundSlug" = '${slug}' and "enrichedAt" is null and baseline = false
+					   and category <> ''
+					   and exists (select 1 from job_details d where d.id = jobs."detailKey")`
+				);
+			}
+			const { mentionsTrackedLanguage } = await import('../server/feeds');
 			// newest first: the newcomers of this run are what gets announced
 			const queue = await pendingDetailJobs(slug);
 			let enriched = 0;
@@ -440,15 +465,21 @@ export class ScrapeController {
 							const d = await detail(job);
 							const when = new Date();
 							if (d) {
-								// one statement each: an update that finds no row is
-								// followed by the insert (a retry finds the row)
+								// stored only when a description-reading feed would match
+								// it — nothing else ever reads the text — and under the
+								// posting's key, one copy for every fund listing it. One
+								// statement each: an update that finds no row is followed
+								// by the insert (a retry finds the row)
 								const description = d.description.slice(0, DESCRIPTION_LIMIT);
-								const details = repo(JobDetail);
-								const updated = await details.updateMany({
-									where: { id: job.id },
-									set: { description }
-								});
-								if (!updated) await details.insert({ id: job.id, description });
+								if (description.trim() && mentionsTrackedLanguage(description)) {
+									const key = job.detailKey || job.id;
+									const details = repo(JobDetail);
+									const updated = await details.updateMany({
+										where: { id: key },
+										set: { description }
+									});
+									if (!updated) await details.insert({ id: key, description });
+								}
 								await jobs.updateMany({
 									where: { id: job.id },
 									set: {
@@ -558,7 +589,7 @@ export class ScrapeController {
 			$or: [
 				{ title: { $contains: 'rust' } },
 				{ category: { $contains: 'rust' } },
-				...chunks(described, 500).map((ids) => ({ id: { $in: ids } }))
+				...chunks(described, 500).map((keys) => ({ detailKey: { $in: keys } }))
 			]
 		};
 		const rows = await repo(Job).find({
@@ -581,7 +612,7 @@ export class ScrapeController {
 				? 'title'
 				: RUST.test(job.category)
 					? 'function'
-					: mentioned.has(job.id)
+					: mentioned.has(job.detailKey)
 						? 'description'
 						: null;
 			if (!matchedIn) continue;
@@ -634,6 +665,23 @@ export class ScrapeController {
 		if (!import.meta.env.SSR) throw new Error('renderFeeds only runs on the server');
 		const { renderAllFeeds } = await import('../server/feeds');
 		return { feeds: await renderAllFeeds() };
+	}
+
+	// the descriptions' nightly sweep: a stored description survives only
+	// while some fund still lists its posting and saw it inside the feeds'
+	// thirty-day reach — departed postings and old nights go
+	@BackendMethod({ allowed: true, transactional: false })
+	static async tidyDetails(): Promise<{ removed: number }> {
+		if (!import.meta.env.SSR) throw new Error('tidyDetails only runs on the server');
+		const db = remult.dataProvider;
+		if (!(db instanceof SqlDatabase)) return { removed: 0 };
+		const gone = await db.execute(
+			`delete from job_details d
+			 where not exists (select 1 from jobs j
+				where j."detailKey" = d.id and j."firstSeenAt" > now() - interval '30 days')
+			 returning d.id`
+		);
+		return { removed: gone.rows.length };
 	}
 
 	// "clean" on the newcomers page: acknowledge the current newcomers so the

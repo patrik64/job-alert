@@ -172,11 +172,19 @@ if (firstTry.length && firstTry.length <= results.length * 0.2) {
 // routes serve the stored renderings until the next run. A smoke-test
 // subset leaves the standing renderings alone
 if (!only) {
+	// descriptions nobody references any more — departed postings, nights
+	// beyond the feeds' reach — go first, then the feeds render
+	try {
+		const tidied = await call('tidyDetails', []);
+		console.log(`\ndetails tidied, ${tidied.removed} removed`);
+	} catch (err) {
+		console.log(`\ndetail tidying failed: ${String(err instanceof Error ? err.message : err).slice(0, 120)}`);
+	}
 	try {
 		await call('renderFeeds', []);
-		console.log('\nfeeds rendered');
+		console.log('feeds rendered');
 	} catch (err) {
-		console.log(`\nfeed rendering failed: ${String(err instanceof Error ? err.message : err).slice(0, 120)}`);
+		console.log(`feed rendering failed: ${String(err instanceof Error ? err.message : err).slice(0, 120)}`);
 	}
 }
 
