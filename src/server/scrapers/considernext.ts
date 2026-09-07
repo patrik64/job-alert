@@ -120,6 +120,41 @@ function actionId(base: string, renew = false): Promise<string> {
 	return actionIds.get(base)!;
 }
 
+// the action answers a react flight stream: newline-separated rows of
+// `<id>:<json>` — except text rows, `<id>:T<hexlen>,<raw bytes>`, whose
+// byte-counted payload may hold newlines. A string long enough gets hoisted
+// into such a row and referenced from the json as "$<id>" (a fifty-city
+// locations string was the first to cross the threshold), so the rows are
+// walked by length rather than grepped by line, and the references resolved
+function parseFlight(buf: Buffer): ActionPage | null {
+	const blobs = new Map<string, string>();
+	let jobsRow: string | undefined;
+	let i = 0;
+	while (i < buf.length) {
+		const head = buf.subarray(i, Math.min(i + 64, buf.length)).toString('latin1');
+		const text = /^([0-9a-f]+):T([0-9a-f]+),/.exec(head);
+		if (text) {
+			const start = i + text[0].length;
+			const length = parseInt(text[2], 16);
+			blobs.set(text[1], buf.subarray(start, start + length).toString('utf8'));
+			i = start + length;
+			if (buf[i] === 0x0a) i++;
+			continue;
+		}
+		const newline = buf.indexOf(0x0a, i);
+		const line = buf.subarray(i, newline < 0 ? buf.length : newline).toString('utf8');
+		const m = line.match(/^[0-9a-f]+:(\{"jobs".*)$/);
+		if (m) jobsRow = m[1];
+		i = newline < 0 ? buf.length : newline + 1;
+	}
+	if (!jobsRow) return null;
+	return JSON.parse(jobsRow, (_key, value) =>
+		typeof value === 'string' && /^\$[0-9a-f]+$/.test(value)
+			? (blobs.get(value.slice(1)) ?? value)
+			: value
+	) as ActionPage;
+}
+
 // null means the action was not understood — most likely an id gone stale
 async function callAction(
 	base: string,
@@ -137,10 +172,7 @@ async function callAction(
 		body: JSON.stringify([{}, { companyId, page, limit: PAGE_SIZE }])
 	});
 	if (!resp.ok) return null;
-	// the response is a react flight stream; the result is the row whose
-	// payload is the search's json
-	const row = (await resp.text()).match(/^[0-9a-f]+:(\{"jobs".*)$/m)?.[1];
-	return row ? (JSON.parse(row) as ActionPage) : null;
+	return parseFlight(Buffer.from(await resp.arrayBuffer()));
 }
 
 const label = (x: Labeled) => (x.label ?? x.value ?? '').trim();
