@@ -43,6 +43,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'htgf', name: 'HTGF', url: 'https://startupjobs.htgf.de/jobs' },
 	{ slug: 'hvcapital', name: 'HV Capital', url: 'https://jobs.hvcapital.com/jobs' },
 	{ slug: 'indexventures', name: 'Index Ventures', url: 'https://indexventures.getro.com/jobs' },
+	{ slug: 'industrious', name: 'Industrious Ventures', url: 'https://jobs.industrious.vc/jobs' },
 	{ slug: 'initialized', name: 'Initialized Capital', url: 'https://jobs.initialized.com/jobs' },
 	{ slug: 'innospark', name: 'InnoSpark Ventures', url: 'https://careers.innospark.vc/jobs' },
 	{ slug: 'innovation', name: 'Innovation Endeavors', url: 'https://jobs.innovationendeavors.com/jobs' },
