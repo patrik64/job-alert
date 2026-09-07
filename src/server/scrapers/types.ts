@@ -40,5 +40,7 @@ export interface JobBoardScraper {
 	// the job's detail — from its page on the board, or from the posting on
 	// the company's applicant tracking system when the board has none; null
 	// when there is nothing to be had. Absent for boards without either.
-	detail?(job: { url: string; applyUrl: string }): Promise<ScrapedJobDetail | null>;
+	// key is the board's own job id, for platforms whose detail is addressed
+	// by it rather than by a url (heavybit's algolia records)
+	detail?(job: { url: string; applyUrl: string; key?: string }): Promise<ScrapedJobDetail | null>;
 }

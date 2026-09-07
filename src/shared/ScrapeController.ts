@@ -156,6 +156,8 @@ interface PendingJob {
 	url: string;
 	applyUrl: string;
 	detailKey: string;
+	// the board's own job id — the id's tail past the fund prefix
+	key: string;
 }
 async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
 	const db = remult.dataProvider;
@@ -170,7 +172,8 @@ async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
 			id: String(r.id),
 			url: String(r.url),
 			applyUrl: String(r.applyUrl),
-			detailKey: String(r.detailKey)
+			detailKey: String(r.detailKey),
+			key: String(r.id).slice(slug.length + 1)
 		}));
 	}
 	return (
@@ -179,7 +182,13 @@ async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
 			orderBy: { firstSeenAt: 'desc' },
 			limit: ENRICH_BATCH
 		})
-	).map((j) => ({ id: j.id, url: j.url, applyUrl: j.applyUrl, detailKey: j.detailKey }));
+	).map((j) => ({
+		id: j.id,
+		url: j.url,
+		applyUrl: j.applyUrl,
+		detailKey: j.detailKey,
+		key: j.id.slice(slug.length + 1)
+	}));
 }
 
 // the ids of a fund's jobs — all a fetch's diff ever reads of the rows
