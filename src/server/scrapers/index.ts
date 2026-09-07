@@ -43,6 +43,7 @@ import { board as innovation } from './innovation';
 import { board as insight } from './insight';
 import { board as inspired } from './inspired';
 import { board as ironspring } from './ironspring';
+import { board as isai } from './isai';
 import { board as ivp } from './ivp';
 import { board as javelin } from './javelin';
 import { board as kapor } from './kapor';
@@ -214,6 +215,7 @@ const impls: Record<string, JobBoardScraper> = {
 	insight,
 	inspired,
 	ironspring,
+	isai,
 	ivp,
 	javelin,
 	kapor,

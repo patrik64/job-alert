@@ -50,6 +50,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'insight', name: 'Insight Partners', url: 'https://jobs.insightpartners.com/jobs' },
 	{ slug: 'inspired', name: 'Inspired Capital', url: 'https://jobs.inspiredcapital.com/jobs' },
 	{ slug: 'ironspring', name: 'Ironspring Ventures', url: 'https://jobs.ironspring.com/jobs' },
+	{ slug: 'isai', name: 'ISAI', url: 'https://isai.welcomekit.co/' },
 	{ slug: 'ivp', name: 'IVP', url: 'https://careers.ivp.com/jobs' },
 	{ slug: 'javelin', name: 'Javelin Venture Partners', url: 'https://careers.javelinvp.com/jobs' },
 	{ slug: 'kapor', name: 'Kapor Capital', url: 'https://jobs.kaporcapital.com/jobs' },
