@@ -45,6 +45,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'indexventures', name: 'Index Ventures', url: 'https://indexventures.getro.com/jobs' },
 	{ slug: 'insight', name: 'Insight Partners', url: 'https://jobs.insightpartners.com/jobs' },
 	{ slug: 'ivp', name: 'IVP', url: 'https://careers.ivp.com/jobs' },
+	{ slug: 'kapor', name: 'Kapor Capital', url: 'https://jobs.kaporcapital.com/jobs' },
 	{ slug: 'kdt', name: 'KdT Ventures', url: 'https://jobs.kdtvc.com/jobs' },
 	{ slug: 'khosla', name: 'Khosla Ventures', url: 'https://jobs.khoslaventures.com/jobs' },
 	{ slug: 'kickstart', name: 'Kickstart', url: 'https://jobs.kickstart.com/jobs' },
