@@ -34,6 +34,7 @@ import { board as grove } from './grove';
 import { board as gv } from './gv';
 import { board as headline } from './headline';
 import { board as htgf } from './htgf';
+import { board as humba } from './humba';
 import { board as hvcapital } from './hvcapital';
 import { board as hyperplane } from './hyperplane';
 import { board as indexventures } from './indexventures';
@@ -207,6 +208,7 @@ const impls: Record<string, JobBoardScraper> = {
 	gv,
 	headline,
 	htgf,
+	humba,
 	hvcapital,
 	hyperplane,
 	indexventures,

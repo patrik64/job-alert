@@ -54,8 +54,9 @@ interface ActionPage {
 }
 
 // the payload a next.js app server-renders is spread over escaped string
-// pushes; joined back together they hold the page's data as plain json
-function flightText(html: string): string {
+// pushes; joined back together they hold the page's data as plain json.
+// Shared with every scraper of an app-router site (humba reads it too)
+export function flightText(html: string): string {
 	let text = '';
 	for (const m of html.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g)) {
 		text += JSON.parse(`"${m[1]}"`);
@@ -64,7 +65,7 @@ function flightText(html: string): string {
 }
 
 // the json array starting at `from`, found by bracket depth outside strings
-function readArray(text: string, from: number): string {
+export function readArray(text: string, from: number): string {
 	let depth = 0;
 	let inString = false;
 	let escaped = false;
