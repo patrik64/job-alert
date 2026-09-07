@@ -38,6 +38,7 @@ import { board as hvcapital } from './hvcapital';
 import { board as indexventures } from './indexventures';
 import { board as insight } from './insight';
 import { board as ivp } from './ivp';
+import { board as kdt } from './kdt';
 import { board as khosla } from './khosla';
 import { board as kickstart } from './kickstart';
 import { board as lakestar } from './lakestar';
@@ -200,6 +201,7 @@ const impls: Record<string, JobBoardScraper> = {
 	indexventures,
 	insight,
 	ivp,
+	kdt,
 	khosla,
 	kickstart,
 	lakestar,
