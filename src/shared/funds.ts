@@ -40,6 +40,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'grove', name: 'Grove Ventures', url: 'https://careers.grovevc.com/jobs' },
 	{ slug: 'gv', name: 'GV', url: 'https://jobs.gv.com/jobs' },
 	{ slug: 'headline', name: 'Headline', url: 'https://jobs.headline.com/jobs' },
+	{ slug: 'homebrew', name: 'Homebrew', url: 'https://careers.homebrew.co/jobs' },
 	{ slug: 'htgf', name: 'HTGF', url: 'https://startupjobs.htgf.de/jobs' },
 	{ slug: 'humba', name: 'Humba Ventures', url: 'https://humbaventures.com/jobs/' },
 	{ slug: 'hvcapital', name: 'HV Capital', url: 'https://jobs.hvcapital.com/jobs' },

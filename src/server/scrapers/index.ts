@@ -33,6 +33,7 @@ import { board as greylock } from './greylock';
 import { board as grove } from './grove';
 import { board as gv } from './gv';
 import { board as headline } from './headline';
+import { board as homebrew } from './homebrew';
 import { board as htgf } from './htgf';
 import { board as humba } from './humba';
 import { board as hvcapital } from './hvcapital';
@@ -207,6 +208,7 @@ const impls: Record<string, JobBoardScraper> = {
 	grove,
 	gv,
 	headline,
+	homebrew,
 	htgf,
 	humba,
 	hvcapital,
