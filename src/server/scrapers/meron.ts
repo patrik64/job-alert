@@ -36,12 +36,21 @@ export const board: JobBoardScraper = {
 		for (const row of html.matchAll(/<a href="(https?:\/\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/g)) {
 			const [, href, block] = row;
 			const title = block.match(/<h3[^>]*>([^<]+)<\/h3>/)?.[1]?.trim();
-			const company = block
-				.match(/text-forest\/90">\s*<span[^>]*>\s*<\/span>([^<]+)<\/span>/)?.[1]
-				?.trim();
+			// under the title sits one meta line — company · function ·
+			// location — read as plain text so a redesign's class names
+			// (which have changed once already) cannot break it
+			const meta = block.match(/<p[^>]*>([\s\S]*?)<\/p>/)?.[1];
 			// the page's other links (nav, footer, the fund's own pages) carry
 			// no job row
-			if (!title || !company) continue;
+			if (!title || !meta) continue;
+			const parts = meta
+				.replace(/<!--[\s\S]*?-->/g, '')
+				.replace(/<[^>]+>/g, '')
+				.split('·')
+				.map((p) => p.trim())
+				.filter(Boolean);
+			const company = parts[0] ?? '';
+			if (!company) continue;
 			// several jobs may share one careers-page link, so the title is
 			// part of the key; the page renders every row twice
 			const key = `${href}#${title}`;
@@ -54,10 +63,9 @@ export const board: JobBoardScraper = {
 				title,
 				url: href,
 				applyUrl: href,
-				category: block.match(/·<\/span>\s*<span>([^<]+)<\/span>/)?.[1]?.trim() ?? '',
+				category: parts[1] ?? '',
 				sector: '',
-				location:
-					block.match(/<span class="normal-case[^"]*">([^<]+)<\/span>/)?.[1]?.trim() ?? '',
+				location: parts.slice(2).join(' · '),
 				salary: null,
 				postedAt: posted ? postedOn(posted.trim(), now) : null
 			});
