@@ -191,6 +191,26 @@ async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
 	}));
 }
 
+// the indexes the queries below lean on — remult's ensureSchema makes tables
+// and columns but no indexes, so they are created here, once per process.
+// `if not exists` makes this a no-op the moment they are in place (and on an
+// empty fresh database the builds are instant); a populated database without
+// them is indexed out of band, since a plain build there would lock the
+// table. Runs only on sql — the json fallback of local development needs none
+let indexesEnsured = false;
+async function ensureIndexes(): Promise<void> {
+	if (indexesEnsured) return;
+	const db = remult.dataProvider;
+	if (db instanceof SqlDatabase) {
+		// every fetch's diff reads `where "fundSlug"`; the feeds and timeline
+		// read recent rows by "firstSeenAt"; tidyDetails deletes by "detailKey"
+		await db.execute('create index if not exists jobs_fundslug_idx on jobs ("fundSlug")');
+		await db.execute('create index if not exists jobs_firstseen_idx on jobs ("firstSeenAt")');
+		await db.execute('create index if not exists jobs_detailkey_idx on jobs ("detailKey")');
+	}
+	indexesEnsured = true;
+}
+
 // the ids of a fund's jobs — all a fetch's diff ever reads of the rows
 // already there. The full rows would be the whole board over again,
 // megabytes a fund off the database every night; one column travels
@@ -285,6 +305,7 @@ export class ScrapeController {
 		const { scraperBySlug } = await import('../server/scrapers/index');
 		const entry = scraperBySlug.get(slug);
 		if (!entry) throw new Error(`unknown fund: ${slug}`);
+		await ensureIndexes();
 		if (inFlight.has(slug)) throw new Error(`${entry.name}: fetch already running`);
 		inFlight.add(slug);
 		try {
