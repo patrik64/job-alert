@@ -9,11 +9,13 @@ import type { JobBoardScraper, ScrapedJob } from './types';
 
 const API = 'https://api.getro.com/api/v2/collections';
 const PAGE_SIZE = 20;
-const LIST_CONCURRENCY = 4;
+const LIST_CONCURRENCY = 6;
 const JSON_HEADERS = { accept: 'application/json', 'content-type': 'application/json' };
-// the search api rate-limits bursts of a few hundred requests a minute; all
-// boards share one pace towards it, a little under eight requests a second
-const paceSearch = pacer(130);
+// all boards share one pace towards the search api — around fourteen
+// requests a second, still under half of what probes sustain without a
+// single 429 (the biggest board's thirteen hundred pages have to fit,
+// with the diff, inside a serverless function's five minutes)
+const paceSearch = pacer(70);
 
 interface ListJob {
 	id: number;
