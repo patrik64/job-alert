@@ -179,6 +179,7 @@ import { board as xange } from './xange';
 import { board as xfund } from './xfund';
 import { board as xrc } from './xrc';
 import { board as ycombinator } from './ycombinator';
+import { board as yocto } from './yocto';
 import { board as zetta } from './zetta';
 
 const impls: Record<string, JobBoardScraper> = {
@@ -360,6 +361,7 @@ const impls: Record<string, JobBoardScraper> = {
 	xfund,
 	xrc,
 	ycombinator,
+	yocto,
 	zetta
 };
 

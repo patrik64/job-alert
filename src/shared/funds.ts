@@ -186,6 +186,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'xfund', name: 'Xfund', url: 'https://www.xfund.com/jobs' },
 	{ slug: 'xrc', name: 'XRC Ventures', url: 'https://careers.xrcventures.com/jobs' },
 	{ slug: 'ycombinator', name: 'Y Combinator', url: 'https://www.ycombinator.com/jobs' },
+	{ slug: 'yocto', name: 'Yocto Project', url: 'https://www.yoctoproject.org/community/jobs/' },
 	{ slug: 'zetta', name: 'Zetta Venture Partners', url: 'https://careers.zettavp.com/jobs' }
 ];
 
