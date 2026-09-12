@@ -290,6 +290,12 @@ const postingKey = (applyUrl: string, id: string) => {
 // the database fall out of the listing and are closed by the ordinary diff
 const LINKEDIN_POSTING = /^https?:\/\/([a-z0-9-]+\.)*linkedin\.com\/jobs\/view\//i;
 
+// companies whose jobs are unwanted noise (they sit on dozens of boards at
+// once): SpaceX and Anduril. Matched as whole words on the company name only
+// — the boundary keeps an unrelated company like "SpaceXAI" out of it, and
+// title text (an xAI role at a "SpaceXAI" site) never triggers it
+const BLOCKED_COMPANY = /\bspace\s?x\b|\banduril\b/i;
+
 const inFlight = new Set<string>();
 
 export class ScrapeController {
@@ -326,10 +332,12 @@ export class ScrapeController {
 				const title = decodeEntities(j.title ?? '');
 				if (!key || !title || byKey.has(key)) continue;
 				if (LINKEDIN_POSTING.test(j.applyUrl ?? '')) continue;
+				const company = decodeEntities(j.company ?? '');
+				if (BLOCKED_COMPANY.test(company)) continue;
 				byKey.set(key, {
 					...j,
 					title,
-					company: decodeEntities(j.company ?? ''),
+					company,
 					category: decodeEntities(j.category ?? ''),
 					sector: decodeEntities(j.sector ?? ''),
 					location: decodeEntities(j.location ?? '')
