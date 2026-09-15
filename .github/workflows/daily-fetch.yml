@@ -6,7 +6,7 @@ on:
     # and github's scheduler adds hours of drift of its own anyway. An
     # off-hour minute, because the scheduler is most congested on the hour
     # and has started runs ten hours late from there
-    - cron: '3 1 * * *'
+    - cron: '43 22 * * *'
   workflow_dispatch:
     inputs:
       announce_only:
