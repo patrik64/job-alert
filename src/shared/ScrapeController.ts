@@ -291,10 +291,10 @@ const postingKey = (applyUrl: string, id: string) => {
 const LINKEDIN_POSTING = /^https?:\/\/([a-z0-9-]+\.)*linkedin\.com\/jobs\/view\//i;
 
 // companies whose jobs are unwanted noise (they sit on dozens of boards at
-// once): SpaceX and Anduril. Matched as whole words on the company name only
-// — the boundary keeps an unrelated company like "SpaceXAI" out of it, and
-// title text (an xAI role at a "SpaceXAI" site) never triggers it
-const BLOCKED_COMPANY = /\bspace\s?x\b|\banduril\b/i;
+// once): SpaceX, Anduril and xAI. Matched as whole words on the company name
+// only — the boundaries keep unrelated companies like "Xaira" or "CONXAI" out
+// of it, and title text never triggers it
+const BLOCKED_COMPANY = /\bspace\s?x\b|\banduril\b|\bxai\b/i;
 
 const inFlight = new Set<string>();
 
