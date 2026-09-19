@@ -277,6 +277,55 @@ const chunks = <T>(items: T[], size: number): T[][] => {
 	return out;
 };
 
+// the columns a fetch writes for a job it has not seen before, in the order
+// the multi-row insert spells them
+const JOB_COLUMNS = [
+	'id',
+	'fundSlug',
+	'company',
+	'companyUrl',
+	'title',
+	'url',
+	'applyUrl',
+	'category',
+	'sector',
+	'location',
+	'salaryMin',
+	'salaryMax',
+	'salaryCurrency',
+	'salaryPeriod',
+	'postedAt',
+	'detailKey',
+	'isNewcomer',
+	'baseline',
+	'firstSeenAt',
+	'enrichedAt'
+] as const;
+type NewJob = { [K in (typeof JOB_COLUMNS)[number]]: Job[K] };
+
+// a night's newcomers are a few hundred rows, but a baseline — or a board
+// that re-keys its jobs, as consider did to a16z's in september 2026 — is
+// well over ten thousand, and a round trip a row does not get through those
+// in the time a serverless function has. On sql they go in five hundred to a
+// statement; "on conflict do nothing" keeps the insert idempotent by id, so
+// a run cut short is still picked up by the next one. The json fallback of
+// local development has no sql and inserts them one by one
+async function insertJobs(rows: NewJob[]): Promise<void> {
+	const db = remult.dataProvider;
+	if (!(db instanceof SqlDatabase)) {
+		for (const batch of chunks(rows, 50)) await Promise.all(batch.map((r) => repo(Job).insert(r)));
+		return;
+	}
+	const columns = JOB_COLUMNS.map((c) => `"${c}"`).join(', ');
+	for (const batch of chunks(rows, 500)) {
+		const command = db.createCommand();
+		const values = batch.map((r) => `(${JOB_COLUMNS.map((c) => command.param(r[c])).join(', ')})`);
+		await command.execute(
+			`insert into jobs (${columns}) values ${values.join(', ')} on conflict (id) do nothing`
+		);
+	}
+}
+
 // the key a job's description is stored under — see Job.detailKey
 const postingKey = (applyUrl: string, id: string) => {
 	const url = applyUrl.trim();
@@ -299,9 +348,9 @@ const BLOCKED_COMPANY = /\bspace\s?x\b|\banduril\b|\bxai\b/i;
 const inFlight = new Set<string>();
 
 export class ScrapeController {
-	// not transactional: a transaction pins every command to one connection,
-	// which serializes thousands of inserts over a high-latency link. Inserts
-	// are idempotent by id, so a run cut short is picked up by the next one
+	// not transactional: a transaction pins every command to one connection
+	// for the length of the scrape. Inserts are idempotent by id, so a run cut
+	// short is picked up by the next one
 	@BackendMethod({ allowed: true, transactional: false })
 	static async fetchFund(slug: string): Promise<FetchResult> {
 		// This class is client-bundled (it's how @BackendMethod builds its HTTP
@@ -378,38 +427,34 @@ export class ScrapeController {
 				await jobs.deleteMany({ where: { id: { $in: ids } } });
 			}
 
-			// chunked concurrent inserts; the pg pool bounds real concurrency
-			for (const batch of chunks(newcomers, 50)) {
-				await Promise.all(
-					batch.map(([key, j]) =>
-						jobs.insert({
-							id: idOf(key),
-							fundSlug: slug,
-							company: j.company,
-							companyUrl: j.companyUrl ?? '',
-							title: j.title,
-							url: j.url ?? '',
-							applyUrl: j.applyUrl ?? '',
-							category: j.category,
-							sector: j.sector,
-							location: j.location,
-							salaryMin: j.salary?.min ?? null,
-							salaryMax: j.salary?.max ?? null,
-							salaryCurrency: j.salary?.currency ?? '',
-							salaryPeriod: j.salary?.period ?? '',
-							postedAt: j.postedAt ?? null,
-							detailKey: postingKey(j.applyUrl ?? '', idOf(key)),
-							isNewcomer: !baseline,
-							baseline,
-							// descriptions are kept for the jobs that turn up after a board's
-							// baseline: the baseline is thousands of jobs a board, more than
-							// the database has room for, and it is the newcomers that get
-							// read. A board without detail has nothing to fetch anyway
-							enrichedAt: entry.board.detail && !baseline ? null : now
-						})
-					)
-				);
-			}
+			await insertJobs(
+				newcomers.map(([key, j]) => ({
+					id: idOf(key),
+					fundSlug: slug,
+					company: j.company,
+					companyUrl: j.companyUrl ?? '',
+					title: j.title,
+					url: j.url ?? '',
+					applyUrl: j.applyUrl ?? '',
+					category: j.category,
+					sector: j.sector,
+					location: j.location,
+					salaryMin: j.salary?.min ?? null,
+					salaryMax: j.salary?.max ?? null,
+					salaryCurrency: j.salary?.currency ?? '',
+					salaryPeriod: j.salary?.period ?? '',
+					postedAt: j.postedAt ?? null,
+					detailKey: postingKey(j.applyUrl ?? '', idOf(key)),
+					isNewcomer: !baseline,
+					baseline,
+					firstSeenAt: now,
+					// descriptions are kept for the jobs that turn up after a board's
+					// baseline: the baseline is thousands of jobs a board, more than
+					// the database has room for, and it is the newcomers that get
+					// read. A board without detail has nothing to fetch anyway
+					enrichedAt: entry.board.detail && !baseline ? null : now
+				}))
+			);
 
 			const added = baseline ? 0 : newcomers.length;
 			const pending = entry.board.detail
