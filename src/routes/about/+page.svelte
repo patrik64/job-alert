@@ -123,6 +123,21 @@
 			>.
 		</p>
 		<p>
+			Programs — or an assistant — can ask for the jobs directly: the
+			<a
+				href="/api/v1/jobs?remote=only&region=eu&format=md"
+				target="_blank"
+				class="font-semibold text-white underline">jobs api</a
+			> narrows a recent window by words, topic, region, remote and pay, and answers in json or as a
+			markdown list of links. Its parameters are in the
+			<a
+				href={`${REPO_URL}#api`}
+				target="_blank"
+				rel="external noreferrer"
+				class="font-semibold text-white underline">readme</a
+			>.
+		</p>
+		<p>
 			Built with SvelteKit, Svelte 5, remult and Tailwind CSS on a Supabase postgres database. The
 			source is on
 			<a href={REPO_URL} target="_blank" rel="external noreferrer" class="font-semibold text-white underline"

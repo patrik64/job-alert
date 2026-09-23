@@ -59,6 +59,53 @@ live at https://job-alert-pax.vercel.app/
 Every job row shows when the job was first encountered ("first seen"). Job
 descriptions are collected too, but not shown yet.
 
+## API
+
+`GET /api/v1/jobs` — the jobs that turned up on the boards in a recent window
+(not the ones a board's baseline import brought in), filtered, one entry per
+posting — a posting several funds list comes once, naming them all — newest
+first. Public and read-only; each distinct query is cached for an hour. A
+misspelt or malformed parameter gets a 400 that names the problem and lists
+every parameter.
+
+| parameter | meaning |
+| --- | --- |
+| `days` | the window: jobs first seen in the last n days, 1–30 (default 14) |
+| `since` | the window from an ISO date or time instead, at most 30 days back |
+| `title` | words in the title or job function, comma-separated, any of them — whole words in any case; a space or hyphen within a word also matches none (`back end` finds Backend and Back-End); a trailing `*` matches word beginnings (`engineer*`) |
+| `exclude` | words that rule a job out, matched as in `title` |
+| `company` | words in the company name, matched as in `title` |
+| `fund` | fund slugs, any of them |
+| `topic` | the rss feeds' topics, any of them: `rust`, `svelte`, `kotlin`, `react`, `go`, `cpp`, `devops`, `product-manager`, `ux` |
+| `remote` | `only`, `none` or `any` (default) — as the location says |
+| `region` | where the job can be done from, any of `eu`, `uk`, `europe`, `us`, `canada`, `latam`, `apac`, `mena`, `africa` — and `unknown`, a location naming no place (a bare "Remote") |
+| `salary` | `only`: jobs publishing a figure |
+| `currency` | only figures in this currency (an ISO code) |
+| `minSalary` | a yearly figure reaching at least this much, in `currency` |
+| `limit`, `offset` | paging: up to 500 a page (default 100); the answer links the next page |
+| `format` | `json` (default) or `md`, a markdown list of direct links grouped by company |
+
+Regions are read off the free-text location lines the boards publish
+(`src/server/regions.ts`): countries, their regions and cities, the codes
+boards abbreviate them to (`Austin, TX`, `Berlin, BE, DE`) and stretches of
+the world (Europe, EMEA, LATAM…). `eu` is the EU with the countries sharing
+its free movement (Norway, Iceland, Liechtenstein, Switzerland); a job named
+for Europe, EMEA or the whole world counts in every region those span.
+
+Each entry in the JSON answer carries the company, the title, `url` — the ad
+itself, on the company's careers site or applicant tracking system where the
+board knows it — and `boardUrl`, the `funds` listing it, the location with
+`remote` and `regions`, the job function, the salary and when it was first
+seen. The answer also echoes the query as understood, the total and the
+window.
+
+Remote backend jobs someone in the EU can take, from the last two weeks, as a
+list of links:
+
+```sh
+curl 'https://job-alert-pax.vercel.app/api/v1/jobs?remote=only&region=eu&title=back%20end,platform,infrastructure,software%20engineer*&exclude=front%20end,mobile,ios,android&format=md'
+```
+
 ## Data
 
 - `funds` — one row per tracked board: listed job count, newcomer count, last

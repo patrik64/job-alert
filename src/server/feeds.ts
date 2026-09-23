@@ -74,19 +74,54 @@ const PM_FUNCTION = /\bproduct manager\b/i;
 // work with the ux team
 const UX = /\bux\b|\buser experience\b|\bgraphics? design/i;
 
-// a title-and-function matcher; the language feeds add the described ids
-const inText = (re: RegExp) => () => (job: FeedJob) => re.test(job.title) || re.test(job.category);
+// what a feed is about: a pattern for the title and one for the board's job
+// function, and — for the languages, which postings also name in their
+// prose — a pattern the database runs over the stored descriptions (see
+// describedIds). The feeds narrow the night's newcomers by these, and the
+// jobs api filters its queries by them
+export interface Topic {
+	title: RegExp;
+	category: RegExp;
+	described?: { posix: string; substring: string; word: RegExp; exactCase?: boolean };
+}
 
-const withDescribed =
-	(re: RegExp, posix: string, substring: string, word: RegExp, exactCase = false): Narrow =>
+const trade = (re: RegExp): Topic => ({ title: re, category: re });
+const language = (re: RegExp, posix: string, substring: string, word = re, exactCase = false): Topic => ({
+	title: re,
+	category: re,
+	described: { posix, substring, word, exactCase }
+});
+
+export const TOPICS = {
+	rust: language(RUST, RUST_SQL, 'rust'),
+	svelte: language(SVELTE, SVELTE_SQL, 'svelte'),
+	kotlin: language(KOTLIN, KOTLIN_SQL, 'kotlin'),
+	react: language(REACT, REACT_SQL, 'react', REACT_DESCRIBED, true),
+	go: language(GO, GO_SQL, 'golang', GO_DESCRIBED),
+	cpp: trade(CPP),
+	devops: trade(DEVOPS),
+	'product-manager': { title: PM_TITLE, category: PM_FUNCTION },
+	ux: trade(UX)
+} satisfies Record<string, Topic>;
+export type TopicName = keyof typeof TOPICS;
+
+// a topic as a feed's narrowing: the title, the job function, or — where
+// the topic reads them — the stored description
+const narrowBy =
+	({ title, category, described }: Topic): Narrow =>
 	async () => {
-		const described = new Set(await describedIds(posix, substring, word, exactCase));
-		return (job) => re.test(job.title) || re.test(job.category) || described.has(job.detailKey);
+		const ids = described
+			? new Set(
+					await describedIds(described.posix, described.substring, described.word, described.exactCase)
+				)
+			: undefined;
+		return (job) =>
+			title.test(job.title) || category.test(job.category) || !!ids?.has(job.detailKey);
 	};
 
-// whether a description is worth keeping at all: only the five feeds above
-// with described ids ever read stored text, so enrichment stores a
-// description only when one of their patterns speaks up
+// whether a description is worth keeping at all: only the five language
+// topics above ever read stored text, so enrichment stores a description
+// only when one of their patterns speaks up
 export const mentionsTrackedLanguage = (text: string) =>
 	RUST.test(text) ||
 	SVELTE.test(text) ||
@@ -95,31 +130,19 @@ export const mentionsTrackedLanguage = (text: string) =>
 	REACT_DESCRIBED.test(text);
 
 export const FEEDS: { slug: string; spec: FeedSpec; narrow: Narrow }[] = [
-	{ slug: 'rss-rust', spec: RUST_FEED, narrow: withDescribed(RUST, RUST_SQL, 'rust', RUST) },
-	{
-		slug: 'rss-svelte',
-		spec: SVELTE_FEED,
-		narrow: withDescribed(SVELTE, SVELTE_SQL, 'svelte', SVELTE)
-	},
-	{
-		slug: 'rss-kotlin',
-		spec: KOTLIN_FEED,
-		narrow: withDescribed(KOTLIN, KOTLIN_SQL, 'kotlin', KOTLIN)
-	},
-	{
-		slug: 'rss-react',
-		spec: REACT_FEED,
-		narrow: withDescribed(REACT, REACT_SQL, 'react', REACT_DESCRIBED, true)
-	},
-	{ slug: 'rss-go', spec: GO_FEED, narrow: withDescribed(GO, GO_SQL, 'golang', GO_DESCRIBED) },
-	{ slug: 'rss-cpp', spec: CPP_FEED, narrow: inText(CPP) },
-	{ slug: 'rss-devops', spec: DEVOPS_FEED, narrow: inText(DEVOPS) },
+	{ slug: 'rss-rust', spec: RUST_FEED, narrow: narrowBy(TOPICS.rust) },
+	{ slug: 'rss-svelte', spec: SVELTE_FEED, narrow: narrowBy(TOPICS.svelte) },
+	{ slug: 'rss-kotlin', spec: KOTLIN_FEED, narrow: narrowBy(TOPICS.kotlin) },
+	{ slug: 'rss-react', spec: REACT_FEED, narrow: narrowBy(TOPICS.react) },
+	{ slug: 'rss-go', spec: GO_FEED, narrow: narrowBy(TOPICS.go) },
+	{ slug: 'rss-cpp', spec: CPP_FEED, narrow: narrowBy(TOPICS.cpp) },
+	{ slug: 'rss-devops', spec: DEVOPS_FEED, narrow: narrowBy(TOPICS.devops) },
 	{
 		slug: 'rss-product-manager',
 		spec: PRODUCT_MANAGER_FEED,
-		narrow: () => (job) => PM_TITLE.test(job.title) || PM_FUNCTION.test(job.category)
+		narrow: narrowBy(TOPICS['product-manager'])
 	},
-	{ slug: 'rss-ux', spec: UX_FEED, narrow: inText(UX) }
+	{ slug: 'rss-ux', spec: UX_FEED, narrow: narrowBy(TOPICS.ux) }
 ];
 
 // render every feed from one reading of the newcomer window and store the
