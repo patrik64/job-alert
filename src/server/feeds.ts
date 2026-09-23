@@ -46,11 +46,26 @@ const REACT = /\breact(?:\.?js|[- ]native)?\b/i;
 const REACT_DESCRIBED = /\bReact\b|\b[Rr]eact\.?[Jj][Ss]\b|\b[Rr]eact[- ][Nn]ative\b/;
 const REACT_SQL = '\\mReact\\M|\\m[Rr]eact\\.?[Jj][Ss]\\M|\\m[Rr]eact[- ][Nn]ative\\M';
 
-// the language as a word — "Go", "Go/Rust", "Backend Engineer (Go)" — or as
-// golang, in a title or job function; the boards' many go-to-market roles
-// and the odd go-getter are turned away by the lookahead. In prose only
-// golang counts — go is the commonest of verbs there in any casing
-const GO = /\bgolang\b|\bgo\b(?![ -]to[ -]market|[ -]getter)/i;
+// the language, in a title or job function: golang anywhere, and go where a
+// title names a language — "(Go)", "(Go, Java)", "Go/Rust", "Python & GO",
+// "- Go", "PHP or Go" — or stands beside the role ("Go Software Engineer",
+// "Senior Go Engineer", "Backend Developer GO"), in a title about software
+// work. Anywhere else the word is a name — "Vinted Go", "MONOPOLY GO!",
+// "Pokémon GO Platform", "Go.Compare", the Brazilian state — or go-to-market
+// and go-live. In prose only golang counts — go is the commonest of verbs
+// there in any casing
+const GO = new RegExp(
+	'\\bgolang\\b|' +
+		// a title about software work
+		'^(?=.*(?:engineer|developer|programmer|software|back[\\s-]?end|architect|infrastructure|devops|\\b(?:sre|sde|tech)\\b)).*' +
+		// after an opening bracket, a list separator or a dash, or after a
+		// connecting, seniority or role word
+		'(?<=(?:^|[(\\[,/&+|:;]|\\s[-–—])\\s*|\\b(?:or|and|in|with|senior|sr\\.?|staff|lead|principal|junior|jr\\.?|mid|head|experienced|remote|freelance|back[\\s-]?end|stack|engineers?|developers?|programmers?)\\s+)go' +
+		// before a closing bracket, a list separator or the end, or before a
+		// connecting or role word
+		'(?=\\s*(?:$|[)\\],/&+|:;])|\\s+(?:or|and|engineers?|engineering|developers?|devs?|programmers?|software|back[\\s-]?end|expert|specialist|consultant|architect|sre|senior|staff|lead|principal)\\b)',
+	'i'
+);
 const GO_DESCRIBED = /\bgolang\b/i;
 const GO_SQL = '\\mgolang\\M';
 
