@@ -484,8 +484,25 @@ export class ScrapeController {
 			};
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err);
+			// a board that stays down finds nothing new: its newcomers age out
+			// as they would on a successful fetch, so its badge doesn't stand
+			// for days on the last night that worked
+			const newCount = await repo(Job)
+				.updateMany({
+					where: {
+						fundSlug: slug,
+						isNewcomer: true,
+						firstSeenAt: { $lt: new Date(Date.now() - KEEP_NEWCOMER_MS) }
+					},
+					set: { isNewcomer: false }
+				})
+				.then(() => repo(Job).count({ fundSlug: slug, isNewcomer: true }))
+				.catch(() => undefined);
 			await repo(Fund)
-				.upsert({ where: { slug }, set: { lastError: message } })
+				.upsert({
+					where: { slug },
+					set: { lastError: message, ...(newCount === undefined ? {} : { newCount }) }
+				})
 				.catch(() => {});
 			throw err;
 		} finally {
