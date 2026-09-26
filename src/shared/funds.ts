@@ -181,6 +181,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'supermoon', name: 'Supermoon Capital', url: 'https://jobs.supermooncapital.com/jobs' },
 	{ slug: 'tau', name: 'Tau Ventures', url: 'https://www.tauventures.com/careers' },
 	{ slug: 'techstars', name: 'Techstars', url: 'https://jobs.techstars.com/jobs' },
+	{ slug: 'engine', name: 'The Engine', url: 'https://jobs.engine.xyz/jobs' },
 	{ slug: 'thirdrock', name: 'Third Rock Ventures', url: 'https://jobs.thirdrockventures.com/jobs' },
 	{ slug: 'tlv', name: 'TLV Partners', url: 'https://jobs.tlv.partners/jobs' },
 	{ slug: 'toyota', name: 'Toyota Ventures', url: 'https://jobs.toyota.ventures/jobs' },
