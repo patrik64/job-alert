@@ -28,6 +28,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'creandum', name: 'Creandum', url: 'https://careers.creandum.com/jobs' },
 	{ slug: 'dcvc', name: 'DCVC', url: 'https://jobs.dcvc.com/jobs' },
 	{ slug: 'digitalfuel', name: 'Digital Fuel Capital', url: 'https://careers.digitalfuelcapital.com/jobs' },
+	{ slug: 'dragonfly', name: 'Dragonfly', url: 'https://jobs.dragonfly.xyz/jobs' },
 	{ slug: 'drive', name: 'Drive Capital', url: 'https://jobs.drivecapital.com/jobs' },
 	{ slug: 'dynamo', name: 'Dynamo Ventures', url: 'https://careers.dynamo.vc/jobs' },
 	{ slug: 'e14', name: 'E14 Fund', url: 'https://jobs.e14.vc/jobs' },
