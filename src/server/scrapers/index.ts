@@ -27,6 +27,7 @@ import { board as firstround } from './firstround';
 import { board as flagship } from './flagship';
 import { board as foundation } from './foundation';
 import { board as generalcatalyst } from './generalcatalyst';
+import { board as gradient } from './gradient';
 import { board as greycroft } from './greycroft';
 import { board as greylock } from './greylock';
 import { board as group11 } from './group11';
@@ -208,6 +209,7 @@ const impls: Record<string, JobBoardScraper> = {
 	flagship,
 	foundation,
 	generalcatalyst,
+	gradient,
 	greycroft,
 	greylock,
 	group11,
