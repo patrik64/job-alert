@@ -19,6 +19,7 @@ import { board as congruent } from './congruent';
 import { board as convective } from './convective';
 import { board as craft } from './craft';
 import { board as creandum } from './creandum';
+import { board as crosscut } from './crosscut';
 import { board as crv } from './crv';
 import { board as dcvc } from './dcvc';
 import { board as decibel } from './decibel';
@@ -247,6 +248,7 @@ const impls: Record<string, JobBoardScraper> = {
 	convective,
 	craft,
 	creandum,
+	crosscut,
 	crv,
 	dcvc,
 	decibel,
