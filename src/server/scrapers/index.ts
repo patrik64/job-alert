@@ -28,6 +28,7 @@ import { board as felicis } from './felicis';
 import { board as ffc } from './ffc';
 import { board as firstround } from './firstround';
 import { board as flagship } from './flagship';
+import { board as forerunner } from './forerunner';
 import { board as foundation } from './foundation';
 import { board as fprime } from './fprime';
 import { board as framework } from './framework';
@@ -223,6 +224,7 @@ const impls: Record<string, JobBoardScraper> = {
 	ffc,
 	firstround,
 	flagship,
+	forerunner,
 	foundation,
 	fprime,
 	framework,
