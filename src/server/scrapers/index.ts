@@ -26,6 +26,7 @@ import { board as emergence } from './emergence';
 import { board as f2 } from './f2';
 import { board as felicis } from './felicis';
 import { board as ffc } from './ffc';
+import { board as fintech } from './fintech';
 import { board as firstminute } from './firstminute';
 import { board as firstmomentum } from './firstmomentum';
 import { board as firstround } from './firstround';
@@ -226,6 +227,7 @@ const impls: Record<string, JobBoardScraper> = {
 	f2,
 	felicis,
 	ffc,
+	fintech,
 	firstminute,
 	firstmomentum,
 	firstround,
