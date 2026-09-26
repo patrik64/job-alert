@@ -22,6 +22,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'byfounders', name: 'byFounders', url: 'https://jobs.byfounders.vc/jobs' },
 	{ slug: 'canapi', name: 'Canapi Ventures', url: 'https://careers.canapi.com/jobs' },
 	{ slug: 'cherry', name: 'Cherry Ventures', url: 'https://talent.cherry.vc/jobs' },
+	{ slug: 'collab', name: 'Collab Capital', url: 'https://jobs.collab.capital/jobs' },
 	{ slug: 'collide', name: 'Collide Capital', url: 'https://jobs.collidecap.com/jobs' },
 	{ slug: 'compound', name: 'Compound', url: 'https://jobs.compound.vc/' },
 	{ slug: 'congruent', name: 'Congruent Ventures', url: 'https://jobs.congruentvc.com/jobs' },
