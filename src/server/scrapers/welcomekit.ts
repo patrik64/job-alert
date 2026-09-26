@@ -98,6 +98,28 @@ function toJob(host: string, h: WkHit): ScrapedJob | null {
 	};
 }
 
+// the JobPosting keys that follow a description
+const AFTER_DESCRIPTION =
+	'qualifications|educationRequirements|employmentType|experienceRequirements|hiringOrganization|identifier|industry|jobLocation|jobLocationType|occupationalCategory|responsibilities|skills|validThrough|workHours';
+
+// a page's schema.org json. Some descriptions carry quotes nobody escaped
+// ('click the "Apply" button') and no parser takes the whole; the posting's
+// type and description are then read off the text: the description runs to
+// the key that follows it, its bare quotes escaped
+function readPosting(text: string): { '@type'?: string; description?: string } | null {
+	try {
+		return JSON.parse(text);
+	} catch (err) {
+		const type = text.match(/"@type"\s*:\s*"([^"]+)"/)?.[1];
+		const body = text.match(
+			new RegExp(`"description"\\s*:\\s*"([\\s\\S]*?)"\\s*,\\s*"(?:${AFTER_DESCRIPTION})"\\s*:`)
+		)?.[1];
+		if (type !== 'JobPosting' || body === undefined) throw err;
+		const escaped = body.replace(/\\([\s\S])|"/g, (m, c) => (c === undefined ? '\\"' : m));
+		return { '@type': type, description: JSON.parse(`"${escaped}"`) };
+	}
+}
+
 export function welcomekitBoard({ host }: { host: string }): JobBoardScraper {
 	return {
 		async list() {
@@ -139,11 +161,8 @@ export function welcomekitBoard({ host }: { host: string }): JobBoardScraper {
 			// the description travels in the page's schema.org JobPosting; its
 			// strings hold raw control characters no strict parser accepts
 			for (const m of html.matchAll(/<script[^>]*>\s*(\{\s*"@context"[\s\S]*?)<\/script>/g)) {
-				const posting = JSON.parse(m[1].replace(/[\u0000-\u001f]+/g, ' ')) as {
-					'@type'?: string;
-					description?: string;
-				};
-				if (posting['@type'] === 'JobPosting') {
+				const posting = readPosting(m[1].replace(/[\u0000-\u001f]+/g, ' '));
+				if (posting?.['@type'] === 'JobPosting') {
 					return { description: posting.description ?? '' };
 				}
 			}
