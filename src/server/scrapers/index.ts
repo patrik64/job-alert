@@ -33,7 +33,6 @@ import { board as grove } from './grove';
 import { board as gtmfund } from './gtmfund';
 import { board as gv } from './gv';
 import { board as hamilton } from './hamilton';
-import { board as hax } from './hax';
 import { board as hcvc } from './hcvc';
 import { board as headline } from './headline';
 import { board as healthx } from './healthx';
@@ -141,7 +140,6 @@ import { board as sixty8 } from './sixty8';
 import { board as socialleverage } from './socialleverage';
 import { board as sogal } from './sogal';
 import { board as soma } from './soma';
-import { board as sosv } from './sosv';
 import { board as speedinvest } from './speedinvest';
 import { board as springtide } from './springtide';
 import { board as springtime } from './springtime';
@@ -215,7 +213,6 @@ const impls: Record<string, JobBoardScraper> = {
 	gtmfund,
 	gv,
 	hamilton,
-	hax,
 	hcvc,
 	headline,
 	healthx,
@@ -323,7 +320,6 @@ const impls: Record<string, JobBoardScraper> = {
 	socialleverage,
 	sogal,
 	soma,
-	sosv,
 	speedinvest,
 	springtide,
 	springtime,

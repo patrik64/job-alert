@@ -1,3 +1,0 @@
-import { considerBoard } from './consider';
-
-export const board = considerBoard({ host: 'jobs.hax.co', boardId: 'hax' });
