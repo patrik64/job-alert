@@ -18,6 +18,7 @@ import { board as cherry } from './cherry';
 import { board as compound } from './compound';
 import { board as congruent } from './congruent';
 import { board as convective } from './convective';
+import { board as cowboy } from './cowboy';
 import { board as craft } from './craft';
 import { board as crane } from './crane';
 import { board as creandum } from './creandum';
@@ -249,6 +250,7 @@ const impls: Record<string, JobBoardScraper> = {
 	compound,
 	congruent,
 	convective,
+	cowboy,
 	craft,
 	crane,
 	creandum,
