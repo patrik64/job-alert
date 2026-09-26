@@ -31,6 +31,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'e14', name: 'E14 Fund', url: 'https://jobs.e14.vc/jobs' },
 	{ slug: 'earlybird', name: 'Earlybird Venture Capital', url: 'https://jobs.earlybird.com/jobs' },
 	{ slug: 'electric', name: 'Electric Capital', url: 'https://jobs.electriccapital.com/jobs' },
+	{ slug: 'emerge', name: 'Emerge Capital', url: 'https://careers.emergecapital.vc/jobs' },
 	{ slug: 'emergence', name: 'Emergence Capital', url: 'https://talent.emcap.com/jobs' },
 	{ slug: 'energize', name: 'Energize Capital', url: 'https://jobs.energizecap.com/jobs' },
 	{ slug: 'eniac', name: 'Eniac Ventures', url: 'https://jobs.eniac.vc/jobs' },
