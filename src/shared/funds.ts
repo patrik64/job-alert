@@ -34,6 +34,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'flagship', name: 'Flagship Pioneering', url: 'https://www.flagshippioneering.com/join/roles' },
 	{ slug: 'foundation', name: 'Foundation Capital', url: 'https://jobs.foundationcapital.com/jobs' },
 	{ slug: 'generalcatalyst', name: 'General Catalyst', url: 'https://jobs.generalcatalyst.com/jobs' },
+	{ slug: 'gfr', name: 'GFR Fund', url: 'https://jobs.gfrfund.com/jobs' },
 	{ slug: 'goodwater', name: 'Goodwater Capital', url: 'https://portfoliojobs.goodwatercap.com/jobs' },
 	{ slug: 'gradient', name: 'Gradient Ventures', url: 'https://careers.gradient.com/jobs' },
 	{ slug: 'greycroft', name: 'Greycroft', url: 'https://jobs.greycroft.com/jobs' },
