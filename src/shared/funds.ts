@@ -30,6 +30,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'digitalfuel', name: 'Digital Fuel Capital', url: 'https://careers.digitalfuelcapital.com/jobs' },
 	{ slug: 'e14', name: 'E14 Fund', url: 'https://jobs.e14.vc/jobs' },
 	{ slug: 'earlybird', name: 'Earlybird Venture Capital', url: 'https://jobs.earlybird.com/jobs' },
+	{ slug: 'elaia', name: 'Elaia Partners', url: 'https://elaia.welcomekit.co/' },
 	{ slug: 'electric', name: 'Electric Capital', url: 'https://jobs.electriccapital.com/jobs' },
 	{ slug: 'elevate', name: 'Elevate Ventures', url: 'https://jobs.elevateventures.com/jobs' },
 	{ slug: 'emerge', name: 'Emerge Capital', url: 'https://careers.emergecapital.vc/jobs' },
