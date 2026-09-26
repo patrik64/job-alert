@@ -16,6 +16,7 @@ import { board as byfounders } from './byfounders';
 import { board as canapi } from './canapi';
 import { board as cherry } from './cherry';
 import { board as congruent } from './congruent';
+import { board as convective } from './convective';
 import { board as craft } from './craft';
 import { board as creandum } from './creandum';
 import { board as dcvc } from './dcvc';
@@ -226,6 +227,7 @@ const impls: Record<string, JobBoardScraper> = {
 	canapi,
 	cherry,
 	congruent,
+	convective,
 	craft,
 	creandum,
 	dcvc,
