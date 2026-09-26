@@ -20,6 +20,7 @@ import { board as convective } from './convective';
 import { board as craft } from './craft';
 import { board as creandum } from './creandum';
 import { board as dcvc } from './dcvc';
+import { board as differential } from './differential';
 import { board as digitalfuel } from './digitalfuel';
 import { board as dragonfly } from './dragonfly';
 import { board as drive } from './drive';
@@ -240,6 +241,7 @@ const impls: Record<string, JobBoardScraper> = {
 	craft,
 	creandum,
 	dcvc,
+	differential,
 	digitalfuel,
 	dragonfly,
 	drive,
