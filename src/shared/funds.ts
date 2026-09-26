@@ -35,6 +35,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'felicis', name: 'Felicis', url: 'https://jobs.felicis.com/jobs' },
 	{ slug: 'ffc', name: 'Female Founder Collective', url: 'https://ffcjobboard.lovable.app/' },
 	{ slug: 'firstround', name: 'First Round Capital', url: 'https://jobs.firstround.com/jobs' },
+	{ slug: 'firstminute', name: 'firstminute capital', url: 'https://jobs.firstminute.capital/jobs' },
 	{ slug: 'flagship', name: 'Flagship Pioneering', url: 'https://www.flagshippioneering.com/join/roles' },
 	{ slug: 'flare', name: 'Flare Capital Partners', url: 'https://careers.flarecapital.com/jobs' },
 	{ slug: 'flourish', name: 'Flourish Ventures', url: 'https://jobs.flourishventures.com/jobs' },
