@@ -46,6 +46,7 @@ import { board as flare } from './flare';
 import { board as flourish } from './flourish';
 import { board as forerunner } from './forerunner';
 import { board as foundation } from './foundation';
+import { board as foundry } from './foundry';
 import { board as fprime } from './fprime';
 import { board as framework } from './framework';
 import { board as freestyle } from './freestyle';
@@ -258,6 +259,7 @@ const impls: Record<string, JobBoardScraper> = {
 	flourish,
 	forerunner,
 	foundation,
+	foundry,
 	fprime,
 	framework,
 	freestyle,

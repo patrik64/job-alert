@@ -53,6 +53,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'flourish', name: 'Flourish Ventures', url: 'https://jobs.flourishventures.com/jobs' },
 	{ slug: 'forerunner', name: 'Forerunner Ventures', url: 'https://jobs.forerunnerventures.com/jobs' },
 	{ slug: 'foundation', name: 'Foundation Capital', url: 'https://jobs.foundationcapital.com/jobs' },
+	{ slug: 'foundry', name: 'Foundry', url: 'https://jobs.foundry.vc/jobs' },
 	{ slug: 'framework', name: 'Framework Ventures', url: 'https://jobs.framework.ventures/jobs' },
 	{ slug: 'freestyle', name: 'Freestyle Capital', url: 'https://jobs.freestyle.vc/jobs' },
 	{ slug: 'fristcressey', name: 'Frist Cressey Ventures', url: 'https://careers.fcventures.com/jobs' },
