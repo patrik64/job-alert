@@ -25,6 +25,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'congruent', name: 'Congruent Ventures', url: 'https://jobs.congruentvc.com/jobs' },
 	{ slug: 'convective', name: 'Convective Capital', url: 'https://jobs.convectivecapital.com/jobs' },
 	{ slug: 'craft', name: 'Craft Ventures', url: 'https://jobs.craftventures.com/jobs' },
+	{ slug: 'crane', name: 'Crane Venture Partners', url: 'https://careers.crane.vc/jobs' },
 	{ slug: 'creandum', name: 'Creandum', url: 'https://careers.creandum.com/jobs' },
 	{ slug: 'crosscut', name: 'Crosscut Ventures', url: 'https://careers.crosscut.vc/jobs' },
 	{ slug: 'crv', name: 'CRV', url: 'https://jobs.crv.com/jobs' },
