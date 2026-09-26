@@ -205,6 +205,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'usv', name: 'Union Square Ventures', url: 'https://jobs.usv.com/jobs' },
 	{ slug: 'vamos', name: 'VamosVentures', url: 'https://jobs.vamosventures.com/jobs' },
 	{ slug: 'venrock', name: 'Venrock', url: 'https://jobs.venrock.com/jobs' },
+	{ slug: 'ventureforward', name: 'Venture Forward', url: 'https://ventureforward.org/resources-for-emerging-vc/job-board/' },
 	{ slug: 'vertex', name: 'Vertex Ventures Israel', url: 'https://jobs.vertexventures.co.il/jobs' },
 	{ slug: 'vestigo', name: 'Vestigo Ventures', url: 'https://jobs.vestigoventures.com/jobs' },
 	{ slug: 'viola', name: 'Viola Group', url: 'https://careers.viola-group.com/jobs' },

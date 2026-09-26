@@ -198,6 +198,7 @@ import { board as urban } from './urban';
 import { board as usv } from './usv';
 import { board as vamos } from './vamos';
 import { board as venrock } from './venrock';
+import { board as ventureforward } from './ventureforward';
 import { board as vertex } from './vertex';
 import { board as vestigo } from './vestigo';
 import { board as viola } from './viola';
@@ -411,6 +412,7 @@ const impls: Record<string, JobBoardScraper> = {
 	usv,
 	vamos,
 	venrock,
+	ventureforward,
 	vertex,
 	vestigo,
 	viola,
