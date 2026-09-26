@@ -27,6 +27,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'craft', name: 'Craft Ventures', url: 'https://jobs.craftventures.com/jobs' },
 	{ slug: 'creandum', name: 'Creandum', url: 'https://careers.creandum.com/jobs' },
 	{ slug: 'dcvc', name: 'DCVC', url: 'https://jobs.dcvc.com/jobs' },
+	{ slug: 'define', name: 'Define Ventures', url: 'https://careers.definevc.com/jobs' },
 	{ slug: 'delphi', name: 'Delphi Ventures', url: 'https://jobs.delphiventures.io/jobs' },
 	{ slug: 'designerfund', name: 'Designer Fund', url: 'https://jobs.designerfund.com/jobs' },
 	{ slug: 'differential', name: 'Differential Ventures', url: 'https://jobs.differential.vc/jobs' },
