@@ -20,6 +20,7 @@ import { board as convective } from './convective';
 import { board as craft } from './craft';
 import { board as creandum } from './creandum';
 import { board as dcvc } from './dcvc';
+import { board as deciens } from './deciens';
 import { board as decisivepoint } from './decisivepoint';
 import { board as define } from './define';
 import { board as delphi } from './delphi';
@@ -245,6 +246,7 @@ const impls: Record<string, JobBoardScraper> = {
 	craft,
 	creandum,
 	dcvc,
+	deciens,
 	decisivepoint,
 	define,
 	delphi,
