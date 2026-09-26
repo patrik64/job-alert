@@ -30,6 +30,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'e14', name: 'E14 Fund', url: 'https://jobs.e14.vc/jobs' },
 	{ slug: 'earlybird', name: 'Earlybird Venture Capital', url: 'https://jobs.earlybird.com/jobs' },
 	{ slug: 'emergence', name: 'Emergence Capital', url: 'https://talent.emcap.com/jobs' },
+	{ slug: 'eoventures', name: 'Equal Opportunity Ventures', url: 'https://jobs.eoventures.com/jobs' },
 	{ slug: 'essence', name: 'Essence VC', url: 'https://careers.essencevc.fund/jobs' },
 	{ slug: 'expa', name: 'Expa', url: 'https://jobs.expa.com/jobs' },
 	{ slug: 'fprime', name: 'F-Prime Capital', url: 'https://jobs.fprimecapital.com/jobs' },
