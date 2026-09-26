@@ -21,6 +21,7 @@ import { board as craft } from './craft';
 import { board as creandum } from './creandum';
 import { board as dcvc } from './dcvc';
 import { board as digitalfuel } from './digitalfuel';
+import { board as dynamo } from './dynamo';
 import { board as e14 } from './e14';
 import { board as earlybird } from './earlybird';
 import { board as eclipse } from './eclipse';
@@ -238,6 +239,7 @@ const impls: Record<string, JobBoardScraper> = {
 	creandum,
 	dcvc,
 	digitalfuel,
+	dynamo,
 	e14,
 	earlybird,
 	eclipse,
