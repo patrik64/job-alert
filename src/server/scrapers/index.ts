@@ -23,6 +23,7 @@ import { board as dcvc } from './dcvc';
 import { board as digitalfuel } from './digitalfuel';
 import { board as e14 } from './e14';
 import { board as earlybird } from './earlybird';
+import { board as eclipse } from './eclipse';
 import { board as elaia } from './elaia';
 import { board as electric } from './electric';
 import { board as elevate } from './elevate';
@@ -239,6 +240,7 @@ const impls: Record<string, JobBoardScraper> = {
 	digitalfuel,
 	e14,
 	earlybird,
+	eclipse,
 	elaia,
 	electric,
 	elevate,
