@@ -1,7 +1,7 @@
 // The engine behind the bluesky announcements: posts assembled part by part,
-// composed into a short thread — or a single post of counts per fund when the
-// night is too busy for names — and published over the AT Protocol XRPC
-// endpoints. Plain Node, no dependencies.
+// composed into a thread of one line per item — as many posts as the list
+// takes — and published over the AT Protocol XRPC endpoints. Plain Node, no
+// dependencies.
 //
 // Credentials come from the environment:
 //   BLUESKY_IDENTIFIER    handle or did of the account to post as
@@ -14,8 +14,6 @@ const PASSWORD = process.env.BLUESKY_APP_PASSWORD;
 
 // bluesky counts graphemes, not characters, and stops at 300
 const POST_LIMIT = 300;
-// beyond a short thread the naming turns into a count per fund instead
-const MAX_POSTS = 3;
 
 const segmenter = new Intl.Segmenter();
 const graphemes = (s) => [...segmenter.segment(s)].length;
@@ -65,71 +63,46 @@ class Post {
 	}
 }
 
-// a fund's line opens right after the headline, under the previous line, or at
-// the very top when it has been carried over into a fresh post
-const openLine = (post, fund) =>
-	`${post.parts.length === 0 ? '' : post.hasBody ? '\n' : '\n\n'}${fund}: `;
+// cut to at most n graphemes, an ellipsis marking the cut
+function clip(text, n) {
+	const parts = [...segmenter.segment(text)].map((p) => p.segment);
+	return parts.length <= n ? text : `${parts.slice(0, n - 1).join('')}…`;
+}
 
-// every job by company and title, each linking to its page on the board
-function composeDetailed(groups, headline, footer) {
-	const reserved = graphemes(`\n\n${footer.label}`);
+// the headline, then one line per item — its label linking to the item's
+// url, a note after it in brackets — carried over into as many posts as the
+// list takes; the closing lines and the link to the page the announcement
+// stands for come last. items are [{ label, url, note }], the footer is
+// { label, url }
+export function composeList(headline, items, closing, footer) {
 	const posts = [];
-	let post = new Post(POST_LIMIT - reserved).add(headline);
-
-	for (const group of groups) {
-		let open = false;
-		for (const job of group.jobs) {
-			const uri = job.url.startsWith('http') ? job.url : undefined;
-			const lead = open ? ', ' : openLine(post, group.name);
-			if (!post.fits(lead + job.label)) {
-				// the post is full — carry the rest of the group into a new one
-				posts.push(post);
-				post = new Post(POST_LIMIT);
-				post.add(openLine(post, group.name));
-				open = false;
-			} else {
-				post.add(lead);
-			}
-			post.hasBody = true;
-			post.add(job.label, uri);
-			open = true;
+	let post = new Post(POST_LIMIT).add(headline);
+	for (const item of items) {
+		const note = item.note ? ` (${item.note})` : '';
+		const uri = item.url?.startsWith('http') ? item.url : undefined;
+		let lead = post.hasBody ? '\n' : '\n\n';
+		if (!post.fits(lead + item.label + note)) {
+			// the post is full — the line opens the next one
+			posts.push(post);
+			post = new Post(POST_LIMIT);
+			lead = '';
 		}
-	}
-	posts.push(post);
-	posts[0].add('\n\n').add(footer.label, footer.url);
-	return posts;
-}
-
-// a busy night (and most nights are, on boards this size) reads better as
-// counts than as a wall of titles, and fits in a single post
-function composeSummary(groups, headline, footer) {
-	const reserved = graphemes(`\n\n${footer.label}`);
-	const post = new Post(POST_LIMIT - reserved).add(headline);
-	const more = (n) => `\n+${n} more fund${n === 1 ? '' : 's'}`;
-
-	let shown = 0;
-	for (const group of groups) {
-		const line = `${post.hasBody ? '\n' : '\n\n'}${group.name}: ${group.jobs.length}`;
-		const rest = groups.length - shown - 1;
-		if (!post.fits(line + (rest > 0 ? more(rest) : ''))) break;
-		post.add(line);
+		// a line longer than a whole post gives up the end of its label
+		const label = clip(item.label, POST_LIMIT - graphemes(note));
+		post.add(lead).add(label, uri);
+		if (note) post.add(note);
 		post.hasBody = true;
-		shown++;
 	}
-	if (shown < groups.length) post.add(more(groups.length - shown));
-
-	post.add('\n\n').add(footer.label, footer.url);
-	return [post];
-}
-
-// names when they fit in a short thread, counts when they don't; groups are
-// [{ name, jobs: [{ label, url }] }], the footer { label, url } links the page
-// the announcement stands for
-export function compose(groups, headline, footer) {
-	const detailed = composeDetailed(groups, headline, footer);
-	return detailed.length <= MAX_POSTS && detailed.every((p) => p.length <= POST_LIMIT)
-		? detailed
-		: composeSummary(groups, headline, footer);
+	const tail = `${closing}\n\n${footer.label}`;
+	if (!post.fits(`\n\n${tail}`)) {
+		posts.push(post);
+		post = new Post(POST_LIMIT);
+	} else {
+		post.add('\n\n');
+	}
+	post.add(`${closing}\n\n`).add(footer.label, footer.url);
+	posts.push(post);
+	return posts;
 }
 
 async function login() {

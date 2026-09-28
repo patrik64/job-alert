@@ -166,11 +166,15 @@ gained in `fetch-results.json`. A board just added to the code is picked up
 too: its first fetch imports the baseline (the biggest boards are still best
 imported locally first — see Setup). `scripts/post-rust-jobs.mjs` then announces the
 night's new rust jobs on Bluesky from
-[rust-job-alert.bsky.social](https://bsky.app/profile/rust-job-alert.bsky.social),
-naming each job under its fund and linking it to its page on the board — as a
-short thread or, on a busy night, as a count per fund — with the thread linking
-the rust jobs page; a night without any stays quiet. The engine behind the
-posts is `scripts/bluesky.mjs`.
+[rust-job-alert.bsky.social](https://bsky.app/profile/rust-job-alert.bsky.social):
+every one located in Europe, one line each — company and title linking to its
+page on the board, the European place after it — over as many posts as it
+takes, then how many new rust jobs there are in all and at how many VCs, and
+last the link to the rust jobs page. A job several VCs list counts once;
+"in Europe" means its location names a European country, city or code, or
+Europe or EMEA as a whole (the jobs api's region classifier,
+`src/server/regions.ts`). A night without any new rust job stays quiet. The
+engine behind the posts is `scripts/bluesky.mjs`.
 
 ```sh
 pnpm fetch-all                       # refresh every fund against production

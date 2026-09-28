@@ -1,8 +1,11 @@
 // Announces the night's new rust jobs on Bluesky, from the account behind the
-// rust jobs page. Asks the API for the page's jobs and keeps the newcomers
-// among them — only those of funds that gained something in this very run
-// (read from the result file fetch-all.mjs writes), since a fund whose scrape
-// failed still carries the newcomer flags of whenever it last succeeded.
+// rust jobs page: every one in Europe by name, then how many there are in all
+// and at how many VCs, then the link to the page. Asks the API for the page's
+// jobs and keeps the newcomers among them — only those of funds that gained
+// something in this very run (read from the result file fetch-all.mjs
+// writes), since a fund whose scrape failed still carries the newcomer flags
+// of whenever it last succeeded. Where a job is comes from its location, read
+// by the app's own region classifier (node runs the typescript as it is).
 //
 //   node scripts/post-rust-jobs.mjs --dry-run    compose and print, post nothing
 //   node scripts/post-rust-jobs.mjs              compose and post
@@ -14,7 +17,8 @@
 // this announcement as rust-job-alert.bsky.social.
 
 import { readFileSync } from 'node:fs';
-import { checkCredentials, compose, postThread } from './bluesky.mjs';
+import { checkCredentials, composeList, postThread } from './bluesky.mjs';
+import { inEurope } from '../src/server/regions.ts';
 
 const BASE_URL = process.env.BASE_URL ?? 'https://job-alert-pax.vercel.app';
 const PAGE_URL = `${BASE_URL}/rust-jobs`;
@@ -74,29 +78,48 @@ if (fresh.length === 0) {
 	process.exit(0);
 }
 
-const funds = await fetch(`${BASE_URL}/api/funds?_limit=1000`);
-if (!funds.ok) throw new Error(`GET /api/funds — ${funds.status}`);
-const names = new Map((await funds.json()).map((f) => [f.slug, f.name]));
-
-// grouped by fund and named like the newcomers announcement, loudest first
-const byFund = new Map();
+// one entry per job: several funds list the same one, each with its own
+// spelling of where it is
+const jobs = new Map();
 for (const h of fresh) {
-	if (!byFund.has(h.fundSlug)) byFund.set(h.fundSlug, []);
-	byFund.get(h.fundSlug).push({ label: `${h.company} – ${h.title}`, url: h.url ?? '' });
+	const key = `${h.company}\n${h.title}`.toLowerCase();
+	const job = jobs.get(key) ?? { company: h.company, title: h.title, url: h.url ?? '', locations: [] };
+	job.locations.push(h.location ?? '');
+	jobs.set(key, job);
 }
-const groups = [...byFund]
-	.map(([slug, jobs]) => ({ name: names.get(slug) || slug, jobs }))
-	.sort((a, b) => b.jobs.length - a.jobs.length || a.name.localeCompare(b.name));
+const vcs = new Set(fresh.map((h) => h.fundSlug)).size;
 
-const total = fresh.length;
-const headline = `${total} new rust ${total === 1 ? 'job' : 'jobs'} at vc-backed companies`;
-const posts = compose(groups, headline, { label: PAGE_LABEL, url: PAGE_URL });
+// the part of a location that is in Europe — "Berlin, Germany" out of
+// "San Francisco, CA, USA; Berlin, Germany"
+const europeanPlace = (location) =>
+	location
+		.split(/\s*;\s*|\s+·\s+/)
+		.find((part) => inEurope(part))
+		?.trim();
+
+const inEuropeNow = [...jobs.values()]
+	.map((job) => ({ job, place: job.locations.filter(inEurope).map(europeanPlace)[0] }))
+	.filter(({ job }) => job.locations.some(inEurope))
+	.sort((a, b) => a.job.company.localeCompare(b.job.company) || a.job.title.localeCompare(b.job.title));
+
+const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const headline = inEuropeNow.length
+	? `${count(inEuropeNow.length, 'new rust job', 'new rust jobs')} in Europe`
+	: 'No new rust jobs in Europe today';
+const items = inEuropeNow.map(({ job, place }) => ({
+	label: `${job.company} – ${job.title}`,
+	url: job.url,
+	// the place, unless the whole of a long location line was all there was
+	note: place && place.length <= 40 ? place : ''
+}));
+const closing = `In total: ${count(jobs.size, 'new rust job', 'new rust jobs')} at ${count(vcs, 'VC', 'VCs')}`;
+const posts = composeList(headline, items, closing, { label: PAGE_LABEL, url: PAGE_URL });
 const url = await postThread(posts, { dryRun: DRY_RUN });
 
 if (url && process.env.GITHUB_STEP_SUMMARY) {
 	const { appendFileSync } = await import('node:fs');
 	appendFileSync(
 		process.env.GITHUB_STEP_SUMMARY,
-		`\n[announced ${total} rust job${total === 1 ? '' : 's'} on bluesky](${url})\n`
+		`\n[announced ${inEuropeNow.length} of ${jobs.size} new rust jobs (the ones in Europe) on bluesky](${url})\n`
 	);
 }

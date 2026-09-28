@@ -32,7 +32,9 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          # 24 runs typescript as it is — the bluesky script reads the app's
+          # region classifier straight from src/server/regions.ts
+          node-version: 24
 
       - if: github.event.inputs.announce_only != 'true'
         name: refresh every fund

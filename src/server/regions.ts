@@ -6,6 +6,9 @@
 // world like EMEA — and a job is placed wherever its line points. This runs
 // here rather than in the database: postgres needs seconds for what takes
 // milliseconds here, so the api reads just the distinct lines off it.
+// The bluesky script imports this file straight into node, which strips
+// the types and runs the rest: it keeps to syntax that strips cleanly — no
+// enums, namespaces or parameter properties — and imports nothing.
 
 // the regions a caller can ask for
 export const REGIONS = [
@@ -1016,13 +1019,25 @@ const MATCHERS = AREAS.map((area) => {
 	};
 });
 
+const areasOf = (location: string) =>
+	new Set(
+		MATCHERS.filter((m) => m.words.test(location) || m.codes?.test(location)).map((m) => m.area)
+	);
+
 // the regions a location puts a job within reach of; none when it names no
 // place at all ("Remote", "Hybrid", an office's name)
 export function regionsOf(location: string): Region[] {
-	const areas = new Set(
-		MATCHERS.filter((m) => m.words.test(location) || m.codes?.test(location)).map((m) => m.area)
-	);
+	const areas = areasOf(location);
 	return REGIONS.filter((r) => COVERS[r].some((a) => areas.has(a)));
+}
+
+// whether a location names a place in Europe — a country, a city or a code
+// there, or Europe or EMEA as a whole. A job open to the whole world is
+// within reach of Europe (see regionsOf) but is not counted as in it
+const EUROPEAN: Area[] = ['eu', 'uk', 'europe-other', 'europe', 'emea'];
+export function inEurope(location: string): boolean {
+	const areas = areasOf(location);
+	return EUROPEAN.some((a) => areas.has(a));
 }
 
 // whether a location's regions (from regionsOf) meet any of the wanted
