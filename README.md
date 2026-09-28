@@ -44,7 +44,7 @@ live at https://job-alert-pax.vercel.app/
   route 404s and neither the icon nor the menu item appears.
 - **about** (`/about`) — what the app does and how the pages fit together.
 - **rss** — the nightly newcomer digests as feeds: one item per night that
-  found some, naming the jobs under their funds (the first few dozen per
+  found some, naming the jobs under their funds (the first hundred per
   fund, counting the rest).
   - `/rss-rust.xml` — rust jobs
   - `/rss-svelte.xml` — svelte jobs

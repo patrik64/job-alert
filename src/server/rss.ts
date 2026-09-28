@@ -1,7 +1,7 @@
 // The newcomer digest feeds: one item per night that turned up new jobs, with
 // the night's headline as the title and the jobs named under their funds, each
 // linking to its page on the board. A night on boards this size can run to
-// thousands of jobs, so a fund's line names the first few dozen and counts
+// thousands of jobs, so a fund's line names the first hundred and counts
 // the rest. Every feed is narrowed to one trade or language (devops, rust,
 // go, c++, svelte, product manager) — an unnarrowed feed of such nights
 // would be unreadable.
@@ -19,7 +19,7 @@ export const TIME_ZONE = 'Europe/Vienna';
 // and how many jobs a fund's line names before it counts the rest
 export const WINDOW_DAYS = 30;
 const MAX_ITEMS = 30;
-const MAX_PER_FUND = 30;
+const MAX_PER_FUND = 100;
 // a fetch lands its newcomers over a few seconds and the nightly run keeps
 // going for minutes, so a night this fresh is still being written: it stays
 // out of the feed until it has settled, because a reader that caches a
