@@ -201,7 +201,9 @@ item per night that found newcomers, with the jobs named under their funds
 and linked to their pages on the boards. The feeds are rendered once at the
 end of the nightly run — after the night has settled — and stored, so
 serving them costs the database one small row rather than the whole newcomer
-window per request.
+window per request. Each feed reaches back thirty days, every night in full:
+the render asks the database only for the jobs a feed's words or stored
+descriptions turn up (a substring pass, then the feed's own patterns).
 
 - `/rss-rust.xml` — the rust jobs, matched as on the rust jobs page (title,
   function, or the stored description)
@@ -209,9 +211,11 @@ window per request.
   the function, or the stored description, since the framework hardly ever
   makes a title
 - `/rss-cpp.xml` — the c++ jobs: "c++" or "cpp" in the title or function
-- `/rss-go.xml` — the go jobs: "go" or "golang" in the title or function
-  (go-to-market roles excluded), or "golang" in the stored description —
-  prose uses go for too much else to count the bare word there
+- `/rss-go.xml` — the go jobs: "golang" in the title or function, or "go"
+  where an engineering title names the language — "(Go)", "Go/Rust",
+  "Senior Go Engineer" — rather than a product ("Monopoly GO!") or
+  go-to-market; or "golang" in the stored description, since prose uses go
+  for too much else to count the bare word there
 - `/rss-devops.xml` — the devops jobs: "devops" or "dev ops" in the title or
   the board's job function
 - `/rss-kotlin.xml` — the kotlin jobs, matched like the svelte ones

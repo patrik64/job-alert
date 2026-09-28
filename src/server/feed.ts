@@ -1,16 +1,12 @@
-// One handler behind the rss routes: load the recent newcomers, narrow them
-// to the feed's slice, and render the digests.
+// The reader behind the rss feeds — the window's newcomers a feed could name —
+// and the response that renders one feed on the spot.
 
 import type { RequestEvent } from '@sveltejs/kit';
 import { remult, repo, SqlDatabase } from 'remult';
 import { api } from './api';
-import { dayKey, rssFeed, WINDOW_DAYS, type FeedSpec } from './rss';
+import { rssFeed, WINDOW_DAYS, type FeedSpec } from './rss';
 import { Fund } from '../shared/Fund';
 import { Job } from '../shared/Job';
-
-// a night on these boards can bring thousands of jobs; this many rows, newest
-// first, cover the recent nights in full — a night cut off at the end is left out
-const MAX_ROWS = 20_000;
 
 // what a feed reads of a job: the digest line's fields, plus the two the
 // narrowed feeds judge by
@@ -26,16 +22,43 @@ export interface FeedJob {
 	firstSeenAt: Date;
 }
 
-// the window's newcomers, newest first — as the few columns above, since the
-// full rows would be megabytes a request off the database; the json fallback
-// of local development has no sql and loads them whole
-export const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
+// what the database looks for: a job whose title or job function holds one of
+// the like patterns (in any case), or whose posting's stored description is
+// among the detail keys
+export interface FeedCandidates {
+	like: string[];
+	detailKeys: string[];
+}
+
+// a like pattern as a javascript test, for the json fallback
+const likeTest = (pattern: string) =>
+	new RegExp(
+		`^${[...pattern]
+			.map((ch) => (ch === '%' ? '[\\s\\S]*' : ch === '_' ? '[\\s\\S]' : ch.replace(/[\\^$.*+?()[\]{}|]/, '\\$&')))
+			.join('')}$`,
+		'i'
+	);
+
+// the window's newcomers that could belong to a feed, newest first, over the
+// whole window — as the few columns above: the words keep the scan cheap and
+// the answer small, and the feeds' own patterns judge the jobs after. The
+// json fallback of local development has no sql: it loads the window whole
+// and tests the words itself
+export async function newcomersLike(
+	since: Date,
+	{ like, detailKeys }: FeedCandidates
+): Promise<FeedJob[]> {
 	const db = remult.dataProvider;
 	if (db instanceof SqlDatabase) {
-		const { rows } = await db.execute(
+		const command = db.createCommand();
+		// lists travel as json: remult's parameters pass arrays as json text
+		const words = `array(select jsonb_array_elements_text(${command.param(JSON.stringify(like))}::jsonb))`;
+		const { rows } = await command.execute(
 			`select id, "fundSlug", company, title, url, category, "detailKey", "firstSeenAt" from jobs
-			 where baseline = false and "firstSeenAt" >= '${since.toISOString()}'
-			 order by "firstSeenAt" desc limit ${MAX_ROWS}`
+			 where baseline = false and "firstSeenAt" >= ${command.param(since)}
+			   and (title ilike any(${words}) or category ilike any(${words})
+			     or "detailKey" in (select jsonb_array_elements_text(${command.param(JSON.stringify(detailKeys))}::jsonb)))
+			 order by "firstSeenAt" desc`
 		);
 		return rows.map((r) => ({
 			id: String(r.id),
@@ -48,13 +71,16 @@ export const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
 			firstSeenAt: new Date(r.firstSeenAt)
 		}));
 	}
+	const tests = like.map(likeTest);
+	const keys = new Set(detailKeys);
 	const found = await repo(Job).find({
 		where: { baseline: false, firstSeenAt: { $gte: since } },
 		orderBy: { firstSeenAt: 'desc' },
-		limit: MAX_ROWS
+		limit: 1_000_000
 	});
 	return found.flatMap((j) =>
-		j.firstSeenAt
+		j.firstSeenAt &&
+		(tests.some((t) => t.test(j.title) || t.test(j.category)) || keys.has(j.detailKey))
 			? [
 					{
 						id: j.id,
@@ -69,46 +95,27 @@ export const recentNewcomers = async (since: Date): Promise<FeedJob[]> => {
 				]
 			: []
 	);
-};
+}
 
+// when any fund was last refreshed successfully
+export const latestFetchOf = (funds: Fund[]) =>
+	funds.reduce<Date | undefined>(
+		(latest, f) =>
+			f.lastFetchedAt && (!latest || f.lastFetchedAt > latest) ? f.lastFetchedAt : latest,
+		undefined
+	);
+
+// one feed rendered on the spot, from its own newcomers of the window
 export const feedResponse = (
 	event: RequestEvent,
 	feed: FeedSpec,
-	// built inside the request, so it can ask the database first (the rust
-	// feed's description matches), then judges each job
-	narrow?: () => ((job: FeedJob) => boolean) | Promise<(job: FeedJob) => boolean>
+	newcomers: (since: Date) => Promise<FeedJob[]>
 ) =>
 	api.withRemult(event, async () => {
-		const match = narrow ? await narrow() : undefined;
 		const now = new Date();
 		const since = new Date(now.getTime() - WINDOW_DAYS * 86_400_000);
-
-		// baseline imports are flagged on the rows, so the genuine newcomers are
-		// simply everything else
-		const [jobs, funds] = await Promise.all([
-			recentNewcomers(since),
-			repo(Fund).find({ limit: 1000 })
-		]);
-
-		let rows = jobs.flatMap((j) =>
-			!match || match(j)
-				? [{ fundSlug: j.fundSlug, company: j.company, title: j.title, url: j.url, firstSeenAt: j.firstSeenAt }]
-				: []
-		);
-		// the truncated day is judged by the full query, not the narrowed rows —
-		// a narrowed feed may not even reach the day the limit cut into
-		const oldestFetched = jobs.length === MAX_ROWS ? jobs[jobs.length - 1].firstSeenAt : null;
-		if (oldestFetched) {
-			const oldest = dayKey(oldestFetched);
-			rows = rows.filter((r) => dayKey(r.firstSeenAt) !== oldest);
-		}
-		const latestFetch = funds.reduce<Date | undefined>(
-			(latest, f) =>
-				f.lastFetchedAt && (!latest || f.lastFetchedAt > latest) ? f.lastFetchedAt : latest,
-			undefined
-		);
-
-		return new Response(rssFeed(rows, latestFetch, now, feed), {
+		const [jobs, funds] = await Promise.all([newcomers(since), repo(Fund).find({ limit: 1000 })]);
+		return new Response(rssFeed(jobs, latestFetchOf(funds), now, feed), {
 			headers: {
 				// browsers render plain xml as a document tree, while the feed's own
 				// media type gets them offering a download; readers accept either
