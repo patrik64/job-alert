@@ -118,8 +118,10 @@ curl 'https://job-alert-pax.vercel.app/api/v1/jobs?remote=only&region=eu&title=b
   them), kept apart so listing and diffing never drag them along. Stored
   only when a description-reading feed's language turns up in the text —
   nothing else ever reads it — and one copy per posting, keyed by the apply
-  link the funds share (`jobs.detailKey`), for the jobs that appear after a
-  board's baseline import. A nightly sweep drops the descriptions nobody
+  link the funds share (`jobs.detailKey`: the link without the tracking tags
+  boards add, but with the rest of its query, which some sites use to tell
+  their postings apart — `src/shared/posting.ts`), for the jobs that appear
+  after a board's baseline import. A nightly sweep drops the descriptions nobody
   references or that fall out of the feeds' thirty-day reach.
 
 Identity is the board's own job id, so refetches are idempotent.

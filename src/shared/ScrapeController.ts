@@ -4,6 +4,7 @@ import { Fund } from './Fund';
 import { FUNDS } from './funds';
 import { Job, NULL_DATE } from './Job';
 import { JobDetail } from './JobDetail';
+import { postingKey } from './posting';
 
 export interface FetchResult {
 	slug: string;
@@ -325,13 +326,6 @@ async function insertJobs(rows: NewJob[]): Promise<void> {
 		);
 	}
 }
-
-// the key a job's description is stored under — see Job.detailKey
-const postingKey = (applyUrl: string, id: string) => {
-	const url = applyUrl.trim();
-	if (!/^https?:\/\//i.test(url)) return id;
-	return url.split('#')[0].split('?')[0];
-};
 
 // getro's sourcing pads boards with postings lifted straight off linkedin —
 // spam and other companies' roles under portfolio names — so a job whose only

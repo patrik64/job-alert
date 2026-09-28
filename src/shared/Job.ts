@@ -79,9 +79,9 @@ export class Job {
 	@Fields.createdAt()
 	firstSeenAt?: Date;
 
-	// where the posting actually lives: the apply link shorn of query and
-	// fragment, where boards hang their per-network source tags. Postings
-	// the funds share carry one key, and the shared description in
+	// where the posting actually lives: the apply link without the tags
+	// boards hang on it to say where a visitor came from (see posting.ts).
+	// Postings the funds share carry one key, and the shared description in
 	// job_details is stored under it; a job without a real link keeps its
 	// own id here and shares with nobody
 	@Fields.string()
