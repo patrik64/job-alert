@@ -148,6 +148,21 @@ export async function describedIds(
 				.map((d) => d.id);
 }
 
+// whether a job's link stands for its posting alone: no job carrying the
+// same key goes by another title. A careers page every posting of a company
+// points to (ats-hub.replit.app/careers) identifies none of them, and a
+// description found through it belongs to one job only
+async function linkIsOwn(jobId: string): Promise<boolean> {
+	const db = remult.dataProvider;
+	if (!(db instanceof SqlDatabase)) return true;
+	const command = db.createCommand();
+	const { rows } = await command.execute(
+		`select 1 from jobs a join jobs b on b."detailKey" = a."detailKey"
+		 where a.id = ${command.param(jobId)} and lower(b.title) <> lower(a.title) limit 1`
+	);
+	return rows.length === 0;
+}
+
 // what an enrichment pass reads of its queue: the id to write back by and
 // the two links a detail fetch needs — the full rows would be megabytes a
 // pass off the database (remult cannot project columns, so sql does); the
@@ -536,14 +551,17 @@ export class ScrapeController {
 			});
 			// a posting several funds list is described once: a copy whose text
 			// is already in is done without another fetch — as long as its own
-			// listing brought a category, the one thing the fetch would add
+			// listing brought a category, the one thing the fetch would add, and
+			// the link is its posting's alone (see linkIsOwn)
 			const db = remult.dataProvider;
 			if (db instanceof SqlDatabase) {
 				await db.execute(
 					`update jobs set "enrichedAt" = now()
 					 where "fundSlug" = '${slug}' and "enrichedAt" is null and baseline = false
 					   and category <> ''
-					   and exists (select 1 from job_details d where d.id = jobs."detailKey")`
+					   and exists (select 1 from job_details d where d.id = jobs."detailKey")
+					   and not exists (select 1 from jobs o
+					     where o."detailKey" = jobs."detailKey" and lower(o.title) <> lower(jobs.title))`
 				);
 			}
 			const { mentionsTrackedLanguage } = await import('../server/feeds');
@@ -565,8 +583,12 @@ export class ScrapeController {
 								// statement each: an update that finds no row is followed
 								// by the insert (a retry finds the row)
 								const description = d.description.slice(0, DESCRIPTION_LIMIT);
+								let key = job.detailKey || job.id;
 								if (description.trim() && mentionsTrackedLanguage(description)) {
-									const key = job.detailKey || job.id;
+									// a link other jobs share under other titles is a
+									// careers page, not this posting: the text goes under
+									// the job's own id, and the job is keyed by it
+									if (key !== job.id && !(await linkIsOwn(job.id))) key = job.id;
 									const details = repo(JobDetail);
 									const updated = await details.updateMany({
 										where: { id: key },
@@ -578,6 +600,7 @@ export class ScrapeController {
 									where: { id: job.id },
 									set: {
 										enrichedAt: when,
+										...(key !== job.detailKey ? { detailKey: key } : {}),
 										...(d.category ? { category: decodeEntities(d.category) } : {}),
 										...(d.postedAt ? { postedAt: d.postedAt } : {})
 									}
