@@ -15,6 +15,7 @@ import { board as bessemer } from './bessemer';
 import { board as byfounders } from './byfounders';
 import { board as canapi } from './canapi';
 import { board as cherry } from './cherry';
+import { board as cleanenergy } from './cleanenergy';
 import { board as climactic } from './climactic';
 import { board as collab } from './collab';
 import { board as collide } from './collide';
@@ -252,6 +253,7 @@ const impls: Record<string, JobBoardScraper> = {
 	byfounders,
 	canapi,
 	cherry,
+	cleanenergy,
 	climactic,
 	collab,
 	collide,
