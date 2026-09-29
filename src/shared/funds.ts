@@ -22,6 +22,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'byfounders', name: 'byFounders', url: 'https://jobs.byfounders.vc/jobs' },
 	{ slug: 'canapi', name: 'Canapi Ventures', url: 'https://careers.canapi.com/jobs' },
 	{ slug: 'castleisland', name: 'Castle Island Ventures', url: 'https://jobs.castleisland.vc/jobs' },
+	{ slug: 'cdp', name: 'CDP Venture Capital', url: 'https://xjobs.cdpventurecapital.it/en/search-results?category=jobs' },
 	{ slug: 'celesta', name: 'Celesta Capital', url: 'https://careers.celesta.vc/jobs' },
 	{ slug: 'cervin', name: 'Cervin Ventures', url: 'https://jobs.cervinventures.com/jobs' },
 	{ slug: 'cherry', name: 'Cherry Ventures', url: 'https://talent.cherry.vc/jobs' },

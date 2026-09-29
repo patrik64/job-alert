@@ -15,6 +15,7 @@ import { board as bessemer } from './bessemer';
 import { board as byfounders } from './byfounders';
 import { board as canapi } from './canapi';
 import { board as castleisland } from './castleisland';
+import { board as cdp } from './cdp';
 import { board as celesta } from './celesta';
 import { board as cervin } from './cervin';
 import { board as cherry } from './cherry';
@@ -257,6 +258,7 @@ const impls: Record<string, JobBoardScraper> = {
 	byfounders,
 	canapi,
 	castleisland,
+	cdp,
 	celesta,
 	cervin,
 	cherry,
