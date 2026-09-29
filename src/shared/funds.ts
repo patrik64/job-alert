@@ -19,6 +19,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'base10', name: 'Base10', url: 'https://careers.base10.vc/jobs' },
 	{ slug: 'battery', name: 'Battery Ventures', url: 'https://jobs.battery.com/jobs' },
 	{ slug: 'bessemer', name: 'Bessemer Venture Partners', url: 'https://jobs.bvp.com/jobs' },
+	{ slug: 'breakout', name: 'Breakout Ventures', url: 'https://jobs.breakout.vc/jobs' },
 	{ slug: 'breakthrough', name: 'Breakthrough Energy Ventures', url: 'https://bevjobs.breakthroughenergy.org/jobs' },
 	{ slug: 'building', name: 'Building Ventures', url: 'https://jobs.buildingventures.com/jobs' },
 	{ slug: 'burst', name: 'Burst Capital', url: 'https://burst.vc/jobs' },
