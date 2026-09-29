@@ -21,6 +21,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'bessemer', name: 'Bessemer Venture Partners', url: 'https://jobs.bvp.com/jobs' },
 	{ slug: 'byfounders', name: 'byFounders', url: 'https://jobs.byfounders.vc/jobs' },
 	{ slug: 'canapi', name: 'Canapi Ventures', url: 'https://careers.canapi.com/jobs' },
+	{ slug: 'cantos', name: 'Cantos Ventures', url: 'https://jobs.cantos.vc/jobs' },
 	{ slug: 'canvas', name: 'Canvas Prime', url: 'https://jobs.canvas.vc/jobs' },
 	{ slug: 'castleisland', name: 'Castle Island Ventures', url: 'https://jobs.castleisland.vc/jobs' },
 	{ slug: 'cdp', name: 'CDP Venture Capital', url: 'https://xjobs.cdpventurecapital.it/en/search-results?category=jobs' },
