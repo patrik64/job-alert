@@ -14,6 +14,7 @@ import { board as battery } from './battery';
 import { board as bessemer } from './bessemer';
 import { board as burst } from './burst';
 import { board as byfounders } from './byfounders';
+import { board as byld } from './byld';
 import { board as canaan } from './canaan';
 import { board as canapi } from './canapi';
 import { board as cantos } from './cantos';
@@ -261,6 +262,7 @@ const impls: Record<string, JobBoardScraper> = {
 	bessemer,
 	burst,
 	byfounders,
+	byld,
 	canaan,
 	canapi,
 	cantos,
