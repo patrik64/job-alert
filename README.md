@@ -169,7 +169,7 @@ too: its first fetch imports the baseline (the biggest boards are still best
 imported locally first — see Setup). `scripts/post-rust-jobs.mjs` then announces the
 night's new rust jobs on Bluesky from
 [rust-job-alert.bsky.social](https://bsky.app/profile/rust-job-alert.bsky.social):
-every one located in Europe, one line each — company and title linking to its
+every one located in Europe as a bullet list — company and title linking to its
 page on the board, the European place after it — over as many posts as it
 takes, then how many new rust jobs there are in all and at how many VCs, and
 last the link to the rust jobs page. A job several VCs list counts once;

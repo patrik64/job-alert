@@ -69,27 +69,28 @@ function clip(text, n) {
 	return parts.length <= n ? text : `${parts.slice(0, n - 1).join('')}…`;
 }
 
-// the headline, then one line per item — its label linking to the item's
+// the headline, then a bullet per item — its label linking to the item's
 // url, a note after it in brackets — carried over into as many posts as the
 // list takes; the closing lines and the link to the page the announcement
 // stands for come last. items are [{ label, url, note }], the footer is
 // { label, url }
 export function composeList(headline, items, closing, footer) {
+	const bullet = '• ';
 	const posts = [];
 	let post = new Post(POST_LIMIT).add(headline);
 	for (const item of items) {
 		const note = item.note ? ` (${item.note})` : '';
 		const uri = item.url?.startsWith('http') ? item.url : undefined;
 		let lead = post.hasBody ? '\n' : '\n\n';
-		if (!post.fits(lead + item.label + note)) {
+		if (!post.fits(lead + bullet + item.label + note)) {
 			// the post is full — the line opens the next one
 			posts.push(post);
 			post = new Post(POST_LIMIT);
 			lead = '';
 		}
 		// a line longer than a whole post gives up the end of its label
-		const label = clip(item.label, POST_LIMIT - graphemes(note));
-		post.add(lead).add(label, uri);
+		const label = clip(item.label, POST_LIMIT - graphemes(bullet + note));
+		post.add(lead + bullet).add(label, uri);
 		if (note) post.add(note);
 		post.hasBody = true;
 	}
