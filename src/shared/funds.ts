@@ -14,6 +14,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'airbus', name: 'Airbus Ventures', url: 'https://jobs.airbusventures.vc/jobs' },
 	{ slug: 'a16z', name: 'Andreessen Horowitz', url: 'https://jobs.a16z.com/jobs' },
 	{ slug: 'atone', name: 'At One Ventures', url: 'https://jobs.atoneventures.com/jobs' },
+	{ slug: 'atlas', name: 'Atlas Venture', url: 'https://careers.atlasventure.com/jobs' },
 	{ slug: 'avalanche', name: 'Avalanche', url: 'https://jobs.avax.network/jobs' },
 	{ slug: 'avp', name: 'AVP', url: 'https://jobs.avpcap.com/jobs' },
 	{ slug: 'azolla', name: 'Azolla Ventures', url: 'https://jobs.azollaventures.com/jobs' },
