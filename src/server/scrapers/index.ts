@@ -13,6 +13,7 @@ import { board as base10 } from './base10';
 import { board as battery } from './battery';
 import { board as bcapital } from './bcapital';
 import { board as bessemer } from './bessemer';
+import { board as blackhorn } from './blackhorn';
 import { board as bluebear } from './bluebear';
 import { board as blueyard } from './blueyard';
 import { board as blumberg } from './blumberg';
@@ -271,6 +272,7 @@ const impls: Record<string, JobBoardScraper> = {
 	battery,
 	bcapital,
 	bessemer,
+	blackhorn,
 	bluebear,
 	blueyard,
 	blumberg,
