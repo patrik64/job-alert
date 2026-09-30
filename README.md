@@ -210,7 +210,9 @@ descriptions turn up (a substring pass, then the feed's own patterns).
 - `/rss-svelte.xml` — the svelte jobs: "svelte" or "sveltekit" in the title,
   the function, or the stored description, since the framework hardly ever
   makes a title
-- `/rss-cpp.xml` — the c++ jobs: "c++" or "cpp" in the title or function
+- `/rss-cpp.xml` — the c++ jobs: "c++" in the title or function, or "cpp"
+  where the title is about software work — elsewhere the word is a hospital
+  unit or a pension plan
 - `/rss-go.xml` — the go jobs: "golang" in the title or function, or "go"
   where an engineering title names the language — "(Go)", "Go/Rust",
   "Senior Go Engineer" — rather than a product ("Monopoly GO!") or

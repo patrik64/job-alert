@@ -176,11 +176,9 @@ const uniqueRows = (jobs: FeedRow[]) => {
 	});
 };
 
-// a night's finds, fund by fund — the loudest funds first, as on bluesky;
-// each fund a heading linking its own job board, with the jobs as a bullet
-// list under it. The counts describe the bullets, so they too leave the
-// repeats out
-const describe = (rows: FeedRow[]) => {
+// a night's finds, fund by fund — the loudest funds first, as on bluesky —
+// with each fund's repeats folded away
+const byFund = (rows: FeedRow[]) => {
 	const funds = new Map(FUNDS.map((f) => [f.slug, f]));
 	return [...groupBy(rows, (r) => r.fundSlug)]
 		.map(([slug, jobs]) => ({
@@ -193,7 +191,14 @@ const describe = (rows: FeedRow[]) => {
 				)
 			)
 		}))
-		.sort((a, b) => b.jobs.length - a.jobs.length || a.name.localeCompare(b.name))
+		.sort((a, b) => b.jobs.length - a.jobs.length || a.name.localeCompare(b.name));
+};
+
+// each fund a heading linking its own job board, with the jobs as a bullet
+// list under it. The counts describe the bullets, so they too leave the
+// repeats out
+const describe = (funds: ReturnType<typeof byFund>) =>
+	funds
 		.map((g) => {
 			const named = g.jobs.slice(0, MAX_PER_FUND).map((j) => {
 				const label = escape(`${j.company} – ${j.title}`);
@@ -207,7 +212,6 @@ const describe = (rows: FeedRow[]) => {
 			);
 		})
 		.join('\n');
-};
 
 // rows are the genuine newcomers (no baseline imports), newest first;
 // latestFetch is when any fund was last refreshed successfully. A settled
@@ -227,14 +231,16 @@ export function rssFeed(
 	const nights = [...byDay].sort(([a], [b]) => (a < b ? 1 : -1)).slice(0, MAX_ITEMS);
 	const items = nights.map(([day, rows]) => {
 		const link = `${SITE_URL}/timeline#${day}`;
+		const funds = byFund(rows);
 		return [
 			'<item>',
-			`<title>${escape(feed.headline(rows.length))}</title>`,
+			// the headline counts the bullets under it, not the rows behind them
+			`<title>${escape(feed.headline(funds.reduce((n, f) => n + f.jobs.length, 0)))}</title>`,
 			`<link>${link}</link>`,
 			`<guid>${link}</guid>`,
 			// when the night's last newcomer landed
 			`<pubDate>${rows[0].firstSeenAt.toUTCString()}</pubDate>`,
-			`<description>${escape(describe(rows))}</description>`,
+			`<description>${escape(describe(funds))}</description>`,
 			'</item>'
 		].join('\n');
 	});

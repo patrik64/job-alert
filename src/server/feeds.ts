@@ -46,6 +46,11 @@ const REACT = /\breact(?:\.?js|[- ]native)?\b/i;
 const REACT_DESCRIBED = /\bReact\b|\b[Rr]eact\.?[Jj][Ss]\b|\b[Rr]eact[- ][Nn]ative\b/;
 const REACT_SQL = '\\mReact\\M|\\m[Rr]eact\\.?[Jj][Ss]\\M|\\m[Rr]eact[- ][Nn]ative\\M';
 
+// the start of a title about software work — where a bare "go" or "cpp" can
+// be the language
+const SOFTWARE_TITLE =
+	'^(?=.*(?:engineer|developer|programmer|software|back[\\s-]?end|architect|infrastructure|devops|\\b(?:sre|sde|tech)\\b)).*';
+
 // the language, in a title or job function: golang anywhere, and go where a
 // title names a language — "(Go)", "(Go, Java)", "Go/Rust", "Python & GO",
 // "- Go", "PHP or Go" — or stands beside the role ("Go Software Engineer",
@@ -56,8 +61,7 @@ const REACT_SQL = '\\mReact\\M|\\m[Rr]eact\\.?[Jj][Ss]\\M|\\m[Rr]eact[- ][Nn]ati
 // there in any casing
 const GO = new RegExp(
 	'\\bgolang\\b|' +
-		// a title about software work
-		'^(?=.*(?:engineer|developer|programmer|software|back[\\s-]?end|architect|infrastructure|devops|\\b(?:sre|sde|tech)\\b)).*' +
+		SOFTWARE_TITLE +
 		// after an opening bracket, a list separator or a dash, or after a
 		// connecting, seniority or role word
 		'(?<=(?:^|[(\\[,/&+|:;]|\\s[-–—])\\s*|\\b(?:or|and|in|with|senior|sr\\.?|staff|lead|principal|junior|jr\\.?|mid|head|experienced|remote|freelance|back[\\s-]?end|stack|engineers?|developers?|programmers?)\\s+)go' +
@@ -69,9 +73,11 @@ const GO = new RegExp(
 const GO_DESCRIBED = /\bgolang\b/i;
 const GO_SQL = '\\mgolang\\M';
 
-// the language written out ("C++", also mid-title as in "C/C++") or as the
-// word cpp; a word boundary can't follow the pluses
-const CPP = /\bc\+\+|\bcpp\b/i;
+// the language written out ("C++", also mid-title as in "C/C++") — a word
+// boundary can't follow the pluses — or as the word cpp in a title about
+// software work: on its own cpp is as soon a hospital unit, a pension plan
+// or a payroll certificate ("CPP/Transfer Center RN Supervisor")
+const CPP = new RegExp('\\bc\\+\\+|' + SOFTWARE_TITLE + '\\bcpp\\b', 'i');
 
 // jobs that say devops themselves, in the title or the board's job function;
 // descriptions stay out of it — "works closely with our devops team" does
