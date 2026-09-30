@@ -12,6 +12,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: '2150', name: '2150', url: 'https://2150.getro.com/jobs' },
 	{ slug: '8vc', name: '8VC', url: 'https://jobs.8vc.com/jobs' },
 	{ slug: 'airbus', name: 'Airbus Ventures', url: 'https://jobs.airbusventures.vc/jobs' },
+	{ slug: 'amplify', name: 'Amplify Partners', url: 'https://talent.amplifypartners.com/jobs' },
 	{ slug: 'a16z', name: 'Andreessen Horowitz', url: 'https://jobs.a16z.com/jobs' },
 	{ slug: 'anthemis', name: 'Anthemis Group', url: 'https://jobs.anthemis.com/jobs' },
 	{ slug: 'atone', name: 'At One Ventures', url: 'https://jobs.atoneventures.com/jobs' },
