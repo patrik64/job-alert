@@ -22,6 +22,7 @@ import { board as bowery } from './bowery';
 import { board as box } from './box';
 import { board as breakout } from './breakout';
 import { board as breakthrough } from './breakthrough';
+import { board as btv } from './btv';
 import { board as building } from './building';
 import { board as burst } from './burst';
 import { board as byfounders } from './byfounders';
@@ -281,6 +282,7 @@ const impls: Record<string, JobBoardScraper> = {
 	box,
 	breakout,
 	breakthrough,
+	btv,
 	building,
 	burst,
 	byfounders,
