@@ -4,6 +4,7 @@ import type { JobBoardScraper } from './types';
 import { board as zeroonea } from './01a';
 import { board as twentyonefifty } from './2150';
 import { board as fiveam } from './5am';
+import { board as sixfortyfive } from './645';
 import { board as eightvc } from './8vc';
 import { board as a16z } from './a16z';
 import { board as able } from './able';
@@ -285,6 +286,7 @@ const impls: Record<string, JobBoardScraper> = {
 	'01a': zeroonea,
 	'2150': twentyonefifty,
 	'5am': fiveam,
+	'645': sixfortyfive,
 	'8vc': eightvc,
 	a16z,
 	able,

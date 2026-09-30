@@ -11,6 +11,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: '01a', name: '01 Advisors', url: 'https://jobs.01a.com/jobs' },
 	{ slug: '2150', name: '2150', url: 'https://2150.getro.com/jobs' },
 	{ slug: '5am', name: '5AM Ventures', url: 'https://jobs.5amventures.com/jobs' },
+	{ slug: '645', name: '645 Ventures', url: 'https://jobs.645ventures.com/jobs' },
 	{ slug: '8vc', name: '8VC', url: 'https://jobs.8vc.com/jobs' },
 	{ slug: 'able', name: 'Able Partners', url: 'https://careers.ablepartners.nyc/jobs' },
 	{ slug: 'abstract', name: 'Abstract Ventures', url: 'https://jobs.abstractvc.com/jobs' },
