@@ -6,6 +6,7 @@ import { board as twentyonefifty } from './2150';
 import { board as eightvc } from './8vc';
 import { board as a16z } from './a16z';
 import { board as airbus } from './airbus';
+import { board as aix } from './aix';
 import { board as alleycorp } from './alleycorp';
 import { board as alven } from './alven';
 import { board as amplify } from './amplify';
@@ -281,6 +282,7 @@ const impls: Record<string, JobBoardScraper> = {
 	'8vc': eightvc,
 	a16z,
 	airbus,
+	aix,
 	alleycorp,
 	alven,
 	amplify,
