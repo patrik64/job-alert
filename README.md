@@ -26,10 +26,15 @@ live at https://job-alert-pax.vercel.app/
   baseline import and is not counted as newcomers. A **clean** button
   (development only) acknowledges the current newcomers.
 - **search** (`/search`) — searches all listed jobs across every board by
-  title, company, category, sector or location (server-side, debounced).
-  Terms combine with uppercase `AND` and `OR` (`AND` binds tighter); a term
-  in `"quotes"` must match a title, company or location exactly, or be a
-  whole category/sector tag.
+  title, company, category, sector or location (server-side, debounced),
+  through a word index: words match from their start ("eng" finds
+  "Engineer"; a one-letter word, as in "C#", only as a whole word). A term
+  naming a feed's topic — rust, go or golang, c++ or cpp, svelte, kotlin,
+  react, devops, product manager — finds what that feed does, for the
+  languages including jobs whose stored description names them. Terms combine
+  with uppercase `AND` and `OR` (`AND` binds tighter); a term in `"quotes"`
+  must match a title, company or location exactly, or be a whole
+  category/sector tag.
 - **timeline** (`/timeline`) — the newcomers of the last three days grouped by
   the day they first appeared and then by fund, newest day first; **show
   earlier** widens the window. A checkbox brings the funds' baseline imports

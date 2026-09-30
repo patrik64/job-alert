@@ -96,6 +96,14 @@
 	{#if !searched && !searching}
 		<ul class="mt-6 ml-5 flex list-disc flex-col gap-1.5 text-sm text-white/80">
 			<li>
+				words match from their start in the title, company, category, sector or location — eng
+				finds Engineer, ops does not find DevOps
+			</li>
+			<li>
+				rust, go, c++, svelte, kotlin, react, devops and product manager find what their rss feeds
+				do — for the languages, a job whose description names one counts too
+			</li>
+			<li>
 				a term in "quotes" matches exactly: a title, company or location that is exactly that, or
 				a whole category/sector tag
 			</li>

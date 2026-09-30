@@ -138,6 +138,11 @@ export const TOPICS = {
 } satisfies Record<string, Topic>;
 export type TopicName = keyof typeof TOPICS;
 
+// a topic's pattern in postgres's dialect, where a word boundary is \y, and
+// the operator that matches it
+export const posix = (re: RegExp) => re.source.replaceAll('\\b', '\\y');
+export const operator = (re: RegExp) => (re.flags.includes('i') ? '~*' : '~');
+
 // a topic ready to judge jobs: the stored descriptions its pattern finds (by
 // posting key), and the test — the title, the job function, or one of those
 // descriptions

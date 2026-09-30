@@ -47,56 +47,6 @@ export interface SearchHit {
 
 export const SEARCH_LIMIT = 500;
 
-// one operand of a search term: what to look for, and whether it must match a
-// field exactly (it was written in quotes) or merely appear in one
-interface SearchPart {
-	needle: string;
-	exact: boolean;
-}
-
-// a term parses into an OR of AND-groups: an uppercase OR starts a new group,
-// an uppercase AND separates operands within one — so AND binds tighter — and
-// a quoted stretch is one operand whatever it says inside. lowercase and/or
-// are ordinary text, as is an apostrophe inside a word ("women's health");
-// only a '…' standing free the way a "…" does quotes
-const parseSearch = (term: string): SearchPart[][] => {
-	const groups: SearchPart[][] = [];
-	let group: SearchPart[] = [];
-	let buf = '';
-	const endPart = () => {
-		const q = buf.trim();
-		buf = '';
-		const quoted = q.match(/^"([\s\S]+)"$/) ?? q.match(/^'([\s\S]+)'$/);
-		const needle = (quoted?.[1] ?? q).trim();
-		if (needle) group.push({ needle, exact: !!quoted });
-	};
-	const endGroup = () => {
-		endPart();
-		if (group.length) groups.push(group);
-		group = [];
-	};
-	for (const token of term.match(/"[^"]*"|(?<=^|\s)'[^']*'(?=\s|$)|\s+|[^\s"]+|"/g) ?? []) {
-		if (token === 'OR') endGroup();
-		else if (token === 'AND') endPart();
-		else buf += token;
-	}
-	endGroup();
-	return groups;
-};
-
-// whether one job satisfies one operand, the way the comment on searchJobs
-// spells out
-const partMatches = (job: Job, part: SearchPart): boolean => {
-	const key = part.needle.toLowerCase();
-	if (!part.exact)
-		return [job.title, job.company, job.category, job.sector, job.location].some((s) =>
-			s.toLowerCase().includes(key)
-		);
-	const is = (s: string) => s.trim().toLowerCase() === key;
-	const tagged = (tags: string) => tags.toLowerCase().split(',').some((tag) => tag.trim() === key);
-	return is(job.title) || is(job.company) || is(job.location) || tagged(job.category) || tagged(job.sector);
-};
-
 // a job on the rust jobs page, with where the language turned up: the title,
 // the job function, or — for a job whose description is stored — only there
 export interface RustJob extends SearchHit {
@@ -207,6 +157,18 @@ async function pendingDetailJobs(slug: string): Promise<PendingJob[]> {
 	}));
 }
 
+// what the search reads of a job: its title, company, job function, industry
+// and location as one document of words. Slashes and dots split words there
+// ("Rust/Go", "Node.js"), which postgres's parser would keep whole as a path
+// or a host name. jobs_search_idx is built over this very expression — which
+// is how postgres knows to use it — and search terms are split by searchWords
+// too, so both sides break the same way
+export const searchWords = (text: string) => `to_tsvector('simple', translate(${text}, '/.', '  '))`;
+export const SEARCH_DOCUMENT = searchWords(
+	"coalesce(title, '') || ' ' || coalesce(company, '') || ' ' || coalesce(category, '') || ' ' || " +
+		"coalesce(sector, '') || ' ' || coalesce(location, '')"
+);
+
 // the indexes the queries below lean on — remult's ensureSchema makes tables
 // and columns but no indexes, so they are created here, once per process.
 // `if not exists` makes this a no-op the moment they are in place (and on an
@@ -223,6 +185,8 @@ async function ensureIndexes(): Promise<void> {
 		await db.execute('create index if not exists jobs_fundslug_idx on jobs ("fundSlug")');
 		await db.execute('create index if not exists jobs_firstseen_idx on jobs ("firstSeenAt")');
 		await db.execute('create index if not exists jobs_detailkey_idx on jobs ("detailKey")');
+		// the search's word index (see SEARCH_DOCUMENT)
+		await db.execute(`create index if not exists jobs_search_idx on jobs using gin (${SEARCH_DOCUMENT})`);
 	}
 	indexesEnsured = true;
 }
@@ -626,68 +590,15 @@ export class ScrapeController {
 		}
 	}
 
-	// a term is an OR of AND-groups (see parseSearch). An operand matches a
-	// job when any of title, company, category, sector or location contains
-	// it — or, written in quotes, when the title, company or location is
-	// exactly that, or a category/sector tag is — all case-insensitively.
-	// exactness is decided here rather than in the browser, because the rows
-	// a substring query returns are capped and the exact ones must not be
-	// lost behind that cap. matches come in pages of SEARCH_LIMIT; page asks
-	// for the next batch
+	// a term is an OR of AND-groups of operands — a feed's topic, a quoted
+	// exact match, or words matched from their start; src/server/search.ts
+	// spells it out. matches come in pages of SEARCH_LIMIT; page asks for the
+	// next batch
 	@BackendMethod({ allowed: true })
 	static async searchJobs(term: string, page = 0): Promise<SearchHit[]> {
-		const groups = parseSearch(term);
-		if (groups.length === 0) return [];
-		const batch = Math.max(0, Math.floor(page));
-
-		// the database narrows by substrings — an exact match is one of those
-		// too — and any exact operands are then judged here on the capped rows
-		const anyContains = (needle: string) => ({
-			$or: [
-				{ title: { $contains: needle } },
-				{ company: { $contains: needle } },
-				{ category: { $contains: needle } },
-				{ sector: { $contains: needle } },
-				{ location: { $contains: needle } }
-			]
-		});
-		const hasExact = groups.some((g) => g.some((p) => p.exact));
-		const rows = await repo(Job).find({
-			where: {
-				$or: groups.map((g) => ({ $and: g.map((p) => anyContains(p.needle)) }))
-			},
-			// the id as the last key pins jobs that tie on everything else, so
-			// consecutive pages never overlap or leave a gap
-			orderBy: { firstSeenAt: 'desc', company: 'asc', title: 'asc', id: 'asc' },
-			limit: hasExact ? 100_000 : SEARCH_LIMIT,
-			// with an exact operand the filtering happens below, after the
-			// fetch — it pages there too
-			...(hasExact ? {} : { page: batch + 1 })
-		});
-
-		const hits = hasExact
-			? rows
-					.filter((job) => groups.some((g) => g.every((p) => partMatches(job, p))))
-					.slice(batch * SEARCH_LIMIT, (batch + 1) * SEARCH_LIMIT)
-			: rows;
-
-		return hits.map((job) => ({
-			id: job.id,
-			fundSlug: job.fundSlug,
-			company: job.company,
-			companyUrl: job.companyUrl,
-			title: job.title,
-			url: job.url,
-			applyUrl: job.applyUrl,
-			category: job.category,
-			sector: job.sector,
-			location: job.location,
-			salaryMin: job.salaryMin,
-			salaryMax: job.salaryMax,
-			salaryCurrency: job.salaryCurrency,
-			salaryPeriod: job.salaryPeriod,
-			firstSeenAt: job.firstSeenAt?.toISOString() ?? ''
-		}));
+		if (!import.meta.env.SSR) throw new Error('searchJobs only runs on the server');
+		const { searchJobs } = await import('../server/search');
+		return searchJobs(term, page);
 	}
 
 	// the listed jobs that have to do with rust: the language named in the

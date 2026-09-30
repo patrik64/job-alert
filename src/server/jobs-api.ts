@@ -9,7 +9,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { remult, SqlDatabase } from 'remult';
 import { api } from './api';
-import { TOPICS, type Topic, type TopicName } from './feeds';
+import { operator, posix, TOPICS, type Topic, type TopicName } from './feeds';
 import { inRegions, isRemote, REGIONS, regionsOf, type Region } from './regions';
 import { formatSalary } from '../lib/salary';
 import { fundName } from '../shared/funds';
@@ -186,10 +186,6 @@ const termsPattern = (terms: Term[]) =>
 				(prefix ? '' : '(?:[^a-z0-9]|$)')
 		)
 		.join('|')})`;
-
-// a feed's pattern in postgres's dialect, where a word boundary is \y
-const posix = (re: RegExp) => re.source.replaceAll('\\b', '\\y');
-const operator = (re: RegExp) => (re.flags.includes('i') ? '~*' : '~');
 
 function topicCondition({ title, category, described }: Topic, param: (v: unknown) => string) {
 	const tests = [
