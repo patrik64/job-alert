@@ -15,6 +15,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'alven', name: 'Alven', url: 'https://jobs.alven.co/jobs' },
 	{ slug: 'amplifyla', name: 'Amplify LA', url: 'https://jobs.amplify.la/jobs' },
 	{ slug: 'amplify', name: 'Amplify Partners', url: 'https://talent.amplifypartners.com/jobs' },
+	{ slug: 'amplitude', name: 'Amplitude Ventures', url: 'https://careers.amplitudevc.com/jobs' },
 	{ slug: 'a16z', name: 'Andreessen Horowitz', url: 'https://jobs.a16z.com/jobs' },
 	{ slug: 'anthemis', name: 'Anthemis Group', url: 'https://jobs.anthemis.com/jobs' },
 	{ slug: 'atone', name: 'At One Ventures', url: 'https://jobs.atoneventures.com/jobs' },
