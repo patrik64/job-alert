@@ -9,6 +9,7 @@ import { board as airbus } from './airbus';
 import { board as avp } from './avp';
 import { board as b2venture } from './b2venture';
 import { board as balderton } from './balderton';
+import { board as ballistic } from './ballistic';
 import { board as bam } from './bam';
 import { board as base10 } from './base10';
 import { board as battery } from './battery';
@@ -272,6 +273,7 @@ const impls: Record<string, JobBoardScraper> = {
 	avp,
 	b2venture,
 	balderton,
+	ballistic,
 	bam,
 	base10,
 	battery,
