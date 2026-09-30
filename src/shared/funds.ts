@@ -22,6 +22,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'bessemer', name: 'Bessemer Venture Partners', url: 'https://jobs.bvp.com/jobs' },
 	{ slug: 'bluebear', name: 'Blue Bear Capital', url: 'https://jobs.bluebearcap.com/jobs' },
 	{ slug: 'blueyard', name: 'BlueYard Capital', url: 'https://jobs.blueyard.com/jobs' },
+	{ slug: 'blumberg', name: 'Blumberg Capital', url: 'https://careers.blumbergcapital.com/jobs' },
 	{ slug: 'bonfire', name: 'Bonfire Ventures', url: 'https://jobs.bonfirevc.com/jobs' },
 	{ slug: 'bowery', name: 'Bowery Capital', url: 'https://bowerycap.com/portfolio-jobs' },
 	{ slug: 'box', name: 'Box', url: 'https://careers.box.com/en/jobs/' },
