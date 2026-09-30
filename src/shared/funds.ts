@@ -12,6 +12,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: '2150', name: '2150', url: 'https://2150.getro.com/jobs' },
 	{ slug: '8vc', name: '8VC', url: 'https://jobs.8vc.com/jobs' },
 	{ slug: 'airbus', name: 'Airbus Ventures', url: 'https://jobs.airbusventures.vc/jobs' },
+	{ slug: 'alleycorp', name: 'AlleyCorp', url: 'https://jobs.alleycorp.com/jobs' },
 	{ slug: 'alven', name: 'Alven', url: 'https://jobs.alven.co/jobs' },
 	{ slug: 'amplifyla', name: 'Amplify LA', url: 'https://jobs.amplify.la/jobs' },
 	{ slug: 'amplify', name: 'Amplify Partners', url: 'https://talent.amplifypartners.com/jobs' },
