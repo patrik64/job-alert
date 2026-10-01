@@ -181,6 +181,7 @@ import { board as matchstick } from './matchstick';
 import { board as maveron } from './maveron';
 import { board as mayfield } from './mayfield';
 import { board as mcj } from './mcj';
+import { board as medtech } from './medtech';
 import { board as menlo } from './menlo';
 import { board as meron } from './meron';
 import { board as metaprop } from './metaprop';
@@ -464,6 +465,7 @@ const impls: Record<string, JobBoardScraper> = {
 	maveron,
 	mayfield,
 	mcj,
+	medtech,
 	menlo,
 	meron,
 	metaprop,

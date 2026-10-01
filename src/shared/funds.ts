@@ -189,6 +189,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'maveron', name: 'Maveron', url: 'https://jobs.maveron.com/jobs' },
 	{ slug: 'mayfield', name: 'Mayfield', url: 'https://mayfield.getro.com/jobs' },
 	{ slug: 'mcj', name: 'MCJ', url: 'https://jobs.mcj.vc/jobs' },
+	{ slug: 'medtech', name: 'MedTech Innovator', url: 'https://jobs.medtechinnovator.org/jobs' },
 	{ slug: 'menlo', name: 'Menlo Ventures', url: 'https://jobs.menlovc.com/jobs' },
 	{ slug: 'meron', name: 'Meron Capital', url: 'https://www.meron.vc/jobs' },
 	{ slug: 'metaprop', name: 'MetaProp', url: 'https://jobs.metaprop.com/jobs' },
