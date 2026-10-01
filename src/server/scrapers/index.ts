@@ -2,6 +2,7 @@ import { FUNDS } from '../../shared/funds';
 import type { JobBoardScraper } from './types';
 // these slugs lead with a digit, so the bindings can't be named after them
 import { board as zeroonea } from './01a';
+import { board as fifteenseventeen } from './1517';
 import { board as twentyonefifty } from './2150';
 import { board as fiveam } from './5am';
 import { board as sixfortyfive } from './645';
@@ -284,6 +285,7 @@ import { board as zetta } from './zetta';
 
 const impls: Record<string, JobBoardScraper> = {
 	'01a': zeroonea,
+	'1517': fifteenseventeen,
 	'2150': twentyonefifty,
 	'5am': fiveam,
 	'645': sixfortyfive,
