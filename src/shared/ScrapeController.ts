@@ -187,6 +187,20 @@ async function ensureIndexes(): Promise<void> {
 		await db.execute('create index if not exists jobs_detailkey_idx on jobs ("detailKey")');
 		// the search's word index (see SEARCH_DOCUMENT)
 		await db.execute(`create index if not exists jobs_search_idx on jobs using gin (${SEARCH_DOCUMENT})`);
+		// every night deletes the departed jobs and rewrites the newcomer flags
+		// of the last ones — some twenty thousand dead rows. Left to postgres's
+		// default, autovacuum waits for a fifth of the table to die, and the
+		// table and its indexes grow by the nights in between instead of
+		// reusing the space: vacuum is asked for after every night's run. Set
+		// only when missing, since the change waits on a running vacuum
+		const { rows } = await db.execute(
+			`select 1 from pg_class where relname = 'jobs'
+			 and 'autovacuum_vacuum_scale_factor=0.02' = any(coalesce(reloptions, '{}'))`
+		);
+		if (rows.length === 0)
+			await db.execute(
+				'alter table jobs set (autovacuum_vacuum_scale_factor = 0.02, autovacuum_vacuum_threshold = 1000)'
+			);
 	}
 	indexesEnsured = true;
 }
