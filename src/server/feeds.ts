@@ -24,7 +24,7 @@ import {
 	WINDOW_DAYS,
 	type FeedSpec
 } from './rss';
-import { describedIds, RUST, RUST_SQL } from '../shared/ScrapeController';
+import { describedIds, inTextRe, RUST, RUST_SQL } from '../shared/ScrapeController';
 import { FeedRender } from '../shared/FeedRender';
 import { Fund } from '../shared/Fund';
 
@@ -166,13 +166,11 @@ async function topicNewcomers(topic: Topic, since: Date): Promise<FeedJob[]> {
 
 // whether a description is worth keeping at all: only the five language
 // topics above ever read stored text, so enrichment stores a description
-// only when one of their patterns speaks up
+// only when one of their patterns speaks up — in its text, not its markup
+// (see inText)
+const DESCRIBED_LANGUAGES = [RUST, SVELTE, KOTLIN, GO_DESCRIBED, REACT_DESCRIBED].map(inTextRe);
 export const mentionsTrackedLanguage = (text: string) =>
-	RUST.test(text) ||
-	SVELTE.test(text) ||
-	KOTLIN.test(text) ||
-	GO_DESCRIBED.test(text) ||
-	REACT_DESCRIBED.test(text);
+	DESCRIBED_LANGUAGES.some((re) => re.test(text));
 
 export const FEEDS: { slug: string; spec: FeedSpec; topic: Topic }[] = [
 	{ slug: 'rss-rust', spec: RUST_FEED, topic: TOPICS.rust },

@@ -208,7 +208,10 @@ end of the nightly run — after the night has settled — and stored, so
 serving them costs the database one small row rather than the whole newcomer
 window per request. Each feed reaches back thirty days, every night in full:
 the render asks the database only for the jobs a feed's words or stored
-descriptions turn up (a substring pass, then the feed's own patterns).
+descriptions turn up (a substring pass, then the feed's own patterns). A
+description counts only by its text, never its markup: a svelte-built
+careers page's `id="svelte-announcer"` or a link to `…/bun-in-rust` names
+no language.
 
 - `/rss-rust.xml` — the rust jobs, matched as on the rust jobs page (title,
   function, or the stored description)

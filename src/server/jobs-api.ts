@@ -10,6 +10,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { remult, SqlDatabase } from 'remult';
 import { api } from './api';
 import { operator, posix, TOPICS, type Topic, type TopicName } from './feeds';
+import { inText } from '../shared/ScrapeController';
 import { inRegions, isRemote, REGIONS, regionsOf, type Region } from './regions';
 import { formatSalary } from '../lib/salary';
 import { fundName } from '../shared/funds';
@@ -194,7 +195,7 @@ function topicCondition({ title, category, described }: Topic, param: (v: unknow
 	];
 	if (described)
 		tests.push(
-			`j."detailKey" in (select d.id from job_details d where d.description ${described.exactCase ? '~' : '~*'} ${param(described.posix)})`
+			`j."detailKey" in (select d.id from job_details d where d.description ${described.exactCase ? '~' : '~*'} ${param(inText(described.posix))})`
 		);
 	return `(${tests.join(' or ')})`;
 }

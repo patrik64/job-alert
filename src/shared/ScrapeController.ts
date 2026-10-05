@@ -78,6 +78,16 @@ export const RUST_SQL = '\\mrust\\M';
 // descriptions are html by the thousand: the database matches them, on word
 // boundaries, and only the ids travel — unless the data provider is the json
 // fallback of local development, which has no sql
+// a language's pattern as stored descriptions are read: they are html, and
+// the word must stand in the text, not inside a tag — in an attribute or a
+// link's address, like the id="svelte-announcer" of a svelte-built careers
+// page (a nurse's posting that said nothing of svelte) or the href of a blog
+// post on bun-in-rust. A match is inside a tag when the next angle bracket
+// after it is the one closing the tag. Once for the database's posix engine
+// and once for js
+export const inText = (posix: string) => `(?:${posix})(?![^<>]*>)`;
+export const inTextRe = (re: RegExp) => new RegExp(inText(re.source), re.flags);
+
 export async function describedIds(
 	posix: string,
 	substring: string,
@@ -88,13 +98,13 @@ export async function describedIds(
 	return db instanceof SqlDatabase
 		? (
 				await db.execute(
-					`select id from job_details where description ${exactCase ? '~' : '~*'} '${posix}'`
+					`select id from job_details where description ${exactCase ? '~' : '~*'} '${inText(posix)}'`
 				)
 			).rows.map((r) => String(r.id))
 		: // a substring query first ("Trust" would come along for rust), the
 			// word test after
 			(await repo(JobDetail).find({ where: { description: { $contains: substring } }, limit: 100_000 }))
-				.filter((d) => word.test(d.description))
+				.filter((d) => inTextRe(word).test(d.description))
 				.map((d) => d.id);
 }
 
