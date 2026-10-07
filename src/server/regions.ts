@@ -28,7 +28,7 @@ export type Region = (typeof REGIONS)[number];
 // split three ways, since the eu (with the countries sharing its free
 // movement) and the uk hire differently — or a stretch of the world as a
 // whole
-type Area =
+export type Area =
 	| 'eu'
 	| 'uk'
 	| 'europe-other'
@@ -1019,7 +1019,9 @@ const MATCHERS = AREAS.map((area) => {
 	};
 });
 
-const areasOf = (location: string) =>
+// the areas a location names outright — the statistics count a job where it
+// is, not everywhere it is within reach of
+export const areasOf = (location: string) =>
 	new Set(
 		MATCHERS.filter((m) => m.words.test(location) || m.codes?.test(location)).map((m) => m.area)
 	);

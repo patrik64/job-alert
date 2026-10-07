@@ -119,6 +119,13 @@
 						timeline
 					</a>
 					<a
+						href="/statistics"
+						onclick={() => (menuOpen = false)}
+						class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+					>
+						statistics
+					</a>
+					<a
 						href="/rust-jobs"
 						onclick={() => (menuOpen = false)}
 						class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
@@ -195,14 +202,20 @@
 				timeline
 			</a>
 			<a
+				href="/statistics"
+				class="hidden min-[540px]:block text-white transition duration-150 hover:text-primary-300"
+			>
+				statistics
+			</a>
+			<a
 				href="/rust-jobs"
-				class="hidden min-[530px]:block text-white transition duration-150 hover:text-primary-300"
+				class="hidden min-[610px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				rust jobs
 			</a>
 			<a
 				href="/about"
-				class="hidden min-[580px]:block text-white transition duration-150 hover:text-primary-300"
+				class="hidden min-[660px]:block text-white transition duration-150 hover:text-primary-300"
 			>
 				about
 			</a>

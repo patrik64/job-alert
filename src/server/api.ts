@@ -9,6 +9,7 @@ import { Fund } from '../shared/Fund';
 import { Job } from '../shared/Job';
 import { JobDetail } from '../shared/JobDetail';
 import { ScrapeController } from '../shared/ScrapeController';
+import { StatisticsRow } from '../shared/StatisticsRow';
 
 function postgresDataProvider() {
 	if (!env.DATABASE_URL) return undefined; // JSON files under ./db (local dev)
@@ -28,7 +29,7 @@ function postgresDataProvider() {
 }
 
 export const api = remultApi({
-	entities: [FeedRender, Fund, Job, JobDetail],
+	entities: [FeedRender, Fund, Job, JobDetail, StatisticsRow],
 	controllers: [ScrapeController],
 	admin: dev,
 	dataProvider: postgresDataProvider()

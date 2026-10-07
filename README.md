@@ -39,6 +39,15 @@ live at https://job-alert-pax.vercel.app/
   the day they first appeared and then by fund, newest day first; **show
   earlier** widens the window. A checkbox brings the funds' baseline imports
   in, each showing as a count on its day.
+- **statistics** (`/statistics`) — the newcomers counted month by month: new
+  jobs by day, the funds and companies adding the most, the job functions,
+  where the jobs are, each rss feed's topic with a chart of its own, and the
+  jobs listed across the boards. The nightly run counts each night into a
+  ledger (one row a day, `statistics` table) and sums the months into a
+  summary row that `/statistics.json` serves — so the numbers stand even once
+  the jobs have left their boards, and a page view costs the database one
+  small row. The days before the ledger began were counted after the fact,
+  from the jobs still listed then.
 - **rust jobs** (`/rust-jobs`) — the timeline's form over the listed jobs that
   have to do with rust: the language named in the title or job function, or
   mentioned in the description where one is stored (a word match — "Trust"

@@ -56,7 +56,9 @@
 			<a href="/search" class="font-semibold text-white underline">search</a> finds jobs across every
 			board by title, company, category, sector or location,
 			<a href="/timeline" class="font-semibold text-white underline">timeline</a> groups them by the
-			day they first appeared, and
+			day they first appeared,
+			<a href="/statistics" class="font-semibold text-white underline">statistics</a> counts them
+			month by month — by fund, company, job function, place and rss feed — and
 			<a href="/rust-jobs" class="font-semibold text-white underline">rust jobs</a> picks out, in the
 			same form, the listed jobs that name the language in their title or function — or in their
 			description, where one is kept. Job descriptions are kept for the jobs that appear after a

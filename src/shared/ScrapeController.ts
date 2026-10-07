@@ -709,6 +709,17 @@ export class ScrapeController {
 		return FUNDS.map(({ slug, name }) => ({ slug, name }));
 	}
 
+	// count the night's newcomers into the statistics ledger and refresh the
+	// summary the statistics page reads — called by the nightly run after the
+	// feeds (see server/statistics.ts). days reaches that many days back, for
+	// a backfill; the two latest are always counted again
+	@BackendMethod({ allowed: true, transactional: false })
+	static async renderStatistics(days = 2): Promise<{ days: number; months: number }> {
+		if (!import.meta.env.SSR) throw new Error('renderStatistics only runs on the server');
+		const { renderStatistics } = await import('../server/statistics');
+		return renderStatistics(days);
+	}
+
 	// render the rss feeds into their stored rows — called by the nightly run
 	// once its fetches are done, so one reading of the newcomer window serves
 	// every feed request until the next night (see server/feeds.ts)

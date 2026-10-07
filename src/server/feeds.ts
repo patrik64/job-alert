@@ -145,15 +145,15 @@ export const operator = (re: RegExp) => (re.flags.includes('i') ? '~*' : '~');
 
 // a topic ready to judge jobs: the stored descriptions its pattern finds (by
 // posting key), and the test — the title, the job function, or one of those
-// descriptions
-async function readTopic({ title, category, described }: Topic) {
+// descriptions. The statistics count the nights' newcomers by the same test
+export async function readTopic({ title, category, described }: Topic) {
 	const detailKeys = described
 		? await describedIds(described.posix, described.substring, described.word, described.exactCase)
 		: [];
 	const mentioned = new Set(detailKeys);
 	return {
 		detailKeys,
-		match: (job: FeedJob) =>
+		match: (job: Pick<FeedJob, 'title' | 'category' | 'detailKey'>) =>
 			title.test(job.title) || category.test(job.category) || mentioned.has(job.detailKey)
 	};
 }

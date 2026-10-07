@@ -186,6 +186,14 @@ if (!only) {
 	} catch (err) {
 		console.log(`feed rendering failed: ${String(err instanceof Error ? err.message : err).slice(0, 120)}`);
 	}
+	// the night's numbers go into the statistics ledger, and the summary the
+	// statistics page reads is summed anew from every night's
+	try {
+		const counted = await call('renderStatistics', []);
+		console.log(`statistics counted, ${counted.days} days`);
+	} catch (err) {
+		console.log(`statistics failed: ${String(err instanceof Error ? err.message : err).slice(0, 120)}`);
+	}
 }
 
 const failed = results.filter((r) => r.error);
