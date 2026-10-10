@@ -16,11 +16,13 @@ import { board as airtree } from './airtree';
 import { board as aix } from './aix';
 import { board as alleycorp } from './alleycorp';
 import { board as alven } from './alven';
+import { board as amadeus } from './amadeus';
 import { board as amplify } from './amplify';
 import { board as amplifyla } from './amplifyla';
 import { board as amplitude } from './amplitude';
 import { board as anthemis } from './anthemis';
 import { board as atlas } from './atlas';
+import { board as atomico } from './atomico';
 import { board as atone } from './atone';
 import { board as avalanche } from './avalanche';
 import { board as avp } from './avp';
@@ -75,6 +77,8 @@ import { board as crane } from './crane';
 import { board as creandum } from './creandum';
 import { board as crosscut } from './crosscut';
 import { board as crv } from './crv';
+import { board as daphni } from './daphni';
+import { board as dawn } from './dawn';
 import { board as dcvc } from './dcvc';
 import { board as decibel } from './decibel';
 import { board as deciens } from './deciens';
@@ -114,6 +118,7 @@ import { board as flagship } from './flagship';
 import { board as flare } from './flare';
 import { board as flourish } from './flourish';
 import { board as forerunner } from './forerunner';
+import { board as fortino } from './fortino';
 import { board as foundation } from './foundation';
 import { board as foundry } from './foundry';
 import { board as fprime } from './fprime';
@@ -140,7 +145,9 @@ import { board as headline } from './headline';
 import { board as healthx } from './healthx';
 import { board as heavybit } from './heavybit';
 import { board as hetz } from './hetz';
+import { board as highland } from './highland';
 import { board as homebrew } from './homebrew';
+import { board as hoxton } from './hoxton';
 import { board as htgf } from './htgf';
 import { board as humba } from './humba';
 import { board as hvcapital } from './hvcapital';
@@ -160,6 +167,7 @@ import { board as kapor } from './kapor';
 import { board as kdt } from './kdt';
 import { board as khosla } from './khosla';
 import { board as kickstart } from './kickstart';
+import { board as kindred } from './kindred';
 import { board as lakestar } from './lakestar';
 import { board as leadout } from './leadout';
 import { board as learn } from './learn';
@@ -188,6 +196,7 @@ import { board as metaprop } from './metaprop';
 import { board as mmc } from './mmc';
 import { board as moc } from './moc';
 import { board as moderne } from './moderne';
+import { board as molten } from './molten';
 import { board as moneta } from './moneta';
 import { board as morpheus } from './morpheus';
 import { board as moxxie } from './moxxie';
@@ -205,15 +214,20 @@ import { board as nyca } from './nyca';
 import { board as octopus } from './octopus';
 import { board as offline } from './offline';
 import { board as omnivore } from './omnivore';
+import { board as openocean } from './openocean';
 import { board as orbit } from './orbit';
 import { board as origin } from './origin';
 import { board as outsiders } from './outsiders';
 import { board as paleblue } from './paleblue';
+import { board as partech } from './partech';
+import { board as peak } from './peak';
 import { board as pear } from './pear';
 import { board as phoenixcourt } from './phoenixcourt';
+import { board as planeta } from './planeta';
 import { board as playground } from './playground';
 import { board as plugandplay } from './plugandplay';
 import { board as point72 } from './point72';
+import { board as pointnine } from './pointnine';
 import { board as primary } from './primary';
 import { board as qed } from './qed';
 import { board as quiet } from './quiet';
@@ -237,6 +251,7 @@ import { board as scribble } from './scribble';
 import { board as seedcamp } from './seedcamp';
 import { board as sentiero } from './sentiero';
 import { board as sequoia } from './sequoia';
+import { board as serena } from './serena';
 import { board as shield } from './shield';
 import { board as shima } from './shima';
 import { board as sixty8 } from './sixty8';
@@ -266,6 +281,7 @@ import { board as underline } from './underline';
 import { board as upfront } from './upfront';
 import { board as urban } from './urban';
 import { board as usv } from './usv';
+import { board as uvc } from './uvc';
 import { board as vamos } from './vamos';
 import { board as venrock } from './venrock';
 import { board as ventureforward } from './ventureforward';
@@ -300,11 +316,13 @@ const impls: Record<string, JobBoardScraper> = {
 	aix,
 	alleycorp,
 	alven,
+	amadeus,
 	amplify,
 	amplifyla,
 	amplitude,
 	anthemis,
 	atlas,
+	atomico,
 	atone,
 	avalanche,
 	avp,
@@ -359,6 +377,8 @@ const impls: Record<string, JobBoardScraper> = {
 	creandum,
 	crosscut,
 	crv,
+	daphni,
+	dawn,
 	dcvc,
 	decibel,
 	deciens,
@@ -398,6 +418,7 @@ const impls: Record<string, JobBoardScraper> = {
 	flare,
 	flourish,
 	forerunner,
+	fortino,
 	foundation,
 	foundry,
 	fprime,
@@ -424,7 +445,9 @@ const impls: Record<string, JobBoardScraper> = {
 	healthx,
 	heavybit,
 	hetz,
+	highland,
 	homebrew,
+	hoxton,
 	htgf,
 	humba,
 	hvcapital,
@@ -444,6 +467,7 @@ const impls: Record<string, JobBoardScraper> = {
 	kdt,
 	khosla,
 	kickstart,
+	kindred,
 	lakestar,
 	leadout,
 	learn,
@@ -472,6 +496,7 @@ const impls: Record<string, JobBoardScraper> = {
 	mmc,
 	moc,
 	moderne,
+	molten,
 	moneta,
 	morpheus,
 	moxxie,
@@ -489,15 +514,20 @@ const impls: Record<string, JobBoardScraper> = {
 	octopus,
 	offline,
 	omnivore,
+	openocean,
 	orbit,
 	origin,
 	outsiders,
 	paleblue,
+	partech,
+	peak,
 	pear,
 	phoenixcourt,
+	planeta,
 	playground,
 	plugandplay,
 	point72,
+	pointnine,
 	primary,
 	qed,
 	quiet,
@@ -521,6 +551,7 @@ const impls: Record<string, JobBoardScraper> = {
 	seedcamp,
 	sentiero,
 	sequoia,
+	serena,
 	shield,
 	shima,
 	sixty8,
@@ -550,6 +581,7 @@ const impls: Record<string, JobBoardScraper> = {
 	upfront,
 	urban,
 	usv,
+	uvc,
 	vamos,
 	venrock,
 	ventureforward,
