@@ -131,6 +131,7 @@ import { board as gaingels } from './gaingels';
 import { board as geek } from './geek';
 import { board as generalcatalyst } from './generalcatalyst';
 import { board as gfr } from './gfr';
+import { board as glasswing } from './glasswing';
 import { board as goodwater } from './goodwater';
 import { board as gradient } from './gradient';
 import { board as greycroft } from './greycroft';
@@ -278,6 +279,7 @@ import { board as type1 } from './type1';
 import { board as ulu } from './ulu';
 import { board as uncork } from './uncork';
 import { board as underline } from './underline';
+import { board as underscore } from './underscore';
 import { board as upfront } from './upfront';
 import { board as urban } from './urban';
 import { board as usv } from './usv';
@@ -431,6 +433,7 @@ const impls: Record<string, JobBoardScraper> = {
 	geek,
 	generalcatalyst,
 	gfr,
+	glasswing,
 	goodwater,
 	gradient,
 	greycroft,
@@ -578,6 +581,7 @@ const impls: Record<string, JobBoardScraper> = {
 	ulu,
 	uncork,
 	underline,
+	underscore,
 	upfront,
 	urban,
 	usv,
