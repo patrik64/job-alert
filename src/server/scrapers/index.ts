@@ -4,6 +4,7 @@ import type { JobBoardScraper } from './types';
 import { board as zeroonea } from './01a';
 import { board as fifteenseventeen } from './1517';
 import { board as twentyonefifty } from './2150';
+import { board as fourohsix } from './406';
 import { board as fiveam } from './5am';
 import { board as sixfortyfive } from './645';
 import { board as eightvc } from './8vc';
@@ -15,6 +16,7 @@ import { board as airbus } from './airbus';
 import { board as airtree } from './airtree';
 import { board as aix } from './aix';
 import { board as alleycorp } from './alleycorp';
+import { board as alumni } from './alumni';
 import { board as alven } from './alven';
 import { board as amadeus } from './amadeus';
 import { board as amplify } from './amplify';
@@ -170,6 +172,7 @@ import { board as khosla } from './khosla';
 import { board as kickstart } from './kickstart';
 import { board as kindred } from './kindred';
 import { board as lakestar } from './lakestar';
+import { board as launchcapital } from './launchcapital';
 import { board as leadout } from './leadout';
 import { board as learn } from './learn';
 import { board as leftlane } from './leftlane';
@@ -263,7 +266,10 @@ import { board as speedinvest } from './speedinvest';
 import { board as springtide } from './springtide';
 import { board as springtime } from './springtime';
 import { board as stageone } from './stageone';
+import { board as suffolk } from './suffolk';
+import { board as summit } from './summit';
 import { board as supermoon } from './supermoon';
+import { board as ta } from './ta';
 import { board as tau } from './tau';
 import { board as techstars } from './techstars';
 import { board as thirdrock } from './thirdrock';
@@ -292,6 +298,7 @@ import { board as vestigo } from './vestigo';
 import { board as viola } from './viola';
 import { board as visible } from './visible';
 import { board as visiblehands } from './visiblehands';
+import { board as volition } from './volition';
 import { board as voyager } from './voyager';
 import { board as willow } from './willow';
 import { board as wing } from './wing';
@@ -306,6 +313,7 @@ const impls: Record<string, JobBoardScraper> = {
 	'01a': zeroonea,
 	'1517': fifteenseventeen,
 	'2150': twentyonefifty,
+	'406': fourohsix,
 	'5am': fiveam,
 	'645': sixfortyfive,
 	'8vc': eightvc,
@@ -317,6 +325,7 @@ const impls: Record<string, JobBoardScraper> = {
 	airtree,
 	aix,
 	alleycorp,
+	alumni,
 	alven,
 	amadeus,
 	amplify,
@@ -472,6 +481,7 @@ const impls: Record<string, JobBoardScraper> = {
 	kickstart,
 	kindred,
 	lakestar,
+	launchcapital,
 	leadout,
 	learn,
 	leftlane,
@@ -565,7 +575,10 @@ const impls: Record<string, JobBoardScraper> = {
 	springtide,
 	springtime,
 	stageone,
+	suffolk,
+	summit,
 	supermoon,
+	ta,
 	tau,
 	techstars,
 	thirdrock,
@@ -594,6 +607,7 @@ const impls: Record<string, JobBoardScraper> = {
 	viola,
 	visiblehands,
 	visible,
+	volition,
 	voyager,
 	willow,
 	wing,

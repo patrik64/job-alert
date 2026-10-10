@@ -8,6 +8,7 @@ export interface FundInfo {
 }
 
 export const FUNDS: FundInfo[] = [
+	{ slug: '406', name: '.406 Ventures', url: 'https://jobs.406ventures.com/jobs' },
 	{ slug: '01a', name: '01 Advisors', url: 'https://jobs.01a.com/jobs' },
 	{ slug: '1517', name: '1517 Fund', url: 'https://jobs.1517fund.com/jobs' },
 	{ slug: '2150', name: '2150', url: 'https://2150.getro.com/jobs' },
@@ -21,6 +22,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'airtree', name: 'Airtree', url: 'https://jobs.airtree.vc/jobs' },
 	{ slug: 'aix', name: 'AIX Ventures', url: 'https://careers.aixventures.com/jobs' },
 	{ slug: 'alleycorp', name: 'AlleyCorp', url: 'https://jobs.alleycorp.com/jobs' },
+	{ slug: 'alumni', name: 'Alumni Ventures', url: 'https://jobs.av.vc/jobs' },
 	{ slug: 'alven', name: 'Alven', url: 'https://jobs.alven.co/jobs' },
 	{ slug: 'amadeus', name: 'Amadeus Capital Partners', url: 'https://jobs.amadeuscapital.com/jobs' },
 	{ slug: 'amplifyla', name: 'Amplify LA', url: 'https://jobs.amplify.la/jobs' },
@@ -176,6 +178,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'kickstart', name: 'Kickstart', url: 'https://jobs.kickstart.com/jobs' },
 	{ slug: 'kindred', name: 'Kindred Capital', url: 'https://jobs.kindredcapital.vc/jobs' },
 	{ slug: 'lakestar', name: 'Lakestar', url: 'https://consider.com/boards/vc/lakestar/jobs' },
+	{ slug: 'launchcapital', name: 'LaunchCapital', url: 'https://jobs.launchcapital.com/jobs' },
 	{ slug: 'leadout', name: 'Leadout Capital', url: 'https://jobs.leadoutcapital.com/jobs' },
 	{ slug: 'learn', name: 'Learn Capital', url: 'https://learncapital.getro.com/jobs' },
 	{ slug: 'leftlane', name: 'Left Lane Capital', url: 'https://jobs.leftlanecap.com/jobs' },
@@ -269,7 +272,10 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'springtide', name: 'SpringTide Ventures', url: 'https://jobs.springtide.com/jobs' },
 	{ slug: 'springtime', name: 'SpringTime Ventures', url: 'https://careers.springtimeventures.com/jobs' },
 	{ slug: 'stageone', name: 'StageOne Ventures', url: 'https://jobs.stageonevc.com/' },
+	{ slug: 'suffolk', name: 'Suffolk Technologies', url: 'https://careers.suffolktech.com/jobs' },
+	{ slug: 'summit', name: 'Summit Partners', url: 'https://jobs.summitpartners.com/jobs' },
 	{ slug: 'supermoon', name: 'Supermoon Capital', url: 'https://jobs.supermooncapital.com/jobs' },
+	{ slug: 'ta', name: 'TA Associates', url: 'https://careers.ta.com/jobs' },
 	{ slug: 'tau', name: 'Tau Ventures', url: 'https://www.tauventures.com/careers' },
 	{ slug: 'techstars', name: 'Techstars', url: 'https://jobs.techstars.com/jobs' },
 	{ slug: 'engine', name: 'The Engine', url: 'https://jobs.engine.xyz/jobs' },
@@ -299,6 +305,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'viola', name: 'Viola Group', url: 'https://careers.viola-group.com/jobs' },
 	{ slug: 'visiblehands', name: 'Visible Hands', url: 'https://jobs.visiblehands.vc/jobs' },
 	{ slug: 'visible', name: 'Visible Ventures', url: 'https://visibleventures.com/jobs/' },
+	{ slug: 'volition', name: 'Volition Capital', url: 'https://jobs.volitioncapital.com/jobs' },
 	{ slug: 'voyager', name: 'Voyager Ventures', url: 'https://careers.voyagervc.com/jobs' },
 	{ slug: 'willow', name: 'Willow Growth Partners', url: 'https://willowgrowth.com/talent/' },
 	{ slug: 'wing', name: 'Wing Venture Capital', url: 'https://careers.wing.vc/jobs' },
