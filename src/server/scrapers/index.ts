@@ -200,6 +200,7 @@ import { board as nextview } from './nextview';
 import { board as nfx } from './nfx';
 import { board as northzone } from './northzone';
 import { board as norwest } from './norwest';
+import { board as notion } from './notion';
 import { board as nyca } from './nyca';
 import { board as octopus } from './octopus';
 import { board as offline } from './offline';
@@ -483,6 +484,7 @@ const impls: Record<string, JobBoardScraper> = {
 	nfx,
 	northzone,
 	norwest,
+	notion,
 	nyca,
 	octopus,
 	offline,
