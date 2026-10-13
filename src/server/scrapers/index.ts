@@ -171,7 +171,6 @@ import { board as kdt } from './kdt';
 import { board as khosla } from './khosla';
 import { board as kickstart } from './kickstart';
 import { board as kindred } from './kindred';
-import { board as lakestar } from './lakestar';
 import { board as launchcapital } from './launchcapital';
 import { board as leadout } from './leadout';
 import { board as learn } from './learn';
@@ -480,7 +479,6 @@ const impls: Record<string, JobBoardScraper> = {
 	khosla,
 	kickstart,
 	kindred,
-	lakestar,
 	launchcapital,
 	leadout,
 	learn,
