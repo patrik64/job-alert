@@ -14,9 +14,10 @@ live at https://job-alert-pax.vercel.app/
 ## Pages
 
 - **dashboard** (`/`) — one card per fund with job count, newcomer badge and
-  last-fetch time; the whole card links to the fund's page. In development a
-  **fetch all** button runs every scraper, and each card has its own
-  **refresh** button.
+  last-fetch time; the whole card links to the fund's page. A box above the
+  cards narrows them by the fund's name (or its board's address, so "getro"
+  shows every Getro-hosted board). In development a **fetch all** button runs
+  every scraper, and each card has its own **refresh** button.
 - **fund** (`/funds/[slug]`) — the fund's listed jobs grouped by company, with
   each job's function, location and pay where the board publishes them, a link
   to the job's page on the board and one to the posting itself; a search box

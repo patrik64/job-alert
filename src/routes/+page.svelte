@@ -11,9 +11,18 @@
 	let funds = $state<Record<string, Fund>>({});
 	let statuses = $state<Record<string, Status>>({});
 	let running = $state(false);
+	let search = $state('');
 
 	const cards = $derived(
 		FUNDS.map((f) => ({ ...f, fund: funds[f.slug], status: statuses[f.slug] }))
+	);
+	// the cards the box narrows to: by the fund's name, or by its board's
+	// address, so a platform's name picks out every board it hosts
+	const query = $derived(search.trim().toLowerCase());
+	const shown = $derived(
+		query
+			? cards.filter((c) => c.name.toLowerCase().includes(query) || c.url.toLowerCase().includes(query))
+			: cards
 	);
 
 	async function reloadFunds() {
@@ -86,6 +95,9 @@
 <div class="mx-auto mt-2 w-full max-w-[71rem] px-6 py-4 lg:dashed-frame">
 	<div class="flex flex-wrap items-center justify-between gap-2">
 		<h1 class="text-lg font-semibold text-white">funds</h1>
+		<span class="text-sm text-white/80">
+			{query ? `${shown.length} of ${cards.length} funds` : `${cards.length} funds`}
+		</span>
 		{#if dev}
 			<button
 				type="button"
@@ -98,8 +110,19 @@
 		{/if}
 	</div>
 
+	<input
+		type="text"
+		placeholder="filter funds by name…"
+		bind:value={search}
+		class="form-input mt-3 w-full focus:shadow-outline-green"
+	/>
+
+	{#if shown.length === 0}
+		<p class="mt-6 text-sm text-white/80">no fund matches "{search.trim()}"</p>
+	{/if}
+
 	<div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		{#each cards as card (card.slug)}
+		{#each shown as card (card.slug)}
 			<div
 				class="group relative rounded-lg bg-white px-4 py-3 shadow-lg transition duration-500 ease-in-out hover:bg-light-500"
 			>
