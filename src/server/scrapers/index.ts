@@ -193,6 +193,7 @@ import { board as makers } from './makers';
 import { board as mantis } from './mantis';
 import { board as massmutual } from './massmutual';
 import { board as matchstick } from './matchstick';
+import { board as matterwave } from './matterwave';
 import { board as maveron } from './maveron';
 import { board as mayfield } from './mayfield';
 import { board as mcj } from './mcj';
@@ -261,6 +262,7 @@ import { board as sandbox } from './sandbox';
 import { board as scifi } from './scifi';
 import { board as scribble } from './scribble';
 import { board as seedcamp } from './seedcamp';
+import { board as senovo } from './senovo';
 import { board as sentiero } from './sentiero';
 import { board as sequoia } from './sequoia';
 import { board as serena } from './serena';
@@ -510,6 +512,7 @@ const impls: Record<string, JobBoardScraper> = {
 	mantis,
 	massmutual,
 	matchstick,
+	matterwave,
 	maveron,
 	mayfield,
 	mcj,
@@ -578,6 +581,7 @@ const impls: Record<string, JobBoardScraper> = {
 	scifi,
 	scribble,
 	seedcamp,
+	senovo,
 	sentiero,
 	sequoia,
 	serena,
