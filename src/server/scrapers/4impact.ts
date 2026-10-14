@@ -4,11 +4,12 @@ import type { JobBoardScraper, ScrapedJob } from './types';
 
 // 4impact's job board — a hulp.work board, a next.js app that renders a page
 // of vacancies at a time (?page=1, 2, …) into its server payload: each with
-// its id, the title, the company, the places, a job family, the posting's own
-// link and a summary of the role and the company. The pages are read in
-// turn until the payload's page count is reached; the board's page per job
-// is /en/jobs/<id>. The summaries stand in for the descriptions, from a
-// short-lived copy of the list; the board's open applications are no jobs.
+// its id, the title, the company, the places, a job family and a summary of
+// the role and the company — no link to the posting itself, so the job's
+// page on the board, /en/jobs/<id>, is its link. The pages are read in turn
+// until the payload's page count is reached. The summaries stand in for the
+// descriptions, from a short-lived copy of the list; the board's open
+// applications are no jobs.
 
 const BASE = 'https://jobs.4impact.vc';
 const MAX_PAGES = 40;
@@ -19,7 +20,6 @@ interface Vacancy {
 	professionTitle?: string | null;
 	vacancyStatusOpenDt?: string | null;
 	vacancyLocations?: { city?: string | null; countryName?: string | null }[] | null;
-	vacancyUrlParent?: string | null;
 	vacancyRole?: string | null;
 	vacancyRoleAndCompanyDescription?: string | null;
 	listingType?: { isOpenApplication?: boolean | null } | null;
@@ -86,7 +86,7 @@ export const board: JobBoardScraper = {
 				companyUrl: '',
 				title,
 				url: pageOf(v.vacancyId),
-				applyUrl: v.vacancyUrlParent || pageOf(v.vacancyId),
+				applyUrl: pageOf(v.vacancyId),
 				category: v.jobFamily?.name ?? '',
 				sector: '',
 				location: [
