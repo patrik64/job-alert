@@ -5,6 +5,7 @@ import { board as zeroonea } from './01a';
 import { board as fifteenseventeen } from './1517';
 import { board as twentyonefifty } from './2150';
 import { board as fourohsix } from './406';
+import { board as fourimpact } from './4impact';
 import { board as fiveam } from './5am';
 import { board as sixfortyfive } from './645';
 import { board as eightvc } from './8vc';
@@ -82,6 +83,7 @@ import { board as crane } from './crane';
 import { board as creandum } from './creandum';
 import { board as crosscut } from './crosscut';
 import { board as crv } from './crv';
+import { board as curiosity } from './curiosity';
 import { board as daphni } from './daphni';
 import { board as dawn } from './dawn';
 import { board as dcvc } from './dcvc';
@@ -104,6 +106,7 @@ import { board as electric } from './electric';
 import { board as elevate } from './elevate';
 import { board as emerge } from './emerge';
 import { board as emergence } from './emergence';
+import { board as endeit } from './endeit';
 import { board as energize } from './energize';
 import { board as engine } from './engine';
 import { board as eniac } from './eniac';
@@ -159,6 +162,7 @@ import { board as htgf } from './htgf';
 import { board as humba } from './humba';
 import { board as hvcapital } from './hvcapital';
 import { board as hyperplane } from './hyperplane';
+import { board as imec } from './imec';
 import { board as indexventures } from './indexventures';
 import { board as industrious } from './industrious';
 import { board as initialized } from './initialized';
@@ -223,6 +227,7 @@ import { board as nyca } from './nyca';
 import { board as octopus } from './octopus';
 import { board as offline } from './offline';
 import { board as omnivore } from './omnivore';
+import { board as oneragtime } from './oneragtime';
 import { board as openocean } from './openocean';
 import { board as orbit } from './orbit';
 import { board as origin } from './origin';
@@ -266,6 +271,7 @@ import { board as senovo } from './senovo';
 import { board as sentiero } from './sentiero';
 import { board as sequoia } from './sequoia';
 import { board as serena } from './serena';
+import { board as setventures } from './setventures';
 import { board as shield } from './shield';
 import { board as shima } from './shima';
 import { board as sixty8 } from './sixty8';
@@ -324,6 +330,7 @@ const impls: Record<string, JobBoardScraper> = {
 	'1517': fifteenseventeen,
 	'2150': twentyonefifty,
 	'406': fourohsix,
+	'4impact': fourimpact,
 	'5am': fiveam,
 	'645': sixfortyfive,
 	'8vc': eightvc,
@@ -401,6 +408,7 @@ const impls: Record<string, JobBoardScraper> = {
 	creandum,
 	crosscut,
 	crv,
+	curiosity,
 	daphni,
 	dawn,
 	dcvc,
@@ -423,6 +431,7 @@ const impls: Record<string, JobBoardScraper> = {
 	elevate,
 	emerge,
 	emergence,
+	endeit,
 	energize,
 	engine,
 	eniac,
@@ -478,6 +487,7 @@ const impls: Record<string, JobBoardScraper> = {
 	humba,
 	hvcapital,
 	hyperplane,
+	imec,
 	indexventures,
 	industrious,
 	initialized,
@@ -542,6 +552,7 @@ const impls: Record<string, JobBoardScraper> = {
 	octopus,
 	offline,
 	omnivore,
+	oneragtime,
 	openocean,
 	orbit,
 	origin,
@@ -585,6 +596,7 @@ const impls: Record<string, JobBoardScraper> = {
 	sentiero,
 	sequoia,
 	serena,
+	setventures,
 	shield,
 	shima,
 	sixty8,
