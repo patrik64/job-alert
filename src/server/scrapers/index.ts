@@ -51,6 +51,7 @@ import { board as bowery } from './bowery';
 import { board as box } from './box';
 import { board as breakout } from './breakout';
 import { board as breakthrough } from './breakthrough';
+import { board as breega } from './breega';
 import { board as btv } from './btv';
 import { board as building } from './building';
 import { board as burst } from './burst';
@@ -124,6 +125,7 @@ import { board as flourish } from './flourish';
 import { board as forerunner } from './forerunner';
 import { board as fortino } from './fortino';
 import { board as foundation } from './foundation';
+import { board as foundersfactory } from './foundersfactory';
 import { board as foundry } from './foundry';
 import { board as fprime } from './fprime';
 import { board as framework } from './framework';
@@ -203,6 +205,7 @@ import { board as moc } from './moc';
 import { board as moderne } from './moderne';
 import { board as molten } from './molten';
 import { board as moneta } from './moneta';
+import { board as moonfire } from './moonfire';
 import { board as morpheus } from './morpheus';
 import { board as moxxie } from './moxxie';
 import { board as mseq } from './mseq';
@@ -228,6 +231,7 @@ import { board as partech } from './partech';
 import { board as peak } from './peak';
 import { board as pear } from './pear';
 import { board as phoenixcourt } from './phoenixcourt';
+import { board as picus } from './picus';
 import { board as planeta } from './planeta';
 import { board as playfair } from './playfair';
 import { board as playground } from './playground';
@@ -235,6 +239,7 @@ import { board as plugandplay } from './plugandplay';
 import { board as point72 } from './point72';
 import { board as pointnine } from './pointnine';
 import { board as primary } from './primary';
+import { board as projecta } from './projecta';
 import { board as qed } from './qed';
 import { board as quiet } from './quiet';
 import { board as qumra } from './qumra';
@@ -363,6 +368,7 @@ const impls: Record<string, JobBoardScraper> = {
 	box,
 	breakout,
 	breakthrough,
+	breega,
 	btv,
 	building,
 	burst,
@@ -436,6 +442,7 @@ const impls: Record<string, JobBoardScraper> = {
 	forerunner,
 	fortino,
 	foundation,
+	foundersfactory,
 	foundry,
 	fprime,
 	framework,
@@ -515,6 +522,7 @@ const impls: Record<string, JobBoardScraper> = {
 	moderne,
 	molten,
 	moneta,
+	moonfire,
 	morpheus,
 	moxxie,
 	mseq,
@@ -540,6 +548,7 @@ const impls: Record<string, JobBoardScraper> = {
 	peak,
 	pear,
 	phoenixcourt,
+	picus,
 	planeta,
 	playfair,
 	playground,
@@ -547,6 +556,7 @@ const impls: Record<string, JobBoardScraper> = {
 	point72,
 	pointnine,
 	primary,
+	projecta,
 	qed,
 	quiet,
 	qumra,
