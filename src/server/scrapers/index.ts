@@ -23,6 +23,8 @@ import { board as amplify } from './amplify';
 import { board as amplifyla } from './amplifyla';
 import { board as amplitude } from './amplitude';
 import { board as anthemis } from './anthemis';
+import { board as atlanticbridge } from './atlanticbridge';
+import { board as atlanticlabs } from './atlanticlabs';
 import { board as atlas } from './atlas';
 import { board as atomico } from './atomico';
 import { board as atone } from './atone';
@@ -227,6 +229,7 @@ import { board as peak } from './peak';
 import { board as pear } from './pear';
 import { board as phoenixcourt } from './phoenixcourt';
 import { board as planeta } from './planeta';
+import { board as playfair } from './playfair';
 import { board as playground } from './playground';
 import { board as plugandplay } from './plugandplay';
 import { board as point72 } from './point72';
@@ -248,6 +251,7 @@ import { board as rockhealth } from './rockhealth';
 import { board as rre } from './rre';
 import { board as s2g } from './s2g';
 import { board as s3vc } from './s3vc';
+import { board as samaipata } from './samaipata';
 import { board as sandbox } from './sandbox';
 import { board as scifi } from './scifi';
 import { board as scribble } from './scribble';
@@ -331,6 +335,8 @@ const impls: Record<string, JobBoardScraper> = {
 	amplifyla,
 	amplitude,
 	anthemis,
+	atlanticbridge,
+	atlanticlabs,
 	atlas,
 	atomico,
 	atone,
@@ -535,6 +541,7 @@ const impls: Record<string, JobBoardScraper> = {
 	pear,
 	phoenixcourt,
 	planeta,
+	playfair,
 	playground,
 	plugandplay,
 	point72,
@@ -556,6 +563,7 @@ const impls: Record<string, JobBoardScraper> = {
 	rre,
 	s2g,
 	s3vc,
+	samaipata,
 	sandbox,
 	scifi,
 	scribble,
