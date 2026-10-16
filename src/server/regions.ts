@@ -1042,6 +1042,17 @@ export function inEurope(location: string): boolean {
 	return EUROPEAN.some((a) => areas.has(a));
 }
 
+// the regions the app keeps jobs for: a job whose location names a place,
+// none of it within reach of the us or europe — Sydney, Bengaluru, Toronto,
+// Tel Aviv — is not imported (see ScrapeController's fetch), the database
+// being a free tier's half gigabyte; one naming no place at all ("Remote",
+// "Hybrid", an office's name) stays, as does one open to the whole world
+const KEPT: Region[] = ['us', 'eu', 'uk', 'europe'];
+export function withinReach(location: string): boolean {
+	const regions = regionsOf(location);
+	return regions.length === 0 || regions.some((r) => KEPT.includes(r));
+}
+
 // whether a location's regions (from regionsOf) meet any of the wanted
 // ones — 'unknown' standing for the lines that name no place
 export const inRegions = (regions: Region[], wanted: readonly (Region | 'unknown')[]) =>

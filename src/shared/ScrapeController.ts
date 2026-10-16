@@ -410,6 +410,7 @@ export class ScrapeController {
 		// dead !SSR branch lets Vite drop the scrapers from the client build.
 		if (!import.meta.env.SSR) throw new Error('fetchFund only runs on the server');
 		const { scraperBySlug } = await import('../server/scrapers/index');
+		const { withinReach } = await import('../server/regions');
 		const entry = scraperBySlug.get(slug);
 		if (!entry) throw new Error(`unknown fund: ${slug}`);
 		await ensureIndexes();
@@ -436,13 +437,17 @@ export class ScrapeController {
 				if (LINKEDIN_POSTING.test(j.applyUrl ?? '')) continue;
 				const company = decodeEntities(j.company ?? '');
 				if (BLOCKED_COMPANY.test(company)) continue;
+				// a job placed outside the us and europe is not kept (see
+				// regions.ts); one already stored falls out as departed
+				const location = decodeEntities(j.location ?? '');
+				if (!withinReach(location)) continue;
 				byKey.set(key, {
 					...j,
 					title,
 					company,
 					category: decodeEntities(j.category ?? ''),
 					sector: decodeEntities(j.sector ?? ''),
-					location: decodeEntities(j.location ?? '')
+					location
 				});
 			}
 			if (byKey.size === 0) throw new Error(`${entry.name}: the board listed no jobs`);

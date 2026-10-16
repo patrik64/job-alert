@@ -278,7 +278,12 @@ Jobs whose application link is a bare linkedin posting
 (`…linkedin.com/jobs/view/…`) are skipped at import: getro's sourcing pads
 boards with postings lifted off linkedin — spam and other companies' roles
 under portfolio names — while genuine openings apply through the company's
-own site or applicant tracking system.
+own site or applicant tracking system. Jobs whose location names a place
+outside the US and Europe (Sydney, Bengaluru, Toronto, Tel Aviv…) are
+skipped too — the database is a free tier's half gigabyte, and they were a
+seventh of it — while a job naming no place ("Remote", "Hybrid", an office's
+name) or open to the whole world is kept; `withinReach` in
+`src/server/regions.ts` decides.
 
 Scrapers fail loudly rather than import a partial list (which would mark the
 missing jobs removed, only to have them reappear as newcomers later); a failing
