@@ -215,6 +215,61 @@ async function ensureIndexes(): Promise<void> {
 	indexesEnsured = true;
 }
 
+// The writes of a fetch and of enrichment go through sql where there is
+// sql: remult's updateMany and deleteMany read the matching rows and then
+// save or delete them one at a time — a night's thousands of round trips,
+// which under a throttled database stretched the largest board's fetch past
+// a serverless function's five minutes. The json fallback of local
+// development has no sql and keeps remult's way.
+
+// the newcomer flags of a fund's jobs first seen before a moment, cleared
+async function ageNewcomerFlags(slug: string, before: Date): Promise<void> {
+	const db = remult.dataProvider;
+	if (db instanceof SqlDatabase) {
+		const command = db.createCommand();
+		await command.execute(
+			`update jobs set "isNewcomer" = false
+			 where "fundSlug" = ${command.param(slug)} and "isNewcomer" = true
+			   and "firstSeenAt" < ${command.param(before)}`
+		);
+		return;
+	}
+	await repo(Job).updateMany({
+		where: { fundSlug: slug, isNewcomer: true, firstSeenAt: { $lt: before } },
+		set: { isNewcomer: false }
+	});
+}
+
+// the jobs with these ids, deleted — a statement per five hundred (the ids
+// travel as json: remult's parameters pass arrays as json text)
+async function deleteJobs(ids: string[]): Promise<void> {
+	const db = remult.dataProvider;
+	for (const batch of chunks(ids, 500)) {
+		if (db instanceof SqlDatabase) {
+			const command = db.createCommand();
+			await command.execute(
+				`delete from jobs where id in (select jsonb_array_elements_text(${command.param(JSON.stringify(batch))}::jsonb))`
+			);
+		} else {
+			await repo(Job).deleteMany({ where: { id: { $in: batch } } });
+		}
+	}
+}
+
+// one job's columns, set
+type JobUpdate = Partial<Pick<Job, 'enrichedAt' | 'detailKey' | 'category' | 'postedAt'>>;
+async function updateJob(id: string, set: JobUpdate): Promise<void> {
+	const db = remult.dataProvider;
+	const entries = Object.entries(set);
+	if (db instanceof SqlDatabase && entries.length) {
+		const command = db.createCommand();
+		const columns = entries.map(([column, value]) => `"${column}" = ${command.param(value)}`);
+		await command.execute(`update jobs set ${columns.join(', ')} where id = ${command.param(id)}`);
+		return;
+	}
+	await repo(Job).updateMany({ where: { id }, set });
+}
+
 // the ids of a fund's jobs — all a fetch's diff ever reads of the rows
 // already there. The full rows would be the whole board over again,
 // megabytes a fund off the database every night; one column travels
@@ -360,6 +415,7 @@ export class ScrapeController {
 		await ensureIndexes();
 		if (inFlight.has(slug)) throw new Error(`${entry.name}: fetch already running`);
 		inFlight.add(slug);
+		const startedAt = Date.now();
 		try {
 			const listed = await Promise.race([
 				entry.board.list(),
@@ -391,6 +447,7 @@ export class ScrapeController {
 			}
 			if (byKey.size === 0) throw new Error(`${entry.name}: the board listed no jobs`);
 
+			const listedAt = Date.now();
 			const jobs = repo(Job);
 			const existing = await existingJobIds(slug);
 			const idOf = (key: string) => `${slug}:${key}`;
@@ -407,22 +464,13 @@ export class ScrapeController {
 			// for a second run to land the same morning, and it must not eat the
 			// night's finds: a flag younger than half a day survives, and the
 			// next night's run is far enough away to clear it
-			await jobs.updateMany({
-				where: {
-					fundSlug: slug,
-					isNewcomer: true,
-					firstSeenAt: { $lt: new Date(now.getTime() - KEEP_NEWCOMER_MS) }
-				},
-				set: { isNewcomer: false }
-			});
+			await ageNewcomerFlags(slug, new Date(now.getTime() - KEEP_NEWCOMER_MS));
 			// jobs that left the board leave the database — the rows were most of
 			// its weight. One that comes back later is a stranger again, and gets
 			// announced as new. Their descriptions may still serve another fund
 			// listing the same posting; the nightly sweep (tidyDetails) takes the
 			// ones nobody references any more
-			for (const ids of chunks(departed, 500)) {
-				await jobs.deleteMany({ where: { id: { $in: ids } } });
-			}
+			await deleteJobs(departed);
 
 			await insertJobs(
 				newcomers.map(([key, j]) => ({
@@ -453,6 +501,13 @@ export class ScrapeController {
 				}))
 			);
 
+			// where a fetch's time went — the largest boards run close to a
+			// serverless function's limit, and the log says which part grew
+			const writtenAt = Date.now();
+			console.log(
+				`${slug}: listed ${byKey.size} jobs in ${Math.round((listedAt - startedAt) / 1000)}s, ` +
+					`wrote +${newcomers.length} -${departed.length} in ${Math.round((writtenAt - listedAt) / 1000)}s`
+			);
 			const added = baseline ? 0 : newcomers.length;
 			const pending = entry.board.detail
 				? await jobs.count({ fundSlug: slug, enrichedAt: NULL_DATE })
@@ -484,15 +539,7 @@ export class ScrapeController {
 			// a board that stays down finds nothing new: its newcomers age out
 			// as they would on a successful fetch, so its badge doesn't stand
 			// for days on the last night that worked
-			const newCount = await repo(Job)
-				.updateMany({
-					where: {
-						fundSlug: slug,
-						isNewcomer: true,
-						firstSeenAt: { $lt: new Date(Date.now() - KEEP_NEWCOMER_MS) }
-					},
-					set: { isNewcomer: false }
-				})
+			const newCount = await ageNewcomerFlags(slug, new Date(Date.now() - KEEP_NEWCOMER_MS))
 				.then(() => repo(Job).count({ fundSlug: slug, isNewcomer: true }))
 				.catch(() => undefined);
 			await repo(Fund)
@@ -584,19 +631,16 @@ export class ScrapeController {
 									});
 									if (!updated) await details.insert({ id: key, description });
 								}
-								await jobs.updateMany({
-									where: { id: job.id },
-									set: {
-										enrichedAt: when,
-										...(key !== job.detailKey ? { detailKey: key } : {}),
-										...(d.category ? { category: decodeEntities(d.category) } : {}),
-										...(d.postedAt ? { postedAt: d.postedAt } : {})
-									}
+								await updateJob(job.id, {
+									enrichedAt: when,
+									...(key !== job.detailKey ? { detailKey: key } : {}),
+									...(d.category ? { category: decodeEntities(d.category) } : {}),
+									...(d.postedAt ? { postedAt: d.postedAt } : {})
 								});
 							} else {
 								// gone from the board: nothing to describe — the next
 								// fetch removes it
-								await jobs.updateMany({ where: { id: job.id }, set: { enrichedAt: when } });
+								await updateJob(job.id, { enrichedAt: when });
 							}
 							enriched++;
 						} catch (err) {

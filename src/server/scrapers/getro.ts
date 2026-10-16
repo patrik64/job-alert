@@ -12,9 +12,9 @@ const PAGE_SIZE = 20;
 const LIST_CONCURRENCY = 6;
 const JSON_HEADERS = { accept: 'application/json', 'content-type': 'application/json' };
 // all boards share one pace towards the search api — around fourteen
-// requests a second, still under half of what probes sustain without a
-// single 429 (the biggest board's thirteen hundred pages have to fit,
-// with the diff, inside a serverless function's five minutes)
+// requests a second. Short bursts go twice as fast without a 429, but a
+// whole thirteen-hundred-page board at that pace runs into a quota ("you
+// exceeded the rate limit") partway through, so the pace stays
 const paceSearch = pacer(70);
 
 interface ListJob {

@@ -3,9 +3,11 @@ import type { JobBoardScraper, ScrapedJob } from './types';
 
 // CDP Venture Capital's XJobs — the jobs at the startups of Italy's national
 // venture fund, on an odoo site of its own. The search page's json-rpc route
-// hands over every job at once as rendered cards — title, company (its id is
-// in its logo's url), location — with the total beside them; a job's
-// overlay, from a second route, holds the description. The page opens that
+// hands over the first twenty jobs as rendered cards — title, company (its
+// id is in its logo's url), location — with the total beside them, and the
+// page's "load more" asks a second route for the next twenty from an offset
+// until it says there are no more (it used to hand over every job at once);
+// a job's overlay, from a third route, holds the description. The page opens that
 // overlay from ?open_job=<id>, the one link to a job the board has, where its
 // "apply" button leads to the posting. The site's data came in with its
 // UTF-8 read as Latin-1 ("fÃ¼r"): a run of characters that are UTF-8 bytes
@@ -13,6 +15,15 @@ import type { JobBoardScraper, ScrapedJob } from './types';
 // form.
 
 const BASE = 'https://xjobs.cdpventurecapital.it';
+// how many pages of twenty the listing follows at most
+const MAX_PAGES = 200;
+
+interface Page {
+	html: string;
+	count?: number;
+	has_more?: boolean;
+	loaded?: number;
+}
 
 async function rpc<T>(route: string, params: object): Promise<T> {
 	const resp = await fetchWithRetry(`${BASE}${route}`, {
@@ -47,13 +58,21 @@ const jobUrl = (id: string) => `${BASE}/en/search-results?category=jobs&open_job
 
 export const board: JobBoardScraper = {
 	async list() {
-		const { html, count } = await rpc<{ html: string; count: number }>('/search/filter/category', {
-			query: '',
-			category: 'jobs',
-			filters: { sort: 'recent' }
-		});
+		const filters = { sort: 'recent' };
+		const first = await rpc<Page>('/search/filter/category', { query: '', category: 'jobs', filters });
+		const count = first.count ?? 0;
+		const pages = [first];
+		for (let page = first; page.has_more && pages.length < MAX_PAGES; ) {
+			page = await rpc<Page>('/search/load/more', {
+				category: 'jobs',
+				query: '',
+				filters,
+				offset: page.loaded ?? pages.length * 20
+			});
+			pages.push(page);
+		}
 		const byId = new Map<string, ScrapedJob>();
-		for (const card of html.split('data-job_id="').slice(1)) {
+		for (const card of pages.flatMap((p) => (p.html ?? '').split('data-job_id="').slice(1))) {
 			const id = card.match(/^(\d+)"/)?.[1];
 			const title = card.match(/class="jp_row_title"[^>]*>([\s\S]*?)<\/p>/)?.[1];
 			if (!id || !title || byId.has(id)) continue;
