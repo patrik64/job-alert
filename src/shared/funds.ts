@@ -31,6 +31,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'amplitude', name: 'Amplitude Ventures', url: 'https://careers.amplitudevc.com/jobs' },
 	{ slug: 'a16z', name: 'Andreessen Horowitz', url: 'https://jobs.a16z.com/jobs' },
 	{ slug: 'anthemis', name: 'Anthemis Group', url: 'https://jobs.anthemis.com/jobs' },
+	{ slug: 'acp', name: 'Asymmetric Capital Partners', url: 'https://jobs.acp.vc/jobs' },
 	{ slug: 'atone', name: 'At One Ventures', url: 'https://jobs.atoneventures.com/jobs' },
 	{ slug: 'atlanticbridge', name: 'Atlantic Bridge', url: 'https://jobs.abven.com/jobs' },
 	{ slug: 'atlanticlabs', name: 'Atlantic Labs', url: 'https://jobs.atlantic.vc/jobs' },

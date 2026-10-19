@@ -12,6 +12,7 @@ import { board as eightvc } from './8vc';
 import { board as a16z } from './a16z';
 import { board as able } from './able';
 import { board as abstract } from './abstract';
+import { board as acp } from './acp';
 import { board as aifund } from './aifund';
 import { board as airbus } from './airbus';
 import { board as airtree } from './airtree';
@@ -337,6 +338,7 @@ const impls: Record<string, JobBoardScraper> = {
 	a16z,
 	able,
 	abstract,
+	acp,
 	aifund,
 	airbus,
 	airtree,
