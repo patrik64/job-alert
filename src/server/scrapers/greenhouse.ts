@@ -16,7 +16,7 @@ interface Named {
 	name?: string | null;
 }
 
-interface GreenhouseJob {
+export interface GreenhouseJob {
 	id: number;
 	title?: string | null;
 	absolute_url?: string | null;
@@ -29,7 +29,7 @@ interface GreenhouseJob {
 }
 
 // a "Pay Range" metadata field: { unit, min_value, max_value }
-function salaryOf(job: GreenhouseJob): ScrapedSalary | null {
+export function salaryOf(job: GreenhouseJob): ScrapedSalary | null {
 	const range = (job.metadata ?? []).find((m) => m.value_type === 'currency_range')?.value as
 		| { unit?: string; min_value?: string | number | null; max_value?: string | number | null }
 		| undefined;

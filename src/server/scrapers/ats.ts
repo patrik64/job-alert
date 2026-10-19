@@ -16,7 +16,7 @@ const unescapeHtml = (s: string) =>
 
 const JSON_HEADERS = { accept: 'application/json' };
 
-async function getJson<T>(url: string): Promise<T | null> {
+export async function getJson<T>(url: string): Promise<T | null> {
 	const resp = await fetchWithRetry(url, { headers: JSON_HEADERS });
 	if (resp.status === 404 || resp.status === 410) return null;
 	if (!resp.ok) throw new Error(`${resp.status} ${url}`);
@@ -88,6 +88,31 @@ async function workday(origin: string, tenant: string, site: string, path: strin
 	return { description: data.jobPostingInfo.jobDescription ?? '' };
 }
 
+// kula: careers.kula.ai/<org>/<id>[-<slug>] — the posting's page carries a
+// schema.org JobPosting with the description and the posting date
+async function kula(org: string, id: string): Promise<ScrapedJobDetail | null> {
+	const url = `https://careers.kula.ai/${org}/${id}`;
+	const resp = await fetchWithRetry(url);
+	if (resp.status === 404 || resp.status === 410) return null;
+	if (!resp.ok) throw new Error(`${resp.status} ${url}`);
+	const html = await resp.text();
+	for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+		let data: { '@type'?: string; description?: string | null; datePosted?: string | null };
+		try {
+			data = JSON.parse(m[1]);
+		} catch {
+			continue;
+		}
+		if (data['@type'] !== 'JobPosting') continue;
+		return {
+			description: data.description ?? '',
+			postedAt: data.datePosted ? new Date(data.datePosted) : undefined
+		};
+	}
+	// a page with no posting on it: the job is gone
+	return null;
+}
+
 // the posting's description from its applicant tracking system; null when
 // the system is not one of the known ones or the posting is gone from it
 export async function atsDetail(applyUrl: string): Promise<ScrapedJobDetail | null> {
@@ -112,6 +137,9 @@ export async function atsDetail(applyUrl: string): Promise<ScrapedJobDetail | nu
 	}
 	if (/^[a-z0-9-]+\.wd\d+\.myworkdayjobs\.com$/.test(host) && (m = path.match(/^\/(?:[a-z]{2}-[A-Za-z]{2}\/)?([^/]+)\/job\/(.+)$/))) {
 		return workday(url.origin, host.split('.')[0], m[1], m[2]);
+	}
+	if (host === 'careers.kula.ai' && (m = path.match(/^\/([^/]+)\/(\d+)/))) {
+		return kula(m[1], m[2]);
 	}
 	return null;
 }

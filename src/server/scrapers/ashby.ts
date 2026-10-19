@@ -10,7 +10,7 @@ import type { JobBoardScraper, ScrapedJob, ScrapedSalary } from './types';
 
 const API = 'https://api.ashbyhq.com/posting-api/job-board';
 
-interface AshbyJob {
+export interface AshbyJob {
 	id?: string;
 	title?: string | null;
 	department?: string | null;
@@ -35,7 +35,7 @@ interface AshbyJob {
 }
 
 // the first salary component of any tier; equity and the like are skipped
-function salaryOf(job: AshbyJob): ScrapedSalary | null {
+export function salaryOf(job: AshbyJob): ScrapedSalary | null {
 	const parts = (job.compensation?.compensationTiers ?? []).flatMap((t) => t.components ?? []);
 	const pay = parts.find(
 		(c) => c.compensationType === 'Salary' && ((c.minValue ?? 0) > 0 || (c.maxValue ?? 0) > 0)
