@@ -90,7 +90,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'crane', name: 'Crane Venture Partners', url: 'https://careers.crane.vc/jobs' },
 	{ slug: 'creandum', name: 'Creandum', url: 'https://careers.creandum.com/jobs' },
 	{ slug: 'crosscut', name: 'Crosscut Ventures', url: 'https://careers.crosscut.vc/jobs' },
-	{ slug: 'crv', name: 'CRV', url: 'https://jobs.crv.com/jobs' },
+	{ slug: 'crv', name: 'CRV', url: 'https://consider.com/boards/vc/crv/jobs' },
 	{ slug: 'curiosity', name: 'Curiosity VC', url: 'https://jobs.curiosityvc.com/' },
 	{ slug: 'daphni', name: 'Daphni', url: 'https://talent.daphni.com/jobs' },
 	{ slug: 'dawn', name: 'Dawn Capital', url: 'https://jobs.dawncapital.com/jobs' },
