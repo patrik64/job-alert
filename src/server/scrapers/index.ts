@@ -83,7 +83,6 @@ import { board as craft } from './craft';
 import { board as crane } from './crane';
 import { board as creandum } from './creandum';
 import { board as crosscut } from './crosscut';
-import { board as crv } from './crv';
 import { board as curiosity } from './curiosity';
 import { board as daphni } from './daphni';
 import { board as dawn } from './dawn';
@@ -409,7 +408,6 @@ const impls: Record<string, JobBoardScraper> = {
 	crane,
 	creandum,
 	crosscut,
-	crv,
 	curiosity,
 	daphni,
 	dawn,
