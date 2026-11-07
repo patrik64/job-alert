@@ -287,6 +287,7 @@ import { board as summit } from './summit';
 import { board as supermoon } from './supermoon';
 import { board as ta } from './ta';
 import { board as tau } from './tau';
+import { board as techsquare } from './techsquare';
 import { board as techstars } from './techstars';
 import { board as thirdrock } from './thirdrock';
 import { board as tlv } from './tlv';
@@ -612,6 +613,7 @@ const impls: Record<string, JobBoardScraper> = {
 	supermoon,
 	ta,
 	tau,
+	techsquare,
 	techstars,
 	thirdrock,
 	tlv,
