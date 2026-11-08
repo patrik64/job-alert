@@ -141,6 +141,7 @@ import { board as geek } from './geek';
 import { board as generalcatalyst } from './generalcatalyst';
 import { board as gfr } from './gfr';
 import { board as glasswing } from './glasswing';
+import { board as goodcompany } from './goodcompany';
 import { board as goodwater } from './goodwater';
 import { board as gradient } from './gradient';
 import { board as greycroft } from './greycroft';
@@ -467,6 +468,7 @@ const impls: Record<string, JobBoardScraper> = {
 	generalcatalyst,
 	gfr,
 	glasswing,
+	goodcompany,
 	goodwater,
 	gradient,
 	greycroft,

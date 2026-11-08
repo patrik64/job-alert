@@ -147,6 +147,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'generalcatalyst', name: 'General Catalyst', url: 'https://jobs.generalcatalyst.com/jobs' },
 	{ slug: 'gfr', name: 'GFR Fund', url: 'https://jobs.gfrfund.com/jobs' },
 	{ slug: 'glasswing', name: 'Glasswing Ventures', url: 'https://jobs.glasswing.vc/jobs' },
+	{ slug: 'goodcompany', name: 'Good Company', url: 'https://jobs.gc-vc.com/jobs' },
 	{ slug: 'goodwater', name: 'Goodwater Capital', url: 'https://portfoliojobs.goodwatercap.com/jobs' },
 	{ slug: 'gradient', name: 'Gradient Ventures', url: 'https://careers.gradient.com/jobs' },
 	{ slug: 'greycroft', name: 'Greycroft', url: 'https://jobs.greycroft.com/jobs' },
