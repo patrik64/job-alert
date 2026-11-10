@@ -49,7 +49,6 @@ import { board as bluebear } from './bluebear';
 import { board as blueyard } from './blueyard';
 import { board as blumberg } from './blumberg';
 import { board as bonfire } from './bonfire';
-import { board as bowery } from './bowery';
 import { board as box } from './box';
 import { board as breakout } from './breakout';
 import { board as breakthrough } from './breakthrough';
@@ -376,7 +375,6 @@ const impls: Record<string, JobBoardScraper> = {
 	blueyard,
 	blumberg,
 	bonfire,
-	bowery,
 	box,
 	breakout,
 	breakthrough,
