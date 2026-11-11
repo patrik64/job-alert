@@ -34,8 +34,12 @@
 			and I created this app to help me find new work.
 		</p>
 		<p>
-			If you have some ideas/suggestions how to improve this app, feel free to send me an email
-			(the email address is on my github page).
+			If you have some ideas/suggestions how to improve this app, feel free to send me a message on
+            <a href="https://bsky.app/profile/patrik64.bsky.social"
+                target="_blank"
+                rel="external noreferrer"
+                class="font-semibold text-white underline">bluesky</a>
+            or an email (the email address is on my github page).
 		</p>
 		<p>
 			<span class="font-semibold">{SITE_NAME}</span> watches the job boards of {FUNDS.length}
