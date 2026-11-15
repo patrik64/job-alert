@@ -64,7 +64,6 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'building', name: 'Building Ventures', url: 'https://jobs.buildingventures.com/jobs' },
 	{ slug: 'burst', name: 'Burst Capital', url: 'https://burst.vc/jobs' },
 	{ slug: 'byfounders', name: 'byFounders', url: 'https://jobs.byfounders.vc/jobs' },
-	{ slug: 'byld', name: 'Byld Ventures', url: 'https://careers.byld.vc/jobs' },
 	{ slug: 'canaan', name: 'Canaan Partners', url: 'https://careers.canaan.com/jobs' },
 	{ slug: 'canapi', name: 'Canapi Ventures', url: 'https://careers.canapi.com/jobs' },
 	{ slug: 'cantos', name: 'Cantos Ventures', url: 'https://jobs.cantos.vc/jobs' },
