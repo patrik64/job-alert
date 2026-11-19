@@ -16,8 +16,8 @@ const unescapeHtml = (s: string) =>
 
 const JSON_HEADERS = { accept: 'application/json' };
 
-export async function getJson<T>(url: string): Promise<T | null> {
-	const resp = await fetchWithRetry(url, { headers: JSON_HEADERS });
+export async function getJson<T>(url: string, attempts?: number): Promise<T | null> {
+	const resp = await fetchWithRetry(url, { headers: JSON_HEADERS }, { attempts });
 	if (resp.status === 404 || resp.status === 410) return null;
 	if (!resp.ok) throw new Error(`${resp.status} ${url}`);
 	return (await resp.json()) as T;
@@ -79,10 +79,15 @@ async function lever(company: string, id: string, eu: boolean): Promise<ScrapedJ
 }
 
 // workday: <tenant>.wd<n>.myworkdayjobs.com/[<lang>/]<site>/job/<path> — the
-// same path under /wday/cxs/<tenant>/<site>/ answers with json
+// same path under /wday/cxs/<tenant>/<site>/ answers with json. Since
+// 2026-11 the cloudflare in front of it answers node's fetch with a 429
+// whatever the headers (curl gets through): a refusal, not a rate limit, so
+// it is asked once rather than retried for a minute — eight workers waiting
+// out those retries filled whole enrichment passes, night after night
 async function workday(origin: string, tenant: string, site: string, path: string) {
 	const data = await getJson<{ jobPostingInfo?: { jobDescription?: string | null } }>(
-		`${origin}/wday/cxs/${tenant}/${site}/job/${path}`
+		`${origin}/wday/cxs/${tenant}/${site}/job/${path}`,
+		1
 	);
 	if (!data?.jobPostingInfo) return null;
 	return { description: data.jobPostingInfo.jobDescription ?? '' };

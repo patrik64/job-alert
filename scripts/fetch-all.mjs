@@ -142,7 +142,10 @@ async function enrichLane() {
 				`     ${fund.slug.padEnd(10)} ${elapsed()}s  detailed ${r.enriched}, ${r.remaining} left` +
 					(r.failed ? `, ${r.failed} failed` : '')
 			);
-			if (r.enriched === 0) break;
+			// nothing done, or nothing left but what this pass just failed: another
+			// pass would only fail the same jobs again (they stay pending for the
+			// next night)
+			if (r.enriched === 0 || r.remaining <= r.failed) break;
 		}
 	}
 }
