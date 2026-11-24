@@ -220,7 +220,7 @@ export const FUNDS: FundInfo[] = [
 	{ slug: 'morpheus', name: 'Morpheus', url: 'https://jobs.morpheus.com/jobs' },
 	{ slug: 'moxxie', name: 'Moxxie Ventures', url: 'https://careers.moxxie.vc/jobs' },
 	{ slug: 'necessary', name: 'Necessary Ventures', url: 'https://jobs.necessary.vc/jobs' },
-	{ slug: 'nea', name: 'New Enterprise Associates', url: 'https://careers.nea.com/jobs' },
+	{ slug: 'nea', name: 'New Enterprise Associates', url: 'https://consider.com/boards/vc/nea/jobs' },
 	{ slug: 'newmarkets', name: 'New Markets Venture Partners', url: 'https://jobs.newmarketsvp.com/jobs' },
 	{ slug: 'newfund', name: 'Newfund Capital', url: 'https://jobs.newfundcap.com/jobs' },
 	{ slug: 'nextview', name: 'NextView Ventures', url: 'https://nextview.getro.com/jobs' },
